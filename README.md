@@ -2,7 +2,7 @@
 
 CachyOS + Waydroid 環境で「アイドルマスター ミリオンライブ！ シアターデイズ（ミリシタ）」を高画質に動作させるためのプロジェクトです。
 
-Waydroid 上で動作するミリシタを対象に、Mesa GLES Render Scale を利用した高解像度描画、画面比率変更・タッチ操作・FPS表示などの設定管理を行います。
+Waydroid 上で動作するミリシタを対象に、Mesa GLES Render Scale を利用した高解像度描画、画面比率変更・タッチ操作・FPS / CPU / GPU 使用率の表示などの設定管理を行います。
 
 ## Goals
 
