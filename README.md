@@ -7,7 +7,7 @@ Waydroid 上で動作するミリシタを対象に、Mesa GLES Render Scale を
 ## Goals
 
 - Mesa GLES Render Scale (RTScale) による高解像度描画
-- 3Dライブ / MV視聴に適した表示環境の構築
+- 3D標準モードのMV視聴に適した表示環境の構築
 - Waydroid 上でのミリシタ表示・操作環境の改善
 - Mirishita Waydroid Manager (MWM) による設定の統合管理
 
