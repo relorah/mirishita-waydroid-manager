@@ -2,7 +2,7 @@
 
 Mirishita Waydroid Manager (MWM) の導入と基本設定について説明します。GitHubの既存ガイドを基に、**v0.70**の実装に合わせて説明を更新・追記しています（2026年10月5日）。
 
-MWM は、**Waydroid 上ですでにミリシタが正常起動する環境**を対象としています。初期環境を作るMWIとは別のツールです。
+MWM は、**Waydroid 上ですでにミリシタが正常起動する環境**を対象としています。
 
 Mesa GLES Render Scale / Render Target Scale（RTScale）の技術を公開した **mogareta7731 氏**に感謝します。[Zennの技術解説](https://zenn.dev/mogareta7731/articles/82f3f0d9567abc)と[noteの概要](https://note.com/mogareta7731/n/n4db668be92b5)を参照しています。v0.70同梱版は独立復元・追加修正版で、元作者のソースや配布バイナリと同一とは主張しません。
 
@@ -89,31 +89,11 @@ MWM では、以下の初期環境構築は行いません。
 
 ---
 
-## 初期環境構築とMWI
+## 導入前に用意する環境
 
-初期環境はMWI等の別ツールで用意します。
+Waydroid Android 11、Google Play、Native Bridge、ミリシタの導入を済ませ、MWMなしでゲームが起動できることを確認してください。初期環境構築の手順は本書の対象外です。
 
-```text
-CachyOS / KDE Wayland
-  → Waydroid Android 11、GApps、Native Bridgeを準備
-  → Google Playにログインし、ミリシタをインストール
-  → ミリシタ単体の起動を確認
-  → MWMを導入し、描画・起動設定を管理
-```
-
-MWIは初期構築用、MWMはゲームが動く環境の管理用です。MWMはWaydroidのインストール・Androidイメージ初期化・Google Play設定・Native Bridge導入・ゲーム導入を行いません。これらのバイナリをMWMに同梱しません。初期構築用MWIの配布・確認状況は別途確認してください。
-
-MWI Minimalで指定されている構成は以下です。新規導入からMWMまでの実機通し確認済みという意味ではありません。
-
-| 部品 | 構成 |
-| --- | --- |
-| system | `lineage-18.1-20250628-GAPPS-waydroid_x86_64-system.zip` |
-| vendor | `lineage-18.1-20250628-MAINLINE-waydroid_x86_64-vendor.zip` |
-| ARM変換 | Houdini 11_38765＋MWI用test_libnb |
-| GApps | 上記systemイメージ内の構成。OpenGAppsを重ねて導入しない |
-| Android描画スタック | MWM v0.70同梱のMesa＋RTScale、LLVM、libdrm、gralloc一式 |
-
-Android側Mesaとホスト側Mesaは別です。Android側のMesa 26.3.0-develベースの記載を、ホストMesaの指定版として扱わないでください。ホストWaydroid・Mesa・Gamescopeのパッケージ版は現インストーラーで固定していません。個別OpenGApps版も資料には記録されていません。
+Android側Mesaとホスト側Mesaは別です。MWM同梱のAndroid用Mesa 26.3.0-develベースという記載を、ホストMesaの指定版として扱わないでください。ホストWaydroid・Mesa・Gamescopeのパッケージ版は現インストーラーで固定していません。
 
 ---
 
@@ -274,7 +254,7 @@ FPS・フレームタイムはゲームのフレーム履歴から取得しま�
 
 ## Waydroid Audio Level
 
-MWMの起動処理はAndroidメディア音量を15/15へ設定し、検出したWaydroidのPipeWireストリームをミュート解除・100%へ調整します。ホストの全体音量や他アプリの音量は変更しません。初回は再生機器側の音量を控えめにしてください。音ズレや出力先の問題を一括修復する処理ではありません。MWIのAudio Fixは不要です。
+MWMの起動処理はAndroidメディア音量を15/15へ設定し、検出したWaydroidのPipeWireストリームをミュート解除・100%へ調整します。ホストの全体音量や他アプリの音量は変更しません。初回は再生機器側の音量を控えめにしてください。音ズレや出力先の問題を一括修復する処理ではありません。
 
 ---
 
