@@ -1,8 +1,12 @@
 # Mirishita Waydroid Manager (MWM) Setup Guide
 
-Mirishita Waydroid Manager (MWM) の導入と基本設定について説明します。
+Mirishita Waydroid Manager (MWM) の導入と基本設定について説明します。GitHubの既存ガイドを基に、**v0.70**の実装に合わせて説明を更新・追記しています（2026年10月5日）。
 
-MWM は、**Waydroid 上ですでにミリシタが正常起動する環境**を対象としています。
+MWM は、**Waydroid 上ですでにミリシタが正常起動する環境**を対象としています。初期環境を作るMWIとは別のツールです。
+
+Mesa GLES Render Scale / Render Target Scale（RTScale）の技術を公開した **mogareta7731 氏**に感謝します。[Zennの技術解説](https://zenn.dev/mogareta7731/articles/82f3f0d9567abc)と[noteの概要](https://note.com/mogareta7731/n/n4db668be92b5)を参照しています。v0.70同梱版は独立復元・追加修正版で、元作者のソースや配布バイナリと同一とは主張しません。
+
+---
 
 ## 免責事項
 
@@ -16,42 +20,59 @@ MWM の利用は利用者自身の判断と責任で行ってください。作�
 
 ---
 
+## v0.70での変更点
+
+| 項目 | 既存ガイドからの変更・補足 |
+| --- | --- |
+| 起動モード | High Quality / NormalともGamescope経由。旧KWin直接起動の説明は適用しない |
+| 設定反映 | Applyで保存、Restartで再起動。Apply & Refreshの一体操作から変更 |
+| RTScale | GUIはOFF / x2〜x10。基準サイズ1316×720固定という旧説明を更新 |
+| FSR | High Qualityはx6以下で最大150%、x7以上はOFF。Normalは最大200% |
+| HUD | FPS CounterのOff / Compact / Detailedへ変更。旧Text / Graphとは異なる |
+| 音量 | 起動時に自動調整。旧Waydroid Audio LevelのON/OFF操作は使用しない |
+| 入力 | Waydroid fake_touchを使用。現インストーラーはuinput設定を追加しない |
+| payload | 単一rtscale-vendor-overlayから5つの描画アーカイブへ変更 |
+| 更新 | --update-appはアプリ更新用。描画payloadを更新しない |
+| 配布 | 軽量な実行用ZIPと対応ソースを別配布。ソース収集・照合は未完 |
+
+---
+
 ## 重要
 
-MWM は、ミリシタ本体（APK）やゲームプログラム自体に変更を加えるツールではありません。
+MWM は、ミリシタ本体（APK）やゲームプログラム自体に変更を加えるツールではありません。Waydroid側の描画ライブラリ、表示・入力設定とホスト側の起動・表示補助を扱います。
 
-高解像度描画、画面比率変更、タッチ操作、Performance Overlay、音量調整などは、主に CachyOS / Waydroid / Mesa 側の設定や補助機能によって実現します。
+v0.70の描画payloadは `payload/graphics/` 内の以下5アーカイブです。
 
-MWM に同梱する `payload/rtscale-vendor-overlay.tar.zst` は、**mogareta7731 氏**が公開している Mesa GLES Render Scale / Render Target Scale (RTScale) の実装・ビルド情報を参照し、Waydroid 上で利用するための vendor overlay としてまとめたものです。
+- `mesa-runtime-overlay.tar.zst`
+- `mesa-rtscale-overlay.tar.zst`
+- `llvm21-overlay.tar.zst`
+- `libdrm-overlay.tar.zst`
+- `gbm-gralloc-overlay.tar.zst`
 
-この overlay には RTScale を組み込んだ Mesa 由来バイナリに加え、動作に必要な libdrm、LLVM、GBM / gralloc 系などの第三者由来コンポーネントが含まれます。`rtscale-vendor-overlay.tar.zst` 全体を mogareta7731 氏の著作物として扱うものではなく、RTScale 追加部分および各上流コンポーネントには、それぞれのライセンスが適用されます。
-
-RTScale の技術情報およびライセンスについては、作者本人による Zenn / note の資料と、後述の [クレジット / ライセンス](#クレジット--ライセンス) を参照してください。
+RTScale追加部分とMesa、LLVM、libdrm、GBM/gralloc等にはそれぞれのライセンスが適用されます。一式をmogareta7731氏だけの著作物として扱いません。
 
 ---
 
 ## 動作要件
 
-MWM を導入する前に、以下の環境を準備してください。
+| 項目 | 条件 |
+| --- | --- |
+| ホスト | CachyOS / Arch Linux系、x86_64 |
+| デスクトップ | KDE Plasma / Wayland |
+| Android | 初期設定済みWaydroid Android 11、x86_64 |
+| ゲーム | ミリシタがインストール済みで、MWMなしで起動・通信・入力ができること |
+| ARM互換環境 | ゲームを動かすNative Bridgeが構築済みであること |
+| 権限・ネットワーク | 通常ユーザーのsudo権限、依存パッケージ取得用ネットワーク |
 
-- CachyOS + KDE Plasma / Wayland
-- Waydroid Android 11 (x86_64) 環境
-- ARM アプリの実行に必要な Native Bridge 環境が構築済み（test_libnb）
-- ミリシタが Waydroid 上で正常起動する環境
+主なゲーム表示確認はAMD Radeon RX 6600 XTで行われています。Ryzen 7 9700X内蔵GPU等での描画部品検証は、ゲーム全機能の検証とは別です。Intel/NVIDIA実機、Android 11以外、新規環境での導入全工程、長時間・全演出の確認は未完了です。BC250を含む各機材の性能保証はありません。
 
-対象パッケージ:
+MWMはミリシタAPKやゲームプログラムを変更するツールではありません。ホスト・Waydroidの設定とAndroid用描画ライブラリを変更します。
+
+対象パッケージ：
 
 ```text
 com.bandainamcoent.imas_millionlive_theaterdays
 ```
-
-ミリシタのインストール確認:
-
-```bash
-sudo waydroid shell -- pm path com.bandainamcoent.imas_millionlive_theaterdays
-```
-
-正常な場合は `package:` で始まるパスが表示されます。
 
 ### MWM の対象外
 
@@ -68,371 +89,267 @@ MWM では、以下の初期環境構築は行いません。
 
 ---
 
+## 初期環境構築とMWI
+
+初期環境はMWI等の別ツールで用意します。
+
+```text
+CachyOS / KDE Wayland
+  → Waydroid Android 11、GApps、Native Bridgeを準備
+  → Google Playにログインし、ミリシタをインストール
+  → ミリシタ単体の起動を確認
+  → MWMを導入し、描画・起動設定を管理
+```
+
+MWIは初期構築用、MWMはゲームが動く環境の管理用です。MWMはWaydroidのインストール・Androidイメージ初期化・Google Play設定・Native Bridge導入・ゲーム導入を行いません。これらのバイナリをMWMに同梱しません。初期構築用MWIの配布・確認状況は別途確認してください。
+
+MWI Minimalで指定されている構成は以下です。新規導入からMWMまでの実機通し確認済みという意味ではありません。
+
+| 部品 | 構成 |
+| --- | --- |
+| system | `lineage-18.1-20250628-GAPPS-waydroid_x86_64-system.zip` |
+| vendor | `lineage-18.1-20250628-MAINLINE-waydroid_x86_64-vendor.zip` |
+| ARM変換 | Houdini 11_38765＋MWI用test_libnb |
+| GApps | 上記systemイメージ内の構成。OpenGAppsを重ねて導入しない |
+| Android描画スタック | MWM v0.70同梱のMesa＋RTScale、LLVM、libdrm、gralloc一式 |
+
+Android側Mesaとホスト側Mesaは別です。Android側のMesa 26.3.0-develベースの記載を、ホストMesaの指定版として扱わないでください。ホストWaydroid・Mesa・Gamescopeのパッケージ版は現インストーラーで固定していません。個別OpenGApps版も資料には記録されていません。
+
+---
+
 ## インストール
 
-MWM を展開し、ディレクトリ内で以下を実行します。
+ミリシタの引き継ぎ情報と、ホスト・Waydroidを復元できるバックアップを用意してください。MWMのBackupは設定等が対象で、Android userdataやゲームデータ全体のバックアップではありません。
+
+Waydroid起動中に確認します。
 
 ```bash
+echo "$XDG_SESSION_TYPE"
+uname -m
+waydroid status
+sudo waydroid shell -- getprop ro.build.version.release
+sudo waydroid shell -- getprop ro.dalvik.vm.native.bridge
+sudo waydroid shell -- pm path com.bandainamcoent.imas_millionlive_theaterdays
+```
+
+Wayland、x86_64、Android 11を確認します。最後に`package:`から始まるパスが出ても、ゲームの正常起動までは証明できません。MWM導入前にゲームを実際に起動してください。
+
+### ZIPの確認と導入
+
+配布元からZIPと対応する外部SHA256ファイルを取得します。外部SHA256がある場合はZIPの隣で検査してください。内部ハッシュだけで配布元の真正性は証明できません。
+
+ZIPを新しい空フォルダーへ展開し、展開した`MWM_v0.70`へ移動します。古い版のファイルを混ぜないでください。
+
+```bash
+cd /path/to/MWM_v0.70
+(cd payload && sha256sum -c SHA256SUMS)
 chmod +x install.sh
 ./install.sh
 ```
 
-インストール時には管理者権限が必要です。
+`payload/SHA256SUMS`のパスはpayloadフォルダーが基準です。すべてOKになることを確認します。失敗したら導入せず、配布元・ZIPを確認してください。
+
+**通常ユーザーで実行します。`sudo ./install.sh`は使いません。** 必要なところで管理者認証が行われます。GUIを自動起動しない場合は`./install.sh --no-gui`を使用します。
+
+通常導入は依存パッケージの導入、既存環境の確認、描画overlayの配置とハッシュ検証、root helper・sudo設定・ランチャーの登録、MWM設定の初期化、最終確認を行います。KDE向けkdotoolの取得に設定済みのparu/yayを使う場合があります。
+
+主な変更先は`/var/lib/waydroid/overlay/`、`/usr/local/libexec/mwm-root-helper`、`/etc/sudoers.d/`、`~/.local/share/mwm/`、`~/.local/bin/mwm`、`~/.local/share/applications/`、`~/.config/mwm/`です。XDG変数の設定によってユーザー側の場所は変わります。
+
+通常導入はMWM設定を初期化します。Android userdataやゲームデータを削除する処理ではありませんが、バックアップの代わりにはなりません。
 
 ### Installer が行う処理
 
-インストーラーは主に以下を行います。
+1. 同梱payloadのハッシュ検査。
+2. 必要なホストパッケージの導入と、既存Waydroid / Android 11 / ミリシタの確認。
+3. 描画overlay一式の配置と、配置後のハッシュ検査。
+4. 限定された操作だけを許可するroot helperとsudo設定の登録。
+5. MWM本体・ランチャーの導入とMWM設定の初期化。
+6. Waydroid起動、Display / RTScale設定・ゲームパッケージの最終確認。
 
-1. 必要なホスト側ツールの確認
-2. Waydroid / Android 11 / ミリシタ環境の確認
-3. `/dev/uinput` のアクセス設定
-4. Mesa GLES Render Scale vendor overlay の導入
-5. MWM 用の制限付き root helper の導入
-6. MWM 本体のインストール
-7. KDE アプリケーションランチャーの作成
-8. 最終動作確認
-
-主なシステム側の変更先:
-
-```text
-/etc/udev/rules.d/
-/usr/local/libexec/mwm-root-helper
-/etc/sudoers.d/
-/var/lib/waydroid/overlay/
-```
-
-ユーザー側の主な導入先:
-
-```text
-~/.local/share/mwm/
-~/.local/bin/mwm
-~/.local/share/applications/
-~/.local/share/waydroid/data/local/tmp/gles_rtscale.conf
-~/.config/mwm/
-```
-
-MWM の root helper は、MWM が必要とする限定された処理のみを実行するためのものです。
+この最終確認は全MV・音声・入力の実機確認を意味しません。現インストーラーに `/dev/uinput` のアクセス設定を新設する処理はありません。
 
 ---
 
 ## 起動
 
-KDE のアプリケーションメニューから:
-
-```text
-Mirishita Waydroid Manager
-```
-
-ターミナルから:
+アプリメニューのMirishita Waydroid Manager、または端末から起動します。
 
 ```bash
 mwm
 ```
 
+コマンドが見つからない場合は`~/.local/bin/mwm`またはアプリメニューを使用してください。複数版の設定画面を同時に操作しないでください。
+
 ---
 
 ## 初期設定
 
-初回は以下の設定から開始できます。
+1. Mode、RTScale、FSR、Display、Mouse as Touch等を選ぶ。
+2. **Apply**で保存する。
+3. 約0.5秒後に有効になる**Restart**を押す。
+4. Waydroidとミリシタの起動完了を待つ。
 
-```text
-Mesa GLES Render Scale: x3
-Display: Auto (Full Screen)
-
-Performance Overlay: OFF
-Mouse as Touch: ON
-Waydroid Audio Level: ON
-```
-
-`x3` は Mesa GLES Render Scale の暫定的な初期値です。
-
-最適な倍率はハードウェアや表示内容によって異なるため、環境に応じて調整してください。
-
-設定後、**Apply & Refresh** を押すと設定を反映し、Waydroid を再起動してミリシタが起動します。
-
-**Cancel** は変更を適用せず MWM を閉じます。
+描画・比率・入力・Abnormal Zoom Fixの設定はRestartで反映します。未保存の変更があるときは先にApplyします。導入直後はHigh Quality、RTScale x3、FSR OFF、Sharpness OFF、Display Auto、FPS Counter Off、Mouse as Touch ONが既定です。初回はRTScale OFFまたはx2から確認しても構いません。
 
 ---
 
 ## Mesa GLES Render Scale
 
-MWM では Mesa GLES Render Scale の倍率を変更できます。
+High Quality (Mesa RTScale)で使用します。GUIの選択肢は **OFF / x2〜x10**、通常導入時の既定値はx3です。NormalではRTScaleを使用しません。変更後はApply → Restartで反映します。
 
-```text
-OFF
-x1
-x2
-x3
-...
-x10
-```
+RTScaleはMesa段で対象の描画先を拡大する処理です。倍率はMSAAのサンプル数ではありません。画面比率や描画負荷によって適した倍率が変わるため、初回はOFFまたは低い倍率で確認してください。
 
-初期値:
+旧ガイドの `1316x720` 固定という説明はv0.70に適用しません。High QualityはAndroid表示を1080高に設定し、そこから720高相当のRTScale基準幅を求めます。例えば16:9では基準1280×720になります。
 
-```text
-x3
-```
-
-倍率によって内部描画解像度や動作特性が変化します。
-
-環境や表示内容によって適した倍率は異なるため、複数の倍率を比較しながら調整してください。
-
-MWM では、Waydroid 環境下のミリシタ基準解像度を以下に固定しています。
-
-```text
-1316x720
-```
-
-この値は Waydroid の表示解像度とは独立しています。
-
-設定ファイル:
-
-```text
-~/.local/share/waydroid/data/local/tmp/gles_rtscale.conf
-```
-
-基本設定:
+MWMが管理する設定の16:9・x3時の例：
 
 ```ini
 schema_version=1
 
 [application.0]
 name=com.bandainamcoent.imas_millionlive_theaterdays
-base_width=1316
+base_width=1280
 base_height=720
 scale=3
 surface=1
 texelsize=0
+zoom_fix=1
 ```
 
-MWM の Render Scale 設定では、主に `scale=` の値を変更します。
+これは全プリセット共通の固定値ではありません。通常はGUIで設定し、手動で基準幅を固定しないでください。設定はroot helperがAndroid側へ書き込み、読み戻して確認します。
 
-Render Scale の変更は Waydroid の再起動後に反映されます。
+設定ファイルのホスト側標準パスは `~/.local/share/waydroid/data/local/tmp/gles_rtscale.conf` です。環境により異なる場合はRTScale Log Viewer / Doctorで確認してください。
+
+---
+
+## 描画モード・FSR・Sharpness
+
+| 設定 | v0.70の動作 |
+| --- | --- |
+| High Quality | RTScaleとGamescopeを使用 |
+| Normal | RTScaleを使用しないGamescope経路 |
+| High QualityのFSR | RTScale x6以下は100 / 125 / 150%。x7〜x10はOFF固定 |
+| NormalのFSR | 100 / 125 / 150 / 175 / 200% |
+| Sharpness | FSRと独立してON/OFF、0〜100% |
+
+FSR1はGamescope段の拡大処理、CASは経路に応じた最終表示のシャープニングです。FSR OFFでもSharpnessを使用できます。高い値が常に画質・速度の改善につながるとは限りません。
 
 ---
 
 ## Display
 
-MWM では以下の表示プリセットを使用できます。
+| Preset | NormalのAndroid表示 | High QualityのAndroid表示 |
+| --- | ---: | ---: |
+| Auto | ホスト画面の比率から720高へ換算 | 同じ比率で1080高へ換算 |
+| 32:9 | 2560×720 | 3840×1080 |
+| 21:9 | 1680×720 | 2520×1080 |
+| 16:9 | 1280×720 | 1920×1080 |
+| 4:3 | 960×720 | 1440×1080 |
+| 3:2 | 1080×720 | 1620×1080 |
+| Custom Width | WIDTH×720 | WIDTHの約1.5倍×1080（偶数幅へ調整） |
 
-| Preset | Waydroid Display |
-| --- | ---: |
-| Auto (Full Screen) | ホスト画面に追従 |
-| 32:9 | 2560x720 |
-| 21:9 | 1680x720 |
-| 16:9 | 1280x720 |
-| 4:3 | 960x720 |
-| 3:2 | 1080x720 |
-| Custom Width | WIDTH x 720 |
+Custom Widthは320〜7680を指定できます。UIの基準高さ720と、High QualityのAndroid表示高さ1080を区別してください。Displayの比率、RTScale対象の描画サイズ、FSR処理サイズ、ホスト出力は別の値です。
 
-### Auto (Full Screen)
+WaydroidのDisplayプロパティを使い、既存の `wm size` overrideをリセットします。手動のoverrideやmulti-window modeを併用しないでください。
 
-ホスト側の表示サイズに追従します。
-
-### Fixed Presets
-
-固定プリセットでは縦解像度を `720` に固定し、横幅を変更します。
-
-### Custom Width
-
-任意の横幅を設定できます。
-
-```text
-320 - 7680 px
-```
-
-縦解像度は常に以下の値となります。
-
-```text
-720 px
-```
-
-MWM は Android の `wm size` override を使用せず、Waydroid の Display 設定を利用します。
-
-Mesa GLES Render Scale の基準解像度 `1316x720` と、ここで設定する Waydroid の表示解像度とは別の設定です。
+Gamescopeは全画面で起動し、**Super（Windowsキー）＋F**で窓表示へ切り替えます。KDE/KWin上で比率維持と画面内に収まる窓操作を補助します。ゲーム側の黒帯やUI余白は残る場合があります。旧Window Placementの選択肢はv0.70の機能として扱いません。
 
 ---
 
 ## Mouse as Touch
 
-`Mouse as Touch` を ON にすると、ミリシタでマウス操作をタッチ入力として扱えるようになります。
+Mouse as TouchをONにすると、Waydroidの `fake_touch` を使ってマウス操作をタッチとして扱います。変更後はApply → Restartで反映します。
 
-MWM では以下を利用します。
-
-- Waydroid の `fake_touch`
-- `/dev/uinput`
-- MWM Virtual Touchscreen
-
-固定幅の Display プリセットでは、表示サイズに合わせてタッチ座標を補正します。
-
-仮想入力デバイス名:
-
-```text
-MWM Virtual Touchscreen
-```
-
-`Auto (Full Screen)` では固定解像度向けの座標補正は行いません。
+旧ガイドのMWM Virtual Touchscreen / uinput座標補正を現行経路の必須機能として扱わないでください。v0.70の起動処理は古いtouch mapperを停止し、fake_touchの設定を適用します。
 
 ---
 
-## Performance Overlay
+## Performance Overlay / FPS Counter
 
-`Performance Overlay` を ON にすると、ミリシタの動作確認に利用する以下の情報を画面左上へ表示します。
+FPS CounterはOff / Compact / Detailedです。ゲーム起動中でもApplyで切り替わり、設定画面を閉じてもHUDは維持されます。MWMからゲームを停止するとHUDも終了します。
 
-```text
-FPS
-CPU
-GPU
-```
-
-表示内容:
-
-- **FPS** ミリシタの描画 FPS
-- **CPU** CachyOS ホスト全体の CPU 使用率（`/proc/stat`）
-- **GPU** AMD GPU 全体の使用率（`gpu_busy_percent`）
-
-更新間隔は `0.2 秒` です。
-
-Performance Overlay のチェックボックス右側で `Text / Graph` を選択できます。  
-Overlay が OFF の場合、この選択欄は無効化されます。
-
-### Text
-
-3 項目を縦に並べたコンパクトな表示です。
-
-```text
-FPS  60.00
-CPU  18.2%
-GPU  42.0%
-```
-
-### Graph
-
-FPS / CPU / GPU を縦 3 段に並べ、現在値と直近の推移を折れ線グラフで表示します。
-
-MWM の標準更新間隔では、およそ直近 12 秒分を表示します。
-
-Overlay はクリック操作を妨げず、ミリシタ側へフォーカスを維持するように動作します。
-
-AMD GPU の使用率を取得できない環境では、GPU 値は取得不可として表示されます。
+FPS・フレームタイムはゲームのフレーム履歴から取得します。CPUはホスト全体、GPUは取得できたGPU全体の値であり、ゲームだけの利用率ではありません。取得できない温度等は欠測です。v0.70はフレーム生成を提供しません。
 
 ---
 
 ## Waydroid Audio Level
 
-`Waydroid Audio Level` はミリシタ起動時の Waydroid の音量状態を揃えるための補助機能です。
-
-ON の場合、以下を設定します。
-
-```text
-Android media volume = 15 / 15
-Waydroid PipeWire stream = Unmuted
-Waydroid PipeWire stream volume = 100%
-```
-
-対象となるのは以下です。
-
-- Android 側のメディア音量
-- CachyOS / PipeWire 側の Waydroid 再生ストリーム
-
-以下の音量設定は変更しません。
-
-- KDE 全体のマスター音量
-- 他アプリの音量
-- DAC 本体の音量
-
-PipeWire の Waydroid 再生ストリームは、Waydroid やミリシタの起動後に作成される場合があります。
-
-MWM は対象ストリームを確認してから音量設定を適用します。
+MWMの起動処理はAndroidメディア音量を15/15へ設定し、検出したWaydroidのPipeWireストリームをミュート解除・100%へ調整します。ホストの全体音量や他アプリの音量は変更しません。初回は再生機器側の音量を控えめにしてください。音ズレや出力先の問題を一括修復する処理ではありません。MWIのAudio Fixは不要です。
 
 ---
 
 ## Maintenance
 
-`Maintenance` タブでは、MWM 環境の確認や設定の保守を行えます。
+- **Doctor**：OS、Waydroid、描画・入力・起動状態を診断。
+- **Backup / Restore**：MWM設定、ゲーム登録、取得できるRTScale設定を保存・復元。
+- **Export Logs**：診断情報をローカルへ出力。
+- **RTScale Debug / Log Viewer**：Summary、Runtime、Surface、Libraries、Full Log等で情報を確認。Refresh、Copy、Clear Logで操作。
+- **Abnormal Zoom Fix**：RTScale有効時の既知の描画範囲問題への互換処理。既定ON。変更後はApply → Restart。
 
-### Doctor
+Gamesタブでは起動中Androidアプリの検出・登録を扱います。ゲームデータやアカウントのバックアップ機能ではありません。
 
-MWM / Waydroid 環境の状態を確認します。
+タイトル・事務所・ライブ等の確認記録と、x7でアイドル詳細の立ち絵・スペシャルトレーニングの確認があります。ログインボーナス受取と新規SSR獲得演出は未確認です。全場面・長時間の安定動作を保証しません。
 
-主な確認対象:
+ログにはユーザー名、ファイルパス、システム情報、アプリ名が含まれる場合があります。共有前に確認してください。ログとセキュリティ（配布ZIP内の `docs/SECURITY.md`）
 
-- Waydroid
-- Android version
-- ミリシタ package
-- Native Bridge
-- Mesa GLES Render Scale
-- Display
-- ミリシタの起動状態
-- MWM 関連設定
+---
 
-Native Bridge は状態確認のみ行い、MWM から導入や変更は行いません。
+## 更新
 
-### Backup
+MWMを閉じ、新しい版の展開先で実行します。
 
-MWM 関連設定をバックアップします。
+```bash
+./install.sh --update-app
+```
 
-### Restore
+この方法はアプリ・root helper・ランチャーを更新し、保存設定と描画payloadを保持します。Mesa / RTScaleバイナリは更新しません。初回導入には使えません。
 
-作成済みのバックアップから MWM 関連設定を復元します。
-
-### Export Logs
-
-トラブルシューティング用のログを出力します。
+描画payloadも更新する場合は、リリース説明に従い通常導入します。設定初期化に備え、必要なMWM設定をBackupして内容を控えます。復旧時にはホスト・Waydroid全体のバックアップも必要です。
 
 ---
 
 ## 動作確認
 
-### Mirishita package
+以下は状態確認用です。Waydroidが起動している状態で実行します。
 
 ```bash
 sudo waydroid shell -- pm path com.bandainamcoent.imas_millionlive_theaterdays
-```
-
-### Android version
-
-```bash
 sudo waydroid shell -- getprop ro.build.version.release
-```
-
-### Native Bridge
-
-```bash
 sudo waydroid shell -- getprop ro.dalvik.vm.native.bridge
-```
-
-### Waydroid display size
-
-```bash
+waydroid prop get persist.waydroid.width
+waydroid prop get persist.waydroid.height
 sudo waydroid shell -- wm size
-```
-
-### Mesa GLES Render Scale configuration
-
-```bash
 cat ~/.local/share/waydroid/data/local/tmp/gles_rtscale.conf
+sudo waydroid shell -- logcat -d -s GLES_RTSCALE
 ```
 
-Render Scale の読み込みログ:
+`wm size`だけでRTScale対象の内部描画サイズやGamescope出力サイズを判断しないでください。Normal / RTScale OFFでは設定ファイルが存在しない場合があります。ゲームパッケージの存在や設定ログの出力だけでは、実際のゲーム・入力・音声が正常とは確認できません。
+
+初回はタイトル・事務所・ライブで、表示、マウス入力、音声、比率、FPS Counter、終了・再起動を確認します。取得できた設定と実際の挙動を分けて記録してください。
+
+---
+
+## トラブルシューティング
+
+| 症状 | 確認すること |
+| --- | --- |
+| 設定が反映されない | 正しい版、Apply、Restart完了 |
+| 起動失敗 | 導入前の単体動作、Android 11、Native Bridge、Doctor |
+| ちらつき・FPS低下 | Sharpness、FSR、RTScaleを一つずつ下げて比較 |
+| 極端なズーム | Abnormal Zoom Fix、Apply → Restart、再現場面 |
+| HUDが出ない | Off以外を選んでApply、必要ならRestart |
+| 窓操作やHUD追従が不自然 | KDE Wayland、kdotool、qdbus6の状態 |
+| 音が出ない | ホスト出力先、Android音量、Waydroidストリーム |
 
 ```bash
-sudo waydroid shell -- logcat -d | grep 'GLES_RTSCALE'
+waydroid status
+systemctl status waydroid-container.service --no-pager
+journalctl -u waydroid-container.service -b --no-pager -n 100
+uname -r
+pacman -Q waydroid mesa vulkan-radeon gamescope
 ```
 
-例えば `x3` の場合、ミリシタから以下のようなログが確認できます。
-
-```text
-GLES_RTSCALE: scale=3 base=1316x720 surface=1 texelsize=0
-```
-
-ほかの Android プロセスから以下のようなログが出力される場合があります。
-
-```text
-GLES_RTSCALE: scale=1 base=1280x720 surface=0 texelsize=0
-```
-
-これらはミリシタとは別のプロセスによるものです。
+報告にはMWM版、OS/カーネル/Gamescope、CPU/GPU、Mode・倍率・比率、再現手順、発生場面を添えてください。診断ログは内容を確認してから共有します。
 
 ---
 
@@ -459,14 +376,20 @@ MWM では、作者本人による以下の資料を Mesa GLES Render Scale の�
 
 作者の公開資料では、RTScale のために追加された部分は 0BSD、既存 Mesa 由来部分はそれぞれ元の Mesa ライセンスが継続して適用されるとされています。
 
-MWM に同梱する `rtscale-vendor-overlay.tar.zst` には、Mesa のほか libdrm、LLVM、GBM / gralloc 系の第三者由来バイナリも含まれます。これらの著作権・ライセンスは各上流プロジェクトおよび各権利者に帰属します。
+MWM に同梱する `payload/graphics/` の描画アーカイブ には、Mesa のほか libdrm、LLVM、GBM / gralloc 系の第三者由来バイナリも含まれます。これらの著作権・ライセンスは各上流プロジェクトおよび各権利者に帰属します。
 
-MWM および同梱する第三者由来コンポーネントの詳細:
+配布ZIP内の `docs/THIRD_PARTY_NOTICES.md`、`docs/GRAPHICS_COMPONENTS.md`、`docs/graphics-build/SOURCE-PROVENANCE.md`、`LICENSES/` に出典・個別通知があります。MWM独自部分のMIT LicenseはZIP内の `LICENSE` を参照してください。MWMのMIT Licenseで第三者コードを再ライセンスするものではありません。
 
-- [CREDITS.md](docs/CREDITS.md)
-- [THIRD_PARTY_NOTICES.md](docs/THIRD_PARTY_NOTICES.md)
-- [LICENSES/](LICENSES/)
-
-MWM 独自部分については [LICENSE](LICENSE) を参照してください。
+同梱MesaにはAndroid libelf等の静的リンク部分があるため、MesaのMIT通知だけで一式の条件を判断できません。対応ソース・ビルド/再リンク入力を含めて確認します。
 
 ---
+
+## 配布構成と対応ソース
+
+実行用ZIPは約36.4MBの軽量構成です。起動に必要なPython・シェルコード、描画バイナリ、ハッシュ、ライセンス、出典・小さなビルド資料を収録し、開発用tests / tools / GitHub Actions、旧版資料、キャッシュ、Git管理情報を除外しています。
+
+数百MBの対応ソースは、通常利用者が一緒にダウンロードする必要のない**別の配布物**として提供する方針です。
+
+**公開候補の未完事項：** 独立復元RTScaleの基礎ソース4ファイルと大きな対応ソースアーカイブは、このZIPには含まれません。ユーザー報告ではサブ1のローカルに保管されていますが、収集・v0.70との照合・公開先の案内は未完です。上流Mesaと同梱パッチだけでは完全に再ビルドできません。必要な対応ソースと再リンク入力の提供方法を揃えてから正式公開します。
+
+このSETUP.mdのGitHub更新は、v0.70バイナリの正式リリースを意味しません。GitHubの他の文書が旧版のままの場合は、本書のv0.70説明と配布候補の実装を区別してください。
