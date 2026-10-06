@@ -113,7 +113,13 @@ Doctorで状態を確認します。「診断ログを保存」で複数の診�
 
 XDG_DATA_HOMEを変更している場合は、その配下のmwm/logsです。ログにはユーザー名・パス・プロセス情報などが含まれることがあります。
 
-RTScale DebugはSummary／Runtime／Surface／Libraries／Full Logの表示とRefresh／Copy／Clear Logを提供します。Abnormal Zoom Fixは互換処理の切替です。変更後はApply→Waydroid Refreshで反映します。
+RTScale DebugはSummary／Runtime／Surface／Libraries／Full Logの表示とRefresh／Copy／Clear Logを提供します。
+
+### Abnormal Zoom Fix（異常ズーム対策）
+
+RTScale使用時に、一部の画面や演出が過度に拡大されたり、描画範囲がずれたりする問題への互換設定です。既定はONです。
+
+変更後は **Apply → Waydroid Refresh** で反映します。今後のミリシタやRTScaleの更新により問題が発生する可能性があります。
 
 ## 初回導入時のバックアップ
 
