@@ -1,4 +1,4 @@
-# MWM 0.74 Setup Guide
+# Mirishita Waydroid Manager (MWM) Setup Guide
 
 ## 対象環境
 
@@ -114,20 +114,6 @@ Doctorで状態を確認します。「診断ログを保存」で複数の診�
 XDG_DATA_HOMEを変更している場合は、その配下のmwm/logsです。ログにはユーザー名・パス・プロセス情報などが含まれることがあります。
 
 RTScale DebugはSummary／Runtime／Surface／Libraries／Full Logの表示とRefresh／Copy／Clear Logを提供します。Abnormal Zoom Fixは互換処理の切替です。変更後はApply→Waydroid Refreshで反映します。
-
-## RTS倍率だけの高速反映
-
-ミリシタを終了して倍率を変更し、Apply→Waydroid Refreshを押します。前回正常反映時と次の状態が一致すると、Waydroidと描画環境を維持して倍率だけを更新します。
-
-- RTScaleがONのままで倍率だけが変更されている
-- MWMの他の保存設定・版が同じ
-- モニター、論理サイズ、OSスケールが同じ
-- Androidのsystem_serverの起動識別情報と必須設定が同じ
-- Waydroid解像度、描画プロセス、実際の表示ウィンドウ、Android内のRTScale設定が同じ
-
-高速反映の表示確認にはkdotoolを使用します。利用できない場合は通常Refreshになります。
-
-初回、RTScale ON/OFF、FSR変更、解像度変更、セッション変更、状態不明では通常Refreshに戻ります。設定を書き込んだ後に失敗した場合は、成功とは表示せず中断します。途中起動検出と3秒の継続確認は維持します。高速化時の実際の所要時間とゲーム再起動時の設定読み直しはLinux実機で未確認です。
 
 ## 初回導入時のバックアップ
 
