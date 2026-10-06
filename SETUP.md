@@ -58,13 +58,13 @@ chmod +x install.sh
 1. Gamescopeで使うRTScale・AMD FSR1・Display設定を選ぶ。
 2. RTScale・AMD FSR1・出力アスペクト比などを設定。
 3. ミリシタを終了し、Applyで保存してWaydroid Refresh。
-4. 「Waydroidの準備が完了しました」の通知でOKを押した後、ミリシタを手動起動。
+4. 「Waydroid Ready」の通知でOKを押した後、ミリシタを手動起動。
 
 準備中はAndroid起動、解像度確認、必須設定反映、表示とセッションの継続確認を行います。MWMの操作は制限されますが、OSのAlt+Tabや外部ショートカットまでは遮断できません。途中起動を検出するとRefreshを中断します。設定が一部反映された可能性があるため、ミリシタを終了してRefreshをやり直してください。
 
 | 操作 | 保存・反映する内容 |
 | --- | --- |
-| Apply | RTScale、AMD FSR1、Upscale、Sharpness、Display、Mouse as Touch、FPS Counter、Abnormal Zoom Fixの選択を保存。FPS Counterは起動状態に応じてその場で更新します。 |
+| Apply | RTScale、AMD FSR1、Upscale、Sharpness、Display、Mouse as Touch、FPS Counter、RTScale Display Fixの選択を保存。FPS Counterは起動状態に応じてその場で更新します。 |
 | Waydroid Refresh | 保存済みの設定でGamescope／Waydroidを起動し、Android側の表示・入力・RTScale設定を反映・確認します。 |
 
 Android側やGamescopeの設定を適用するにはWaydroid Refreshが必要です。未保存の変更がある場合は先にApplyを押してください。
@@ -115,7 +115,7 @@ XDG_DATA_HOMEを変更している場合は、その配下のmwm/logsです。�
 
 RTScale DebugはSummary／Runtime／Surface／Libraries／Full Logの表示とRefresh／Copy／Clear Logを提供します。
 
-### Abnormal Zoom Fix（異常ズーム対策）
+### RTScale Display Fix（RTScale表示補正）
 
 RTScale使用時に、一部の画面や演出が過度に拡大されたり、描画範囲がずれたりする問題への互換設定です。既定はONです。
 
@@ -131,7 +131,7 @@ MWMが変更する描画ファイルとAndroid設定の元の状態を、変更�
 
 ## アンインストール
 
-Maintenanceの「アンインストール」を押します。
+Maintenanceの「Uninstall MWM」を押します。
 
 - バックアップあり：確認でOKを押すと、MWMが変更したファイル・設定だけを復元し、成功後にMWMを削除します。導入時に存在したファイルは復元し、MWMが追加したファイルは削除します。
 - バックアップなし：「バックアップがありません。MWMのみ削除しますか？」のYesでMWMを削除します。Waydroidの現在の設定・描画環境を保持します。
