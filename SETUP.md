@@ -2,6 +2,21 @@
 
 MWM（Mirishita Waydroid Manager）は、Waydroidでミリシタをプレイできる環境に、RTScaleとGamescopeによる描画設定、表示設定、診断機能を追加するツールです。このガイドは独立RTScale実装版を対象とします。
 
+## 配布フォルダー
+
+ZIPの展開先は `MWM_v0.80/` です。展開先で `install.sh` を実行します。
+
+| ファイル・フォルダー | 用途 |
+| --- | --- |
+| `install.sh` / `uninstall.sh` | インストール・アンインストールの入口 |
+| `README.md` / `SETUP.md` / `RELEASE_NOTES.md` | 概要・使い方・変更履歴 |
+| `MWM.py` | 展開先からアプリを開くための入口 |
+| `mwm/` | アプリ本体・設定・内部処理 |
+| `packaging/` | インストーラー用のroot helper・バックアップ処理 |
+| `payload/` | 描画ライブラリ・初期設定・出典とチェックサム |
+| `LICENSE` / `LICENSES/` | MWMと同梱部品のライセンス |
+| `VERSION` | 配布版の番号 |
+
 ## 対象環境
 
 - CachyOS／Arch系Linux、x86_64、Waylandセッション。
