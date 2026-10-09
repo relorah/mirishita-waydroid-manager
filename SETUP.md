@@ -1,10 +1,10 @@
-# MWM 0.81 Setup Guide
+# MWM 0.82 Setup Guide
 
 MWM（Mirishita Waydroid Manager）は、Waydroidでミリシタをプレイできる環境に、RTScaleとGamescopeによる描画設定、表示設定、診断機能を追加するツールです。このガイドは独立RTScale実装版を対象とします。
 
 ## 配布フォルダー
 
-ZIPの展開先は `MWM_v0.81/` です。展開先で `install.sh` を実行します。
+ZIPの展開先は `MWM_v0.82/` です。展開先で `install.sh` を実行します。
 
 | ファイル・フォルダー | 用途 |
 | --- | --- |
@@ -236,8 +236,12 @@ chmod +x uninstall.sh
 
 Save Diagnostic Logで診断ログを取得することができます。
 
-## v0.81 MangoApp FPS表示に関する確認事項
+## v0.82 MangoApp FPS表示に関する確認事項
 
 MangoAppモードのFPS数値は`fps=0`で標準Gamescope FPSを無効にし、`exec`でAndroid側のミリシタ実測FPSを表示します。Gamescopeのフレームタイムグラフは別の指標です。MangoApp設定はMWMが起動時に生成するため、`~/.config/mwm/MangoApp.conf`を直接編集しても再生成時に上書きされます。今回の`legacy_layout=0`と表示領域指定の修正はテンプレート`mwm/config/MangoApp.conf`に適用しました。
 
-BC250で最小設定によるFPS表示は確認しましたが、CPU/GPU項目を含むv0.81の全設定での表示、Verify ON/OFF、異なるGPU環境は未検証です。
+BC250で最小設定によるFPS表示は確認しましたが、CPU/GPU項目を含むv0.82の全設定での表示、Verify ON/OFF、異なるGPU環境は未検証です。
+
+### v0.82 表示レイアウト
+
+MangoAppのレイアウトをv0.80に近づけるため固定領域（320×230）と3列配置を再導入し、文字サイズを24に設定しました。FPSはAndroid実測値を`exec`で表示します。実機での文字位置・重なりは未検証です。
