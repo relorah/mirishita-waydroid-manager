@@ -1,5 +1,12 @@
 # MWM 0.80
 
+## 0.80：配布構成の整理
+
+- root helperとバックアップ処理をpackaging/へ移動し、インストーラーの参照先を更新。
+- 配布ZIPからGit管理用ファイルと開発者向けAGENTS.mdを除外。
+- アプリのバージョン番号は0.80を維持。
+
+
 - RTScale x1-x10 can combine with FSR1 125% or 150%.
 - MWM HUD FPS now uses Android game-layer actual presentation timestamps instead of desired timestamps.
 - MangoApp displays the same Android-layer FPS measurement through its external-text element; its frametime graph remains Gamescope-derived.

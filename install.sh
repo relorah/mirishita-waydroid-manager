@@ -7,6 +7,7 @@ APP_ID="com.bandainamcoent.imas_millionlive_theaterdays"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 APP_VERSION="$(cat "$SCRIPT_DIR/VERSION")"
 PAYLOAD="$SCRIPT_DIR/payload"
+PACKAGING="$SCRIPT_DIR/packaging"
 WD="/var/lib/waydroid"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}/mwm-setup"
 APP_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/mwm"
@@ -144,7 +145,7 @@ check_existing_environment() {
 backup_waydroid() {
   say "Backing up MWM modification targets before changes"
   local backup_rc=0 answer
-  sudo python "$SCRIPT_DIR/mwm-waydroid-backup.py" status >/dev/null || backup_rc=$?
+  sudo python "$PACKAGING/mwm-waydroid-backup.py" status >/dev/null || backup_rc=$?
   if (( backup_rc != 0 && backup_rc != 3 )); then
     die "Existing backup could not be verified. Installation aborted; backup retained."
   fi
@@ -158,7 +159,7 @@ backup_waydroid() {
   fi
   # create validates and retains an existing baseline without starting or
   # stopping Android. New snapshots manage their user session internally.
-  sudo python "$SCRIPT_DIR/mwm-waydroid-backup.py" create "${XDG_DATA_HOME:-$HOME/.local/share}/waydroid" "$APP_HOME" || die "Backup failed; installation aborted before graphics changes"
+  sudo python "$PACKAGING/mwm-waydroid-backup.py" create "${XDG_DATA_HOME:-$HOME/.local/share}/waydroid" "$APP_HOME" || die "Backup failed; installation aborted before graphics changes"
 }
 
 apply_graphics_stack() {
@@ -195,15 +196,15 @@ apply_graphics_stack() {
 
 install_root_helper() {
   say "Installing MWM passwordless helper"
-  local helper_src="$SCRIPT_DIR/mwm-root-helper"
+  local helper_src="$PACKAGING/mwm-root-helper"
   local helper_dst="/usr/local/libexec/mwm-root-helper"
   local sudoers="/etc/sudoers.d/mwm-${USER}"
 
   [[ -f "$helper_src" ]] || die "Missing $helper_src"
   sudo install -d -m 0755 /usr/local/libexec
   sudo install -o root -g root -m 0755 "$helper_src" "$helper_dst"
-  sudo install -o root -g root -m 0755 "$SCRIPT_DIR/mwm-waydroid-backup.py" /usr/local/libexec/mwm-waydroid-backup.py
-  sudo install -o root -g root -m 0644 "$SCRIPT_DIR/mwm_targeted_backup.py" /usr/local/libexec/mwm_targeted_backup.py
+  sudo install -o root -g root -m 0755 "$PACKAGING/mwm-waydroid-backup.py" /usr/local/libexec/mwm-waydroid-backup.py
+  sudo install -o root -g root -m 0644 "$PACKAGING/mwm_targeted_backup.py" /usr/local/libexec/mwm_targeted_backup.py
   printf '%s ALL=(root) NOPASSWD: %s *\n' "$USER" "$helper_dst" | sudo tee "$sudoers" >/dev/null
   sudo chmod 0440 "$sudoers"
   sudo visudo -cf "$sudoers" >/dev/null || {
