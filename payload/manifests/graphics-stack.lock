@@ -1,0 +1,116 @@
+format = 1
+status = "rebuilt-from-pinned-sources-runtime-tested-amd"
+target = "Waydroid Android 11 x86_64 / API 30"
+sources_archive = "sources/graphics-sources.tar.zst"
+donor_equivalence = "independent reconstruction, not bit-identical ISO rebuild"
+gallium_drivers = "radeonsi,iris,crocus,r300,r600,nouveau,svga,virgl,softpipe,llvmpipe,zink"
+
+[[component]]
+name = "Mesa GBM"
+archive = "graphics/mesa-runtime-overlay.tar.zst"
+source_repo = "https://gitlab.freedesktop.org/mesa/mesa"
+source_commit = "acbb4f6b8de2768b5ea7d6a83a8e52a263eac5cc"
+license = "Mesa file licenses"
+files = ["vendor/lib64/libgbm_mesa.so", "vendor/lib64/dri_gbm.so"]
+
+[[binary]]
+path = "vendor/lib64/libgbm_mesa.so"
+sha256 = "b8d07e57da2bfd3bc9765adadb0114b35d75d3ff129f060526a9ac9caaee3dc4"
+soname = "libgbm_mesa.so"
+needed = ["libdrm.so", "libdl.so", "libc.so"]
+
+[[binary]]
+path = "vendor/lib64/dri_gbm.so"
+sha256 = "6e41e525bc1f35e98393a7fddee6689852ef1ed7b266f1560c41423441a7f3bc"
+soname = "dri_gbm.so"
+needed = ["libgallium_dri.so", "libdrm.so", "libm.so", "libc.so"]
+
+[[component]]
+name = "Mesa + independent RTScale reconstruction"
+archive = "graphics/mesa-rtscale-overlay.tar.zst"
+source_repo = "https://gitlab.freedesktop.org/mesa/mesa"
+source_commit = "acbb4f6b8de2768b5ea7d6a83a8e52a263eac5cc"
+license = "Mesa file licenses + 0BSD reconstruction"
+files = ["vendor/lib64/libgallium_dri.so", "vendor/lib64/egl/libEGL_mesa.so", "vendor/lib64/egl/libGLESv1_CM_mesa.so", "vendor/lib64/egl/libGLESv2_mesa.so"]
+
+[[binary]]
+path = "vendor/lib64/libgallium_dri.so"
+sha256 = "678c0b36443edc4a4a8945de98cc28040910ddce70c5e8e597e20f9900e9576b"
+soname = "libgallium_dri.so"
+needed = ["libc++.so", "liblog.so", "libsync.so", "libdrm.so", "libLLVM.so", "libz.so", "libm.so", "libdrm_amdgpu.so", "libdl.so", "libc.so"]
+
+[[binary]]
+path = "vendor/lib64/egl/libEGL_mesa.so"
+sha256 = "f6ae33daf6005adddf9b12d83e4c94aedc7e76914f1ac355bd5d509d3871f105"
+soname = "libEGL.so"
+needed = ["libgallium_dri.so", "libhardware.so", "liblog.so", "libnativewindow.so", "libsync.so", "libdrm.so", "libm.so", "libdl.so", "libc.so"]
+
+[[binary]]
+path = "vendor/lib64/egl/libGLESv1_CM_mesa.so"
+sha256 = "206d5c1cb3f459c51cfeae8faf4d9bc27c796fb948430a718153888665dd7cb8"
+soname = "libGLESv1_CM.so"
+needed = ["libgallium_dri.so", "libc.so"]
+
+[[binary]]
+path = "vendor/lib64/egl/libGLESv2_mesa.so"
+sha256 = "9e28ab318fec1edb5b549d868783c4dec69f08657dc107c3ce844df954cdd75f"
+soname = "libGLESv2.so"
+needed = ["libgallium_dri.so", "libc.so"]
+
+[[component]]
+name = "LLVM 21"
+archive = "graphics/llvm21-overlay.tar.zst"
+source_repo = "https://github.com/maurossi/llvm-project"
+source_commit = "dac12ae0ec75c6431275f672da74de9c9f4d68f7"
+license = "Apache-2.0 WITH LLVM-exception and individual third-party licenses"
+files = ["vendor/lib64/libLLVM.so"]
+
+[[binary]]
+path = "vendor/lib64/libLLVM.so"
+sha256 = "8c220c78291668226582da90a75b734275a9e79a0aa59eaa9d0f612a7e0d04ee"
+soname = "libLLVM.so"
+needed = ["libc++.so", "libdl.so", "libm.so", "libc.so"]
+
+[[component]]
+name = "libdrm 2.4.133 + Android-x86 compatibility"
+archive = "graphics/libdrm-overlay.tar.zst"
+source_repo = "https://dri.freedesktop.org/libdrm/libdrm-2.4.133.tar.xz"
+source_commit = "cb4669afe87470752643f46c81bddb45b0db48e4"
+license = "MIT family + 0BSD compatibility function"
+files = ["vendor/lib64/libdrm.so", "vendor/lib64/libdrm_amdgpu.so", "vendor/lib64/libdrm_radeon.so", "vendor/etc/libdrm/amdgpu.ids"]
+
+[[binary]]
+path = "vendor/lib64/libdrm.so"
+sha256 = "48d72affa2200f0c7758a271d4e3df6f7306f0edcd2e22c2a552d1c7b99e1722"
+soname = "libdrm.so"
+needed = ["libc.so"]
+
+[[binary]]
+path = "vendor/lib64/libdrm_amdgpu.so"
+sha256 = "d05c54fab1d748bf2f9e9b272484462f0969ebc45773330cd08bd85d264cff9e"
+soname = "libdrm_amdgpu.so"
+needed = ["libdrm.so", "libc.so"]
+
+[[binary]]
+path = "vendor/lib64/libdrm_radeon.so"
+sha256 = "725d75dbe1e114e3caac5c78c7582f5eaf59f94119a23170934021ce01fe0725"
+soname = "libdrm_radeon.so"
+needed = ["libdrm.so", "libc.so"]
+
+[[binary]]
+path = "vendor/etc/libdrm/amdgpu.ids"
+sha256 = "ffd2a8f1bfa755f4d90f537b4969fc4676f116e5af051ce2f18ef93a96d8beb6"
+
+[[component]]
+name = "gbm_gralloc + static drm_framebuffer"
+archive = "graphics/gbm-gralloc-overlay.tar.zst"
+source_repo = "https://github.com/robherring/gbm_gralloc"
+source_commit = "e74175c1bb3752665776d5b159292524d8d0f60a"
+license = "MIT family"
+files = ["vendor/lib64/hw/gralloc.gbm.so"]
+
+[[binary]]
+path = "vendor/lib64/hw/gralloc.gbm.so"
+sha256 = "921ae31d9ce26a77ebf6692cc9d83f8a854abeed7b3f559a3c362dbc65b094ba"
+soname = "gralloc.gbm.so"
+needed = ["libdrm.so", "libgbm_mesa.so", "liblog.so", "libcutils.so", "libhardware.so", "libc++.so", "libm.so", "libdl.so", "libc.so"]

@@ -1,153 +1,204 @@
-# Mirishita Waydroid Manager (MWM) Setup Guide
+# MWM 0.77 Setup Guide
+
+MWM（Mirishita Waydroid Manager）は、Waydroidでミリシタをプレイできる環境に、RTScaleとGamescopeによる描画設定、表示設定、診断機能を追加するツールです。このガイドは独立RTScale実装版を対象とします。
 
 ## 対象環境
 
-MWMは、既存のWaydroidでミリシタを正常にプレイできる環境を対象とします。
+- CachyOS／Arch系Linux、x86_64、Waylandセッション。
+- Waydroid Android 11。Google Play、Native Bridge／ARM変換、ミリシタを準備し、通常起動でプレイできること。
+- sudoによる管理者認証と、依存パッケージ取得用のネットワーク。
+- 描画バックエンドはGamescope。開発時の主な確認環境はKDE Plasma／WaylandとAMD GPUです。
 
-- CachyOS／Arch系、KDE Plasma／Wayland、x86_64
-- Waydroid Android 11。Google Play・Native Bridge／ARM変換は利用者側で準備
-- sudo権限、依存パッケージ取得用ネットワーク
-- 描画バックエンド：Gamescope
+MWMは非公式の独立プロジェクトです。各サービスの規約への適合や動作を保証するものではありません。利用者の判断で使用し、重要なデータは事前に保全してください。
 
-Ryzen 7 9700X + RX 6600 XT、およびAMD BC250でテストしています。
+## 導入するものと変更範囲
 
-## 免責と変更範囲
+インストーラーはホストへ依存パッケージを追加し、Waydroidの描画ファイルをoverlayとして導入します。MWMの設定反映では、Androidの表示寸法、入力、RTScale設定などを変更します。限定された管理処理を行うroot helperと、ユーザーごとのsudoers設定も導入します。
 
-MWMは非公式の独立プロジェクトです。各サービスの規約への適合や動作を保証しません。利用者の判断で使用し、重要なデータは事前に保全してください。
-
-インストーラーはWaydroid側の描画ライブラリをoverlayとして導入し、Androidの表示・入力・RTScale設定などを変更します。root helperと限定したsudoers設定を導入します。依存パッケージはホストへ追加します。
-
-Mesa GLES Render Scale (Render Target Scale、以下 RTScale)はmogareta7731氏の原機能を利用しています。今回のISO由来ライブラリとMWMの追加ラッパーは別の成果物です。詳細は[描画資産](docs/GRAPHICS_COMPONENTS.md)を参照してください。
+RTScaleの原機能はmogareta7731氏によるものです。この版の描画payloadには、固定したMesaソースを基に再構成した独立実装を使用します。各描画部品の出典と版、バイナリのチェックサムは `payload/manifests/graphics-stack.lock` に記録し、ライセンス文は `LICENSES/` に収録しています。対応する描画ソースと再ビルド手順は準備後に追加します。
 
 ## インストール
 
-MWMを終了し、ZIPを新しい空フォルダーへ展開します。旧版のファイルを混ぜないでください。展開先で通常ユーザーとして実行します。
+ゲームと既存のMWMを終了し、配布ファイルを展開したフォルダーで実行します。
 
 ```bash
 chmod +x install.sh
 ./install.sh
 ```
 
-インストーラーが追加する主なパッケージは、python、pyside6、gtk3、gtk-layer-shell、python-gobject、python-cairo、polkit、zstd、rsync、gamescope、qt6-toolsです。表示ウィンドウの確認用としてkdotoolの導入を試みます。
+インストーラーは同梱payloadのチェックサム、既存Waydroid、Android 11、ミリシタの存在を確認します。その後、変更対象のバックアップを取得し、描画ファイル、本体、root helper、ランチャーを導入します。既存の保存設定は保持します。
 
-インストーラーは既存Waydroidの起動・ゲームの存在・payloadチェックサムを確認します。通常インストールはMWMの変更対象をバックアップした後に描画overlayを導入し、本体・helperを更新します。既存MWM設定は保存します。導入前にWaydroid、Androidイメージ、Googleサービス、ARM変換、ミリシタの動作環境を用意してください。
+主な依存パッケージはpython、pyside6、gtk3、gtk-layer-shell、python-gobject、python-cairo、polkit、zstd、rsync、gamescope、qt6-toolsです。KDEでは利用可能なAURヘルパーを使ってkdotoolの導入を試みます。MangoApp用にmangohudの導入も試みます。
 
-### 本体のみ更新
+インストール後にGUIを開かない場合は次を使います。
+
+```bash
+./install.sh --no-gui
+```
+
+バックアップ取得に失敗した場合は、描画ファイルを変更する前に導入を中断します。表示された詳細を確認してください。
+
+## 更新
+
+描画ファイルも更新する場合は通常インストールを実行します。
+
+```bash
+./install.sh
+```
+
+本体、制御スクリプト、root helperを更新する場合は次を使います。
 
 ```bash
 ./install.sh --update-app
 ```
 
-既存のMWM本体・helper・ランチャーを更新し、保存設定と導入済みの描画ファイルを保持します。初回導入は通常の `./install.sh` を使用してください。
+この更新は導入済みMWMを対象とし、既存の描画payloadと保存設定を保持します。初回バックアップは検証して再利用します。ISO由来の版から独立実装版へ切り替える場合は、通常インストールで描画ファイルも更新してください。
 
-### インストール後にGUIを開かない
+GUIを開かず更新する場合は次を使います。
 
 ```bash
-./install.sh --no-gui
 ./install.sh --update-app --no-gui
 ```
 
-## 初回操作
+## 起動と基本操作
 
-アプリメニューのMirishita Waydroid Manager、または以下で起動します。
+アプリメニューのMirishita Waydroid Manager、または次のコマンドで起動します。
 
 ```bash
 ~/.local/bin/mwm
 ```
 
-1. Gamescopeで使うRTScale・AMD FSR1・Display設定を選ぶ。
-2. RTScale・AMD FSR1・出力アスペクト比などを設定。
-3. ミリシタを終了し、Applyで保存してWaydroid Refresh。
-4. 「Waydroid Ready」の通知でOKを押した後、ミリシタを手動起動。
+1. HomeでRTScale、AMD FSR1、Aspect Ratio、FPS Counter、Optionsを設定します。
+2. **Apply**を押して保存します。
+3. **Start**を押して保存した設定で起動します。起動中の表示は**Restart**になります。
+4. 初期設定では準備確認後にミリシタを自動起動し、MWMを最小化します。
 
-準備中はAndroid起動、解像度確認、必須設定反映、表示とセッションの継続確認を行います。MWMの操作は制限されますが、OSのAlt+Tabや外部ショートカットまでは遮断できません。途中起動を検出するとRefreshを中断します。設定が一部反映された可能性があるため、ミリシタを終了してRefreshをやり直してください。
+Start／Restartの表示はGamescopeとWaydroidセッションの状態を確認して更新します。外部から終了した場合も、次の状態確認でStartへ戻ります。表示確認は通常2秒間隔です。
+
+初期値はRTScale OFF、AMD FSR1 OFF、Aspect Ratio Auto、FPS Counter Offです。Verify Waydroid Startup、Auto Launch Mirishita、Mouse as Touch、RTScale Zoom FixはONです。
+
+Reset to Defaultsは確認後に画面上の設定を初期値へ戻します。Applyで保存してください。CancelはMWMの設定画面を閉じます。保存済み設定と起動中の描画セッションは保持します。
+
+## ApplyとStart／Restart
 
 | 操作 | 保存・反映する内容 |
 | --- | --- |
-| Apply | RTScale、AMD FSR1、Upscale、Sharpness、Display、Mouse as Touch、FPS Counter、RTScale Display Fixの選択を保存。FPS Counterは起動状態に応じてその場で更新します。 |
-| Waydroid Refresh | 保存済みの設定でGamescope／Waydroidを起動し、Android側の表示・入力・RTScale設定を反映・確認します。 |
+| Apply | RTScale、AMD FSR1、Aspect Ratio、FPS Counter、Optionsの選択をMWM設定へ保存。FPS Counterは起動状態に応じて表示を更新。 |
+| Start／Restart | 保存した設定を基にGamescopeとWaydroidを起動・再起動し、Androidの表示・入力・RTScale設定を適用。Verifyの選択に応じて準備確認と自動起動を実行。 |
 
-Android側やGamescopeの設定を適用するにはWaydroid Refreshが必要です。未保存の変更がある場合は先にApplyを押してください。
+未保存の変更がある間はStart／Restartを無効にします。Apply後には約0.5秒の待機があります。RTScale、FSR、解像度などの変更をゲームへ反映するには、保存後にStart／Restartを押してください。
 
-## 設定
+## Options
 
-### 描画バックエンド
+### Verify Waydroid Startup
 
-- Gamescope：Waydroid画面を別の描画環境に入れ、FSRと最終表示サイズを扱う。
+初期値はONです。Androidの起動、設定の反映、解像度、表示、セッションの継続を確認します。準備中は日本語の案内を表示し、MWMの操作を制限します。
+
+準備中に外部ショートカットやAndroidホームからミリシタを起動すると、その起動を検出して処理を中断します。設定が一部だけ反映されている可能性があるため、ミリシタを終了し、Start／Restartを押してやり直してください。
+
+OFFは、RTScaleやFSRの切り替えなど、挙動を把握した利用者向けの確認用設定です。Start／Restartを押すと、実行中のMWM管理下のGamescopeとWaydroidセッションを終了して起動し直します。プレイ中のゲームも終了します。
+
+OFFでもAndroidの起動と必須設定の書き込み・読み戻しを行います。その後の表示準備確認と安定待機を省略し、ミリシタは手動起動になります。Auto Launch Mirishitaはグレーアウトし、保存済みの選択は保持します。準備中・準備完了のポップアップは省略します。Android起動に要する時間は環境によって変わります。
+
+### Auto Launch Mirishita
+
+初期値はONです。VerifyがONの場合、設定反映と準備確認の後にミリシタを自動起動します。自動起動成功時はMWMを最小化します。
+
+OFFでは準備完了の案内を確認後、Androidホームやショートカットからミリシタを手動起動してください。
+
+### Mouse as Touch
+
+Androidのfake_touch設定でマウス操作をタッチ入力として扱います。変更後はApply→Start／Restartで反映します。
+
+### RTScale Zoom Fix
+
+RTScale使用時に、一部の画面や演出が過度に拡大されたり、描画範囲がずれたりする問題への互換設定です。初期値はONです。
+
+変更後はApply→Start／Restartで反映します。ミリシタや描画部品の更新によって効果や互換性が変わる可能性があります。
+
+## 描画設定
 
 ### RTScale
 
-OFF、x1-x10を選択します。設定はAndroid側のgles_rtscale.confへ書き込み、読み戻しを確認します。倍率選択や設定読取の成功だけでは、全シーンの描画改善・品質・安定性を証明できません。重い場面で問題があれば倍率を下げてください。
+OFF、x1～x10を選択します。設定はAndroid内の`/data/local/tmp/gles_rtscale.conf`へ反映し、読み戻して確認します。重い場面で問題があれば倍率を下げてください。
 
-GamescopeのRTScale経路ではAndroid表示を1080高とし、RTScale用の720高の基準寸法を別に求めます。OSスケール、表示サイズ、RTScale倍率は別の設定です。
+RTScale OFFでは高さ720、ONでは高さ1080相当のWaydroid表示寸法を使い、RTScale用の基準寸法は別に高さ720で管理します。OSのスケール、Waydroidの表示寸法、RTScale倍率はそれぞれ別の設定です。
 
 ### AMD FSR1
 
-GamescopeでFSR1の拡大（EASU）とシャープニング（RCAS）をまとめて切り替えます。チェックOFFでUpscaleとSharpnessをグレーアウトします。
+GamescopeによるFSR1の拡大処理（EASU）とシャープニング（RCAS）をまとめて有効にします。チェックOFFではUpscaleとSharpnessをグレーアウトします。
 
-| 項目 | 選択肢 |
+| RTScale | Upscale |
 | --- | --- |
-| Upscale：RTScale ON | 125% / 150% |
-| Upscale：RTScale OFF | 125% / 150% / 175% / 200% |
-| Sharpness | 1-21 |
+| OFF | 125%／150%／175%／200% |
+| x1～x6 | 125%／150% |
+| x7～x10 | AMD FSR1を無効化 |
 
-Sharpness 1は最小強度であり、完全無効ではありません。21が最大です。
+Sharpnessは1～21です。1が最小強度、21が最大強度です。変更後はApply→Start／Restartで反映します。
 
-### Display
+## Display
 
-Auto、32:9、21:9、16:9、4:3、3:2、Custom Width。Custom Widthの指定範囲は320-7680、基準高さ720です。GamescopeのRTScale経路では表示寸法を1080高へ換算します。
+Aspect RatioはAuto、32:9、21:9、16:9、4:3、3:2、Custom Widthを選択できます。Custom Widthの範囲は320～7680、基準高さは720です。RTScale ONでは高さ1080相当へ換算します。最終的な表示寸法はモニターとGamescopeの拡大処理にも依存します。
 
-### Play Assist / FPS Counter
+Super（Windows）＋Fで全画面とウインドウを切り替えます。ウインドウの比率保持とサイズ復帰は補助スクリプトで管理します。
 
-Mouse as TouchはAndroidのfake_touch設定を使用します。
+### マルチディスプレイ
 
-FPS CounterはOff／Compact／Detailedから選択します。MWMのlayer-shell HUDでFPSやシステム負荷を表示します。表示値の欠測や対応GPUは実機確認が必要です。
+複数のディスプレイを使用している場合、Waydroidは起動時にマウスカーソルがあるディスプレイを対象として表示されます。使用したいディスプレイへカーソルを移してから、Start／Restartを押してください。起動処理中も、Waydroidの画面が表示されるまではカーソルをそのディスプレイに置いてください。
 
-### Maintenance / RTScale Debug
+### FPS Counter
 
-Doctorで状態を確認します。「診断ログを保存」で複数の診断情報を1ファイルにまとめます。保存先は通常以下です。
+FPS CounterはOff、Minimal、Detailed、MangoAppから選択します。MinimalとDetailedはMWM HUDです。MangoAppはGamescopeが扱うカウンターです。
+
+MangoAppが導入済みの場合、Offで開始しても非表示のクライアントを用意し、Applyで表示を切り替えられます。既存クライアントがない場合はStart／Restartで起動し直してください。表示異常やクラッシュが起きる場合はMinimalまたはDetailedへ変更してください。
+
+## Maintenanceと診断
+
+DoctorでWaydroid、描画環境、設定などを確認します。Save Diagnostic Logは関連する診断情報を1ファイルへ保存します。
 
 ```text
 ~/.local/share/mwm/logs/mwm-yyyyMMdd-hhmmss.log
 ```
 
-XDG_DATA_HOMEを変更している場合は、その配下のmwm/logsです。ログにはユーザー名・パス・プロセス情報などが含まれることがあります。
+RTScale DebugではSummary、Runtime、Surface / Display、Mesa / Libraries、Full Logを選択し、Refresh、Copy、Clear Logで操作できます。
 
-RTScale DebugはSummary／Runtime／Surface／Libraries／Full Logの表示とRefresh／Copy／Clear Logを提供します。
+ログにはユーザー名、パス、プロセス情報などが含まれる場合があります。不具合報告では内容を確認した上で診断ログを送付してください。
 
-### RTScale Display Fix（RTScale表示補正）
+| 内容 | 標準保存先 |
+| --- | --- |
+| 本体 | `~/.local/share/mwm` |
+| MWM設定 | `~/.config/mwm` |
+| 実行状態 | `~/.local/state/mwm` |
+| 診断ログ | `~/.local/share/mwm/logs` |
+| 変更対象のバックアップ | `/var/lib/mwm-backups/<UID>/baseline` |
 
-RTScale使用時に、一部の画面や演出が過度に拡大されたり、描画範囲がずれたりする問題への互換設定です。既定はONです。
+XDGの保存先を変更している場合は、それぞれ指定された場所を使用します。Gamesタブは現在非表示です。
 
-変更後は **Apply → Waydroid Refresh** で反映します。今後のミリシタやRTScaleの更新により問題が発生する可能性があります。
+## 変更対象のバックアップ
 
-## 初回導入時のバックアップ
+初回導入時にMWMが書き換える描画ファイル、RTScale設定、表示・入力・音声の設定値を保存します。元のファイルの有無、内容、属性と、設定の元の値を記録します。アプリ・ゲームデータは現在の状態を保持します。
 
-MWMが変更する描画ファイルとAndroid設定の元の状態を、変更前に保存します。対象は描画ファイル15点、競合回避で退避する既存ファイル1点、RTScale設定ファイル、表示・入力・音量の設定値です。[対象ファイル一覧](docs/WAYDROID_CHANGES.md)を参照してください。
+独立版は12点の描画ファイルを導入します。バックアップは移行元を復元するため16パスを対象とします。対象は描画ライブラリ、競合回避で退避するファイル、RTScale設定ファイルと、MWMが変更するAndroid設定値です。容量は元の描画ファイルの大きさに依存します。
 
-保存先は `/var/lib/mwm-backups/<UID>/baseline/` です。最初の正常なバックアップを更新時も保持します。容量は元の描画ファイルのサイズに依存します。root所有・非公開権限で保存します。
-
-バックアップには、各ファイルの有無と内容、属性、各設定の元の値を記録します。アプリ・ゲームデータは現在の状態を保持します。取得失敗時は描画ファイルの変更前に導入を中断します。
+バックアップはroot所有の非公開権限で保存し、最初の正常なバックアップを更新時も保持します。配布ファイルの展開先とは別の場所なので、展開フォルダーを削除しても保持されます。
 
 ## アンインストール
 
-Maintenanceの「Uninstall MWM」を押します。
-
-- バックアップあり：確認でOKを押すと、MWMが変更したファイル・設定だけを復元し、成功後にMWMを削除します。導入時に存在したファイルは復元し、MWMが追加したファイルは削除します。
-- バックアップなし：「バックアップがありません。MWMのみ削除しますか？」のYesでMWMを削除します。Waydroidの現在の設定・描画環境を保持します。
-- バックアップ破損・対象環境不一致・復元失敗：エラーを表示し、MWMを保持して中断します。
-
-MWM本体、保存設定、ログ、ランチャー、専用生成物、ユーザー用sudoersを削除します。root helperは他ユーザーのMWM利用がなければ削除します。共有の依存パッケージと復旧用バックアップは保持します。
-
-ターミナルからは展開先で実行できます。
+Maintenanceの**Uninstall MWM**を押します。ターミナルからは配布ファイルの展開先で実行できます。
 
 ```bash
 chmod +x uninstall.sh
 ./uninstall.sh
 ```
 
-復元直前にも同じ変更対象だけを保存します。復元失敗時はこの保存物で巻き戻しを試みます。巻き戻しにも失敗した場合は復旧記録を保持して停止します。
+- バックアップあり：確認後に、MWMが変更したファイルと設定を復元し、成功後にMWMを削除します。導入時に存在したファイルを復元し、MWMが追加したファイルを削除します。
+- バックアップなし：「バックアップがありません。MWMのみ削除しますか？」の確認で削除できます。Waydroidの現在の設定・描画環境は保持します。
+- バックアップ破損、対象環境不一致、復元失敗：エラーを表示して中断し、MWMを保持します。
 
-旧版の環境全体バックアップを検出した場合は形式不一致として中断します。元の保存物を保全してから内容を確認してください。
+削除対象はMWM本体、保存設定、ログ、ランチャー、専用生成物、ユーザー用sudoers設定です。root helperは他ユーザーのMWM利用がなければ削除します。共有の依存パッケージと復旧用バックアップは保持します。
 
-バックアップ作成・復元・アンインストールは構文と模擬条件で確認しています。Linux実機での検証は継続中です。
+復元直前にも同じ変更対象を保存します。復元に失敗した場合はその保存物で巻き戻しを試みます。巻き戻しにも失敗した場合は復旧記録を保持して停止します。
+
+## 不具合が起きた場合
+
+Applyで保存した設定を確認し、Save Diagnostic Logでログを取得してください。起動確認や描画が不安定な場合はFPS CounterをOff、RTScaleをOFF、AMD FSR1をOFFにして切り分けます。更新後の権限やhelperに関するエラーは、MWMを閉じてインストーラーを再実行してください。
