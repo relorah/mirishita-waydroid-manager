@@ -264,7 +264,8 @@ launch_outer() {
 
   rm -f "$STATE_DIR/mangoapp-active" "$STATE_DIR/mangoapp-failed"
   local mango=off real_candidate
-  if [[ "$overlay" == mangoapp || "$overlay" == off ]]; then
+  # Keep MangoApp attached but hidden for MWM HUD modes, so live switching works.
+  if [[ "$overlay" == mangoapp || "$overlay" == off || "$overlay" == minimal || "$overlay" == detailed ]]; then
     real_candidate="$(command -v mangoapp 2>/dev/null || true)"
     if [[ -n "$real_candidate" ]] && grep -q -- '--mangoapp' <<< "$(gamescope --help 2>&1)"; then
       mango=on

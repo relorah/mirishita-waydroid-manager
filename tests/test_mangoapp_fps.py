@@ -33,14 +33,14 @@ class MangoAppFPS(unittest.TestCase):
 
     def test_generated_config_and_live_command(self):
         for visible in (False, True):
-            config = fps.render_config(visible)
+            config = fps.render_config(visible, scale=1)
             lines = [line for line in config.splitlines() if line and not line.startswith("#")]
             settings = dict(line.split("=", 1) for line in lines if "=" in line)
             self.assertEqual(settings["no_display"], str(int(not visible)))
             self.assertEqual(settings["fps"], "0")
             self.assertEqual(settings["legacy_layout"], "0")
             self.assertEqual(settings["font_size_secondary"], settings["font_size"])
-            self.assertEqual((settings["width"], settings["height"], settings["font_size"]), ("285", "200", "29"))
+            self.assertEqual((settings["width"], settings["height"], settings["font_size"]), ("256.5", "180", "26.1"))
             self.assertEqual(lines[lines.index("custom_text=FPS") + 1].split("=", 1)[0], "exec")
             self.assertIn("frame_timing", lines)
             self.assertLess(lines.index("gpu_stats"), lines.index("cpu_stats"))

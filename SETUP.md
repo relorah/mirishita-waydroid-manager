@@ -1,10 +1,10 @@
-# MWM 0.82 Setup Guide
+# MWM 0.83 Setup Guide
 
 MWM（Mirishita Waydroid Manager）は、Waydroidでミリシタをプレイできる環境に、RTScaleとGamescopeによる描画設定、表示設定、診断機能を追加するツールです。このガイドは独立RTScale実装版を対象とします。
 
 ## 配布フォルダー
 
-ZIPの展開先は `MWM_v0.82/` です。展開先で `install.sh` を実行します。
+ZIPの展開先は `MWM_v0.83/` です。展開先で `install.sh` を実行します。
 
 | ファイル・フォルダー | 用途 |
 | --- | --- |
@@ -238,48 +238,23 @@ chmod +x uninstall.sh
 
 Save Diagnostic Logで診断ログを取得することができます。
 
-## v0.82 MangoApp FPS表示に関する確認事項
+## v0.83 MangoAppとBC250
 
-MangoAppモードのFPS数値は`fps=0`で標準Gamescope FPSを無効にし、`exec`でAndroid側のミリシタ実測FPSを表示します。Gamescopeのフレームタイムグラフは別の指標です。MangoApp設定はMWMが起動時に生成するため、`~/.config/mwm/MangoApp.conf`を直接編集しても再生成時に上書きされます。今回の`legacy_layout=0`と表示領域指定の修正はテンプレート`mwm/config/MangoApp.conf`に適用しました。
+MangoAppはGPU→CPU→FPS→フレームタイムグラフの順に表示します。FPSはSurfaceFlingerで測ったミリシタ実測値を使い、表示だけ整数へ四捨五入します。取得・キャッシュの小数点精度は維持します。欠損・期限切れ時は「--」を表示します。GamescopeのフレームタイムグラフはFPS欄と異なる測定対象です。
 
-BC250で最小設定によるFPS表示は確認しましたが、CPU/GPU項目を含むv0.82の全設定での表示、Verify ON/OFF、異なるGPU環境は未検証です。
+FSRの二段Gamescope構成では、内側の描画サイズと最終出力のfit比率で文字・枠・余白・グラフを補正します。全体は従来の基準サイズの90%とし、温度表示とグラフの左右余白を揃えます。MangoAppはMWM HUD使用中も非表示で待機するため、起動済みの対応セッションでは表示を切り替えられます。古い起動構成から更新した場合は一度Start／Restartしてください。
 
-### v0.82 表示レイアウト
+MWM専用MangoApp v0.8.4ビルドを同梱し、システム版は置換しません。ソース、ライセンス、ビルド方法は`mwm/vendor/mangoapp/BUILD.md`を参照してください。設定は起動・切替時に生成するため、`~/.config/mwm/MangoApp.conf`の直接編集は上書きされます。
 
-MangoAppのレイアウトをv0.80に近づけるため固定領域（320×230）と3列配置を再導入し、文字サイズを24に設定しました。FPSはAndroid実測値を`exec`で表示します。実機での文字位置・重なりは未検証です。
+BC250のGPU使用率は、標準値が655%になる環境向けの読み取り専用サンプリングを試験機能として同梱しています。2ms間隔のGPU活動状態を0.5秒ごとに集計し、MWM HUDとMangoAppが同じキャッシュを読みます。GPU全体の使用率であり、ミリシタ単独の負荷ではありません。時計・電圧・電力設定は変更しません。
 
+既存の試験有効化は更新後も維持します。手動で有効化する場合は次を実行し、HUDを起動し直してください。
 
-## MangoAppレイアウト修正（未リリース）
+```bash
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/mwm"
+touch "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test"
+```
 
-v0.80の幅285・高さ200・基本文字サイズ29・3列を復元します。`legacy_layout=0`は実測FPSの外部表示に必要なため維持します。FPS行は`custom_text=FPS`と直後の`exec`に分け、ラベルを第1列、実測数値を第2列へ配置します。CPU/GPUとGamescopeのフレーム時間グラフは維持します。
+無効化は同じ`bc250-gpu-test`ファイルを削除してHUDを起動し直します。キャッシュが古い・不正・別デバイスの場合は値を表示しません。BC250以外のGPU取得は既存の方式を使います。
 
-MangoHud **v0.8.4**の`HudElements::_exec()`と`custom_text()`は`font_secondary`を使用します。未指定時は通常`font_size`の0.55倍で、`font_size_text`はこの表示に適用されません。このため`font_size_secondary=29`を明示します。`exec`は次の列に進み、4文字相当の幅を基準に右揃えします。「FPS 60.06」全体を第1列へ置くと左側にはみ出し得るため、外部コマンドは数値のみを出力します。
-
-根拠：[hud_elements.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/hud_elements.cpp)、[overlay.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/overlay.cpp)、[overlay_params.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/overlay_params.cpp)、[font.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/font.cpp)。調査した上流コミットは`992103e4fb744897826de04ea00a2f71e7018214`。CachyOSの配布パッチ差分は未確認です。
-
-設定生成・キャッシュ値／鮮度・実際の外部コマンド起動は`python3 -m unittest discover -s tests -v`で検証できます。BC250での描画は未検証です。以下の実機確認を行うまでは見た目の修正完了とは扱いません。
-
-1. 元のインストール内の`config/MangoApp.conf`と`scripts/mangoapp_fps.py`をバックアップし、両方を同時に更新する。
-2. MWMをStart／Restartし、FPSラベルと数値が同じ行・同じ文字サイズで見えること、CPU/GPUとグラフに重ならないことを確認する。起動後の`~/.config/mwm/MangoApp.conf`で`custom_text=FPS`と`font_size_secondary=29`を確認する。
-3. `~/.local/state/mwm/mirishita-fps`の値とFPS欄が更新されることを確認する（XDG_STATE_HOME設定時はその場所を使う）。停止・取得失敗では`--.--`となり、Gamescope FPSへ切り替わらないことを確認する。
-4. Off→MangoApp、再起動、Verify Waydroid Startup ON/OFFを確認する。異常があればバックアップした2ファイルを戻して再起動する。
-
-FPS取得経路（Androidレイヤー→fps-collector.sh→mirishita-fps→mangoapp_fps.py）は変更しません。グラフの測定元はGamescopeのままです。BC250のGPU使用率655%などは今回の表示修正の対象外です。
-
-
-追補：画像で文字サイズ・欠けの改善を確認。表示順はv0.80以前のGPU→CPU→FPS→グラフへ復元。
-
-
-FPS途切れ対策：MangoHud 0.8.4のShell::readOutputは50ms後に非同期出力を読む。Python起動が遅れると空文字でFPS欄を上書きするため、execの読込を軽量Bashスクリプトmangoapp-fps-text.shへ変更。計測・キャッシュ生成は変更なし。開いたファイルの鮮度（2秒）と0超240以下の値を検証する。Bash 5とGNU statが必要（CachyOS対象）。50ms読込検証30回で空出力0回、回帰テスト4件通過。shellcheckは環境に未導入。実画面の連続動作は要確認。
-
-
-起動待機の案内を「ミリシタが起動するまでお待ちください。」に変更。CPU/GPUはMWM HUDが小数点1桁、MangoHud 0.8.4標準欄は整数。FPSは実測値を小数点2桁で表示し、欠損・期限切れ時は--.--。
-
-
-FPSの整数部分の右端をCPU/GPUの数値へ揃えるため、MWM専用のMangoApp v0.8.4ビルドを同梱。小数部分は右へ続けて描画します。システム版は置換しません。実フォントの座標テスト（9.99／60.00／120.00／240.00／--.--）通過。ソース・ライセンス・ビルド情報は`mwm/vendor/mangoapp/BUILD.md`参照。実測FPS取得とCPU/GPU整数表示は維持。実画面の確認は未完了。
-
-
-表示更新：MangoAppのFPS数値は整数へ四捨五入し、右上に小さくFPSを表示します。整数部分の右端はCPU/GPUの数値へ揃えます。取得・キャッシュは従来どおり小数点2桁の実測値で、描画だけを変更。取得不能は-- FPS。
-
-
-追加表示調整：赤いFPSラベル・整数実測FPS・右上の小さいFPS単位。2桁の数値を基準に、ラベル→数値と数値→温度の空白をそれぞれ80%へ縮小。外枠サイズと外側の余白は変更しません。座標・整数表示・間隔テスト通過、実画面は確認待ち。
+検証は`python3 -m unittest discover -s tests -v`で実行できます。ネイティブのフォント・余白テスト方法はBUILD.mdを参照してください。ユーザーのBC250実機で最終表示・GPU取得・Restart時のゲーム終了を確認しました。異なるGPUや全Verify ON/OFF組合せは未検証です。

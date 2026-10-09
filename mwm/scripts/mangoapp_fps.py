@@ -28,10 +28,32 @@ def fps_text(cache=None, now=None):
         return "--.--"
 
 
-def render_config(visible):
+def ui_scale(session=None):
+    """Undo only the outer Gamescope fit; never execute the session file."""
+    session = STATE / "gamescope-session.env" if session is None else Path(session)
+    try:
+        fields = dict(line.split("=", 1) for line in session.read_text().splitlines() if "=" in line)
+        if fields.get("pipeline") not in ("fsr-dual", "fsr-cas-dual"):
+            return 1.0
+        tw, th, ow, oh = (int(fields[key]) for key in
+                         ("fsr_target_width", "fsr_target_height", "output_width", "output_height"))
+        if not all(0 < value <= 32768 for value in (tw, th, ow, oh)):
+            return 1.0
+        scale = max(tw / ow, th / oh)
+        return scale if 0.125 <= scale <= 8 else 1.0
+    except (OSError, ValueError, KeyError):
+        return 1.0
+
+
+def render_config(visible, scale=None):
     text = (ROOT / "config/MangoApp.conf").read_text(encoding="utf-8")
     command = shlex.join(["/bin/bash", str(Path(__file__).resolve().with_name("mangoapp-fps-text.sh"))])
     text = text.replace("@MWM_GAME_FPS@", command)
+    # Keep the compensated HUD slightly smaller on the final display.
+    scale = (ui_scale() if scale is None else scale) * 0.9
+    for key in ("font_size", "font_size_secondary", "font_size_text", "width", "height"):
+        text = "\n".join(f"{key}={float(line.split("=", 1)[1]) * scale:g}" if line.startswith(key + "=") else line
+                         for line in text.splitlines())
     lines = [line for line in text.splitlines() if not line.strip().startswith("no_display")]
     return "\n".join(lines) + f"\nno_display={0 if visible else 1}\n"
 

@@ -23,16 +23,20 @@ c++ -std=c++17 -Isubprojects/imgui-1.91.6 -Isrc /path/to/MWM/tests/test_fps_alig
 ./test-fps-alignment
 ```
 
-Expected: 9.99, 60.00, 120.00, 240.00 and --.-- all have integer anchor 60 at font_size=29; displayed results are 10, 60, 120, 240, --. This verifies coordinates, not the BC250 screenshot. Reproduction and binary SHA256:
+Current layout: GPU/CPU/FPS integer anchors are shared; FPS uses a red label and small superscript. The generated config applies a 0.9 presentation factor and, for dual Gamescope pipelines, max(target_width/output_width, target_height/output_height). Native padding, margin, graph height, and unit spacing follow that factor. Temperatures end at the final column WorkMaxX; the graph ends at the content right edge. Font reload recomputes the number anchor. Small font rasterization differences remain possible.
 
-8a51bc4ef6aeed281a89a1808af4f6d33515471958f75183b719dcb237d869ae  scripts/mangoapp-native/mangoapp
+Additional tests: build tests/test_hud_margins.cpp with the same command as test_fps_alignment.cpp. Actual ImGui tables verify symmetric margins for fit ratios 1/1.25/1.5/1.75/2 within 1.1 pixels of table/window rounding. The BC250 user approved the final appearance.
 
-Additional opt-in layout: preserve the 285px outer width and native window padding. Reduce both label-to-value and value-to-temperature gaps to 80%, using two-digit values as the baseline. Integer anchors of GPU/CPU/FPS remain shared. FPS label uses the engine/frametime color, and the small superscript uses upstream font_small. Tests verify 80% gap arithmetic with actual font widths. Final screen appearance remains unverified.
+BC250 read-only sampling is experimental and opt-in via `${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test`. The flag is preserved by updates. GRBM_STATUS bit 31 is sampled every 2 ms and published every 0.5 seconds; the shared cache checks device identity and expires after 2 seconds. No clock or voltage writes. The GPU-wide activity ratio is not per-game load. Register selection references https://github.com/filippor/cyan-skillfish-governor at commit 7b08fdcf542d1edd82f3a9077c902038019c9842; its MIT license is included as LICENSE-BC250-reference.
 
-BC250 test build: opt-in MWM_BC250_GPU_CACHE reads the shared device-matched cache, expires after 2 seconds, and displays -- on invalid data. Read-only GRBM_STATUS sampling (2 ms, published every 0.5 seconds) uses the included bc250-gpu-probe.c and libdrm_amdgpu; no clock or voltage writes. Register choice references filippor/cyan-skillfish-governor commit 7b08fdcf542d1edd82f3a9077c902038019c9842. Rebuild probe: `cc -O2 scripts/bc250-gpu-probe.c $(pkg-config --cflags --libs libdrm_amdgpu) -o scripts/mangoapp-native/bc250-gpu-probe`. Enabled only when the existing config/mwm/bc250-gpu-test flag is present.
+Rebuild the included probe source:
+
+```bash
+cc -O2 scripts/bc250-gpu-probe.c $(pkg-config --cflags --libs libdrm_amdgpu) -o scripts/mangoapp-native/bc250-gpu-probe
+```
 
 Current packaged binary SHA256:
-3931971a3aa7498a780cd4a61215467d09b817249711f1e4a0d1d37178902274  scripts/mangoapp-native/mangoapp
+9cd6cfc5b2761641e3e48758e9cf264a295397d4f3fd36f424bfd80cd6762fe5  scripts/mangoapp-native/mangoapp
 504b7d7e14b9234562674b7f34dece4fedf7740ed6a9aefb3132045ddd7c08af  scripts/mangoapp-native/bc250-gpu-probe
 
-BC250 register reference license: LICENSE-BC250-reference (MIT, copyright Marcus Medom Ryding). BC250 sampling is experimental and opt-in. The existing test flag is preserved by app updates. To enable it manually, create `${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test`; to disable it, remove that file and restart the overlay. Hardware activity is a sampled GPU-wide busy ratio, not a per-game load metric.
+The supplemental integer-alignment.patch uses zero context (apply with `git apply --unidiff-zero`); the two mwm_*.h headers are included separately. The source archive already contains all changes.
