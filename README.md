@@ -1,30 +1,67 @@
 # Mirishita Waydroid Manager (MWM)
 
-CachyOS + Waydroid 環境で「アイドルマスター ミリオンライブ！ シアターデイズ（ミリシタ）」を高画質に動作させるためのプロジェクトです。
+Linux + Waydroid環境で「アイドルマスター ミリオンライブ！ シアターデイズ（以下、ミリシタ）」を高画質で動作させるためのプロジェクトです。
 
-Waydroid 上で動作するミリシタを対象に、Mesa GLES Render Scale を利用した高解像度描画、画面比率変更・タッチ操作・FPS / CPU / GPU 使用率の表示などの設定管理を行います。
+本ツールは **ChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発**しています。Mesa GLES Render Scale（以下、RTScale）の技術公開と解説を行ったmogareta7731氏、Mesa・Waydroid・Gamescope・MangoHudをはじめとする上流プロジェクトの開発者に感謝します。
+
+Waydroid上で動作するミリシタを対象に、RTScaleによる高解像度描画、画面のアスペクト比、マウスのタッチ入力化、FPS・CPU／GPU使用率の表示などを設定できます。
+
+## 免責事項
+
+Mirishita Waydroid Manager（以下、MWM）はWaydroidの描画ライブラリや表示・入力などを調整するツールです。ミリシタのAPKやゲームデータを同梱・改変・再配布せず、チートを目的としたものではありません。
+
+MWMはMesa由来の描画ライブラリとMWM向けRTScale実装を導入します。出典やライセンスは[描画部品](docs/GRAPHICS_COMPONENTS.md)と[第三者通知](docs/THIRD_PARTY_NOTICES.md)をご覧ください。
+
+MWMは、ミリシタの権利者である窪岡俊之氏、株式会社バンダイナムコエンターテインメントなどの権利者や、各ソフトウェアの開発元とは無関係の非公式ツールです。利用規約をご確認のうえ、ご自身の判断でご利用ください。動作や規約への適合は保証されません。利用による不具合、データ消失、アカウントへの影響について、作者は法令上許容される範囲で責任を負いません。
 
 ## 目的
 
-- Mesa GLES Render Scale (RTScale) による高解像度描画
-- 3D高画質/3D標準モードのMV視聴に適した表示環境の構築
-- Waydroid 上でのミリシタ表示・操作環境の改善
-- Mirishita Waydroid Manager (MWM) による設定の統合管理
+- RTScaleによる高解像度描画
+- 「3D高画質」「3D標準」モードのMV視聴に適した表示環境の構築
+- Waydroid上でのミリシタの表示・操作環境の改善
+- 描画・表示・操作設定の統合管理
 
-## コンポーネント
+## 主な機能
 
-- CachyOS
+- RTScaleによる描画倍率（整数倍）の設定
+- AMD FSR1によるアップスケーリングとシャープニング
+- 描画アスペクト比の設定
+- 起動確認とミリシタの自動起動設定
+- マウス操作のタッチ入力化
+- FPS・CPU／GPU使用率などの表示
+- RTScale Zoom Fixによる過度な拡大・描画ずれへの互換対応
+- 診断ログの一括保存
+- MWMの変更対象のバックアップと、アンインストール時の復元
+
+## 主な構成要素
+
+- CachyOS／Arch系Linux
 - Waydroid
-- Mesa GLES Render Scale (RTScale)
-- Mirishita Waydroid Manager (MWM)
+- Mesa GLES Render Scale（RTScale）とMWM独立実装
+- Gamescope／AMD FSR1
+- MWM HUD／MangoHud（MangoApp）
+- Mirishita Waydroid Manager（MWM）
 
 ## テスト環境
 
-- CPU: AMD Ryzen 7 9700X
-- GPU: AMD Radeon RX 6600 XT / RX 9060 XT 8GB
-- AMD BC250: 8C16T / 24CU / 40CU
-- Display: 1920×1080 / 120Hz
+以下は開発・動作確認に使用した環境です。
+
+- CPU：AMD Ryzen 7 9700X
+- GPU：AMD Radeon RX 6600 XT／RX 9060 XT 8GB
+- AMD BC250：8コア16スレッド構成、GPU 24 CU／40 CU構成
+- ディスプレイ：1920×1080 120Hz、3840×2160 120Hz
+
+## 導入と設定
+
+インストール、更新、各設定の使い方、バックアップとアンインストールは[SETUP.md](SETUP.md)を参照してください。
+
+## ソースと再現手順の提供
+
+GitHubでの公開時には、MWM本体のソースに加え、配布する描画ライブラリに対応したソース、RTScaleとZoom Fixの変更箇所、ビルド・適用手順をそろえて提供する方針です。異常な拡大への対策を確認し、同じ変更を再ビルドして適用できる構成を目指します。
+
+使用する上流ソースの版と追加変更、ビルド入力は[ソースの出典](docs/graphics-build/SOURCE-PROVENANCE.md)と[対応ソース・再ビルド](docs/graphics-build/BUILD.md)に記録します。各コンポーネントのライセンスは[第三者通知](docs/THIRD_PARTY_NOTICES.md)を参照してください。
 
 ## 開発状況
 
-実験的 / 開発中
+実験的な開発中のツールです。
+
