@@ -1,0 +1,30 @@
+diff --git a/src/hud_elements.cpp b/src/hud_elements.cpp
+index 8083591..fa1c62f 100644
+--- a/src/hud_elements.cpp
++++ b/src/hud_elements.cpp
+@@ -7,6 +7,7 @@
+ #include "overlay.h"
+ #include "overlay_params.h"
+ #include "hud_elements.h"
++#include "mwm_fps_alignment.h"
+ #include "logging.h"
+ #include "battery.h"
+ #include "device.h"
+@@ -1187,8 +1188,15 @@ void HudElements::_exec(){
+         if (item.pos == HUDElements.place){
+             if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_horizontal])
+                 HUDElements.TextColored(HUDElements.colors.text, "%s",item.ret.c_str());
+-            else
+-                right_aligned_text(HUDElements.colors.text,HUDElements.ralign_width, "%s", item.ret.c_str());
++            else {
++                float align_width = HUDElements.ralign_width;
++                // MWM opt-in: align the integer part of measured FPS with load values.
++                // Keep upstream alignment for other users and nonnumeric output.
++                if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN")) {
++                    align_width += mwm_fps_alignment_offset(item.ret);
++                }
++                right_aligned_text(HUDElements.colors.text, align_width, "%s", item.ret.c_str());
++            }
+         }
+     }
+     ImGui::PopFont();
