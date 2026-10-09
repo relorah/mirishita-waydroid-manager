@@ -1,5 +1,5 @@
 diff --git a/src/hud_elements.cpp b/src/hud_elements.cpp
-index 8083591..fa1c62f 100644
+index 8083591..a4f0893 100644
 --- a/src/hud_elements.cpp
 +++ b/src/hud_elements.cpp
 @@ -7,6 +7,7 @@
@@ -10,21 +10,71 @@ index 8083591..fa1c62f 100644
  #include "logging.h"
  #include "battery.h"
  #include "device.h"
-@@ -1187,8 +1188,15 @@ void HudElements::_exec(){
+@@ -1175,7 +1176,8 @@ void HudElements::custom_text(){
+         ImGui::PopFont();
+         return;
+     }
+-    HUDElements.TextColored(HUDElements.colors.text, "%s",value);
++    const bool mwm_fps_label = std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN") && std::string(value) == "FPS";
++    HUDElements.TextColored(mwm_fps_label ? HUDElements.colors.engine : HUDElements.colors.text, "%s",value);
+     ImGui::PopFont();
+ }
+ 
+@@ -1187,8 +1189,18 @@ void HudElements::_exec(){
          if (item.pos == HUDElements.place){
              if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_horizontal])
                  HUDElements.TextColored(HUDElements.colors.text, "%s",item.ret.c_str());
 -            else
 -                right_aligned_text(HUDElements.colors.text,HUDElements.ralign_width, "%s", item.ret.c_str());
 +            else {
-+                float align_width = HUDElements.ralign_width;
-+                // MWM opt-in: align the integer part of measured FPS with load values.
-+                // Keep upstream alignment for other users and nonnumeric output.
 +                if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN")) {
-+                    align_width += mwm_fps_alignment_offset(item.ret);
++                    const auto value = mwm_fps_integer_text(item.ret);
++                    right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%s", value.c_str());
++                    ImGui::SameLine(0, 1.0f);
++                    ImGui::PushFont(HUDElements.sw_stats->font_small);
++                    HUDElements.TextColored(HUDElements.colors.text, "FPS");
++                    ImGui::PopFont();
++                } else {
++                    right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%s", item.ret.c_str());
 +                }
-+                right_aligned_text(HUDElements.colors.text, align_width, "%s", item.ret.c_str());
 +            }
          }
      }
      ImGui::PopFont();
+diff --git a/src/overlay.cpp b/src/overlay.cpp
+index 2196953..aae3860 100644
+--- a/src/overlay.cpp
++++ b/src/overlay.cpp
+@@ -10,6 +10,8 @@
+ #include <filesystem.h>
+ // #include <sys/stat.h>
+ #include "overlay.h"
++#include "imgui_internal.h"
++#include "mwm_fps_alignment.h"
+ #include "cpu.h"
+ #include "gpu.h"
+ #include "hud_elements.h"
+@@ -444,7 +446,22 @@ void right_aligned_text(ImVec4& col, float off_x, const char *fmt, ...)
+ 
+    if (!HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_hud_compact]){
+       ImVec2 sz = ImGui::CalcTextSize(buffer);
+-      ImGui::SetCursorPosX(pos.x + off_x - sz.x);
++      float shift = 0.0f;
++      if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN") &&
++          !HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_horizontal] &&
++          static_cast<size_t>(HUDElements.place) < HUDElements.ordered_functions.size()) {
++         const auto& name = HUDElements.ordered_functions[HUDElements.place].name;
++         auto* table = ImGui::GetCurrentTable();
++         if (table && table->ColumnsCount == 3 &&
++             (name == "gpu_stats" || name == "cpu_stats" || name == "exec")) {
++            shift = mwm_metric_column_shift(table->CurrentColumn,
++               table->Columns[1].WorkMinX - table->Columns[0].WorkMinX,
++               table->Columns[2].WorkMinX - table->Columns[1].WorkMinX,
++               HUDElements.ralign_width, ImGui::CalcTextSize("00").x,
++               ImGui::CalcTextSize("GPU").x, ImGui::CalcTextSize("%").x);
++         }
++      }
++      ImGui::SetCursorPosX(pos.x + off_x - sz.x - shift);
+    }
+    RenderOutlinedText(buffer, ImGui::ColorConvertFloat4ToU32(col));
+    // ImGui::TextColored(col,"%s", buffer);
