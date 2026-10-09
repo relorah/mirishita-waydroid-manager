@@ -3,6 +3,7 @@
 """One saved-settings HUD owner for the GUI and runtime start/stop paths."""
 import argparse,fcntl,os,signal,subprocess,sys,time
 from pathlib import Path
+from mangoapp_fps import render_config
 ROOT=Path(__file__).resolve().parents[1]
 RENDERER=ROOT/'fps_overlay.py'
 CFG=Path(os.environ.get('XDG_CONFIG_HOME',str(Path.home()/'.config')))/'mwm'
@@ -55,10 +56,8 @@ def reconcile(action='sync',if_running=False):
         use_mango = mango_running()
         if use_mango:
             cfg=CFG/'MangoApp.conf'
-            text=(ROOT/'config/MangoApp.conf').read_text()
-            text='\n'.join(line for line in text.splitlines() if not line.strip().startswith('no_display'))+'\n'
             visible = mode == 'mangoapp'
-            text += 'no_display=' + ('0' if visible else '1') + '\n'
+            text = render_config(visible)
             CFG.mkdir(parents=True,exist_ok=True)
             temp=cfg.with_suffix('.tmp');temp.write_text(text);temp.replace(cfg)
             try:

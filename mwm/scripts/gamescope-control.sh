@@ -134,11 +134,6 @@ mode_to_internal() {
 }
 
 read_fsr_scale() {
-  local rts
-  rts="$(cat "$CFG_DIR/kwin-rtscale" 2>/dev/null || echo off)"
-  if [[ "$(read_render_mode)" == rtscale && "$rts" =~ ^(7|8|9|10)$ ]]; then
-    printf '100\n'; return
-  fi
   local v="150"
   local enabled
   if [[ -f "$CFG_DIR/gamescope-fsr-enabled" ]]; then

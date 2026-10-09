@@ -650,12 +650,7 @@ class MainWindow(QMainWindow):
         self.fsr_scale_label.setVisible(not is_kwin)
         for control in (self.cas_enabled, self.cas_strength, self.cas_value):
             control.hide()
-        # High RTScale multipliers do not combine with FSR.
-        scale_value = str(self.scale.currentData() or "off")
-        high_scale = is_rtscale and scale_value in ("7", "8", "9", "10")
-        self.rtscale_fsr_enabled.setEnabled(not high_scale)
-        if high_scale:
-            self.rtscale_fsr_enabled.setChecked(False)
+        self.rtscale_fsr_enabled.setEnabled(not is_kwin)
         self.update_gamescope_sharpness_label()
 
     def update_custom_aspect_visibility(self, *_args):

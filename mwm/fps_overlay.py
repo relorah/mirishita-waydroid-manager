@@ -540,7 +540,7 @@ for(var i=0;i<list.length;i++) {
         rows = [
             ("GPU", f"{gpu:4.1f}%" if gpu is not None else "  --%", COLORS["gpu"], self.metrics["gpu_temp"]),
             ("CPU", f"{cpu:4.1f}%" if cpu is not None else "  --%", COLORS["cpu"], self.metrics["cpu_temp"]),
-            ("FPS", f"{fps:5.2f}" if fps is not None else " --.--", COLORS["fps"], None),
+            ("FPS", f"{fps:5.2f}" if fps is not None and fps > 0 else " --.--", COLORS["fps"], None),
         ]
 
         detailed_shift = 0.0

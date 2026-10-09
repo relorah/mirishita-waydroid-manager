@@ -1,4 +1,12 @@
-# MWM 0.77
+# MWM 0.80
+
+- RTScale x1-x10 can combine with FSR1 125% or 150%.
+- MWM HUD FPS now uses Android game-layer actual presentation timestamps instead of desired timestamps.
+- MangoApp displays the same Android-layer FPS measurement through its external-text element; its frametime graph remains Gamescope-derived.
+- SETUP describes measurement differences, RTScale provenance, and high-setting rendering limitations.
+- Linux runtime validation of the changed MangoApp presentation remains pending.
+
+## MWM 0.77
 
 - Based on the independent RTScale build with the revised Home and Maintenance UI.
 - Verify Waydroid Startup is in Options (default ON); OFF disables automatic game launch and skips presentation verification.
