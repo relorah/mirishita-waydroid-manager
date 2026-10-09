@@ -1,36 +1,102 @@
 diff --git a/src/hud_elements.cpp b/src/hud_elements.cpp
-index 8083591..a4f0893 100644
+index 8083591..f697760 100644
 --- a/src/hud_elements.cpp
 +++ b/src/hud_elements.cpp
-@@ -7,6 +7,7 @@
- #include "overlay.h"
- #include "overlay_params.h"
- #include "hud_elements.h"
+@@ -9,0 +10,2 @@
 +#include "mwm_fps_alignment.h"
- #include "logging.h"
- #include "battery.h"
- #include "device.h"
-@@ -1175,7 +1176,8 @@ void HudElements::custom_text(){
-         ImGui::PopFont();
-         return;
-     }
++#include "mwm_bc250_gpu.h"
+@@ -198,0 +201,2 @@ void HudElements::convert_colors(const struct overlay_params& params)
++    if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN"))
++        style.CellPadding.x = 4.0f * mwm_layout_scale(params.font_size);
+@@ -291,0 +296,8 @@ void HudElements::gpu_stats(){
++            int gpu_load = gpu->metrics.load;
++            bool load_valid = true;
++            const char* shared_cache = std::getenv("MWM_BC250_GPU_CACHE");
++            if (shared_cache && gpu->vendor_id == 0x1002 && gpu->device_id == 0x13fe) {
++                const auto shared = mwm_bc250_load(shared_cache, gpu->pci_dev, mwm_monotonic_time());
++                load_valid = shared.has_value();
++                gpu_load = shared ? static_cast<int>(std::lround(*shared)) : 0;
++            }
+@@ -301,3 +313,4 @@ void HudElements::gpu_stats(){
+-                auto load_color = change_on_load_temp(gpu_data, gpu->metrics.load);
+-                right_aligned_text(load_color, HUDElements.ralign_width, "%i", gpu->metrics.load);
+-                ImGui::SameLine(0, 1.0f);
++                auto load_color = change_on_load_temp(gpu_data, gpu_load);
++                if (load_valid) right_aligned_text(load_color, HUDElements.ralign_width, "%i", gpu_load);
++                else right_aligned_text(load_color, HUDElements.ralign_width, "%s", "--");
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -307,2 +320,3 @@ void HudElements::gpu_stats(){
+-                right_aligned_text(text_color, HUDElements.ralign_width, "%i", gpu->metrics.load);
+-                ImGui::SameLine(0, 1.0f);
++                if (load_valid) right_aligned_text(text_color, HUDElements.ralign_width, "%i", gpu_load);
++                else right_aligned_text(text_color, HUDElements.ralign_width, "%s", "--");
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -320 +334 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -336 +350 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -341 +355 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -350 +364 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -357 +371 @@ void HudElements::gpu_stats(){
+-                    ImGui::SameLine(0, 1.0f);
++                    ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -366 +380 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -380 +394 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -401 +415 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -410 +424 @@ void HudElements::gpu_stats(){
+-                ImGui::SameLine(0, 1.0f);
++                ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -445 +459 @@ void HudElements::cpu_stats(){
+-            ImGui::SameLine(0, 1.0f);
++            ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -450 +464 @@ void HudElements::cpu_stats(){
+-            ImGui::SameLine(0, 1.0f);
++            ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -460 +474 @@ void HudElements::cpu_stats(){
+-            ImGui::SameLine(0, 1.0f);
++            ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -473 +487 @@ void HudElements::cpu_stats(){
+-            ImGui::SameLine(0, 1.0f);
++            ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -487 +501 @@ void HudElements::cpu_stats(){
+-            ImGui::SameLine(0, 1.0f);
++            ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -505 +519 @@ void HudElements::cpu_stats(){
+-            ImGui::SameLine(0, 1.0f);
++            ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -678 +692 @@ void HudElements::vram(){
+-                    ImGui::SameLine(0, 1.0f);
++                    ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
+@@ -999 +1013,4 @@ void HudElements::frame_timing(){
+-            height = max_time;
++            if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN"))
++                width = mwm_graph_width(ImGui::GetWindowContentRegionMax().x,
++                    ImGui::GetCursorPosX());
++            height = max_time * mwm_layout_scale(HUDElements.params->font_size);
+@@ -1178 +1195,2 @@ void HudElements::custom_text(){
 -    HUDElements.TextColored(HUDElements.colors.text, "%s",value);
 +    const bool mwm_fps_label = std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN") && std::string(value) == "FPS";
 +    HUDElements.TextColored(mwm_fps_label ? HUDElements.colors.engine : HUDElements.colors.text, "%s",value);
-     ImGui::PopFont();
- }
- 
-@@ -1187,8 +1189,18 @@ void HudElements::_exec(){
-         if (item.pos == HUDElements.place){
-             if (HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_horizontal])
-                 HUDElements.TextColored(HUDElements.colors.text, "%s",item.ret.c_str());
+@@ -1190,2 +1208,12 @@ void HudElements::_exec(){
 -            else
 -                right_aligned_text(HUDElements.colors.text,HUDElements.ralign_width, "%s", item.ret.c_str());
 +            else {
 +                if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN")) {
 +                    const auto value = mwm_fps_integer_text(item.ret);
 +                    right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%s", value.c_str());
-+                    ImGui::SameLine(0, 1.0f);
++                    ImGui::SameLine(0, mwm_layout_scale(HUDElements.params->font_size));
 +                    ImGui::PushFont(HUDElements.sw_stats->font_small);
 +                    HUDElements.TextColored(HUDElements.colors.text, "FPS");
 +                    ImGui::PopFont();
@@ -38,26 +104,27 @@ index 8083591..a4f0893 100644
 +                    right_aligned_text(HUDElements.colors.text, HUDElements.ralign_width, "%s", item.ret.c_str());
 +                }
 +            }
-         }
-     }
-     ImGui::PopFont();
 diff --git a/src/overlay.cpp b/src/overlay.cpp
-index 2196953..aae3860 100644
+index 2196953..88bf2e4 100644
 --- a/src/overlay.cpp
 +++ b/src/overlay.cpp
-@@ -10,6 +10,8 @@
- #include <filesystem.h>
- // #include <sys/stat.h>
- #include "overlay.h"
+@@ -12,0 +13,2 @@
 +#include "imgui_internal.h"
 +#include "mwm_fps_alignment.h"
- #include "cpu.h"
- #include "gpu.h"
- #include "hud_elements.h"
-@@ -444,7 +446,22 @@ void right_aligned_text(ImVec4& col, float off_x, const char *fmt, ...)
- 
-    if (!HUDElements.params->enabled[OVERLAY_PARAM_ENABLED_hud_compact]){
-       ImVec2 sz = ImGui::CalcTextSize(buffer);
+@@ -334,0 +337 @@ void overlay_new_frame(const struct overlay_params& params)
++   const float ui_scale = mwm_layout_scale(params.font_size);
+@@ -336,2 +339,2 @@ void overlay_new_frame(const struct overlay_params& params)
+-   ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(4,4));
+-   ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8,-3));
++   ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(4 * ui_scale, 4 * ui_scale));
++   ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8 * ui_scale, -3 * ui_scale));
+@@ -340 +343 @@ void overlay_new_frame(const struct overlay_params& params)
+-      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5,5));
++      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5 * ui_scale, 5 * ui_scale));
+@@ -357 +360 @@ void position_layer(struct swapchain_stats& data, const struct overlay_params& p
+-   float margin = 10.0f;
++   float margin = 10.0f * mwm_layout_scale(real_params->font_size);
+@@ -447 +450,25 @@ void right_aligned_text(ImVec4& col, float off_x, const char *fmt, ...)
 -      ImGui::SetCursorPosX(pos.x + off_x - sz.x);
 +      float shift = 0.0f;
 +      if (std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN") &&
@@ -67,14 +134,23 @@ index 2196953..aae3860 100644
 +         auto* table = ImGui::GetCurrentTable();
 +         if (table && table->ColumnsCount == 3 &&
 +             (name == "gpu_stats" || name == "cpu_stats" || name == "exec")) {
-+            shift = mwm_metric_column_shift(table->CurrentColumn,
-+               table->Columns[1].WorkMinX - table->Columns[0].WorkMinX,
-+               table->Columns[2].WorkMinX - table->Columns[1].WorkMinX,
-+               HUDElements.ralign_width, ImGui::CalcTextSize("00").x,
-+               ImGui::CalcTextSize("GPU").x, ImGui::CalcTextSize("%").x);
++            const float pixel_scale = mwm_layout_scale(HUDElements.params->font_size);
++            if (table->CurrentColumn == 2 && (name == "gpu_stats" || name == "cpu_stats")) {
++               // End the temperature unit at the cell's right padding, matching
++               // the label's left padding even after the outer Gamescope fit.
++               const auto& column = table->Columns[2];
++               off_x = mwm_temperature_anchor(column.WorkMaxX - column.WorkMinX,
++                  ImGui::CalcTextSize("°C").x, pixel_scale);
++            } else {
++               shift = mwm_metric_column_shift(table->CurrentColumn,
++                  table->Columns[1].WorkMinX - table->Columns[0].WorkMinX,
++                  table->Columns[2].WorkMinX - table->Columns[1].WorkMinX,
++                  HUDElements.ralign_width, ImGui::CalcTextSize("00").x,
++                  ImGui::CalcTextSize("GPU").x, ImGui::CalcTextSize("%").x, pixel_scale);
++            }
 +         }
 +      }
 +      ImGui::SetCursorPosX(pos.x + off_x - sz.x - shift);
-    }
-    RenderOutlinedText(buffer, ImGui::ColorConvertFloat4ToU32(col));
-    // ImGui::TextColored(col,"%s", buffer);
+@@ -689 +716 @@ void render_imgui(swapchain_stats& data, struct overlay_params& params, ImVec2&
+-   if (old_scale != real_params->font_scale) {
++   if (old_scale != real_params->font_scale || std::getenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN")) {

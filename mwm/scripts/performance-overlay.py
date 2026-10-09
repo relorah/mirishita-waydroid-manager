@@ -39,7 +39,7 @@ def mango_running():
         if not p.name.isdigit():continue
         try:
             if p.stat().st_uid!=os.getuid():continue
-            if (p/'exe').resolve().name!='mangoapp':continue
+            if (p/'comm').read_text().strip()!='mangoapp':continue
             env=(p/'environ').read_bytes().split(b'\0')
             if b'MANGOHUD_CONFIGFILE='+expected in env:return True
         except (OSError,RuntimeError):pass

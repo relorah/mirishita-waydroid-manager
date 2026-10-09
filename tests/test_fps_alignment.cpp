@@ -43,4 +43,30 @@ int main() {
     std::cout << "Two-digit metric gaps: 80% verified\n";
     ImGui::EndFrame();
     ImGui::DestroyContext();
+    assert(mwm_layout_scale(58) == 1.0f);
+    setenv("MWM_MANGOAPP_FPS_INTEGER_ALIGN", "1", 1);
+    for (float scale : {1.25f, 1.5f, 1.75f, 2.0f}) {
+        assert(std::fabs(mwm_layout_scale(29 * scale) - scale) < 0.001f);
+        ImGui::CreateContext();
+        auto& scaled_io = ImGui::GetIO();
+        scaled_io.IniFilename = nullptr;
+        scaled_io.DisplaySize = ImVec2(285 * scale, 200 * scale);
+        scaled_io.Fonts->AddFontFromMemoryCompressedBase85TTF(GetDefaultCompressedFontDataTTFBase85(), 29 * scale);
+        scaled_io.Fonts->Build();
+        scaled_io.Fonts->SetTexID(static_cast<ImTextureID>(1));
+        ImGui::NewFrame();
+        const float scaled_anchor = ImGui::CalcTextSize("AAAA").x;
+        // Integer font rasterization permits a up to 2 pixels over this four-character anchor after fit.
+        assert(std::fabs(scaled_anchor / scale - anchor) <= 2.0f);
+        for (const char* value : {"10", "60", "120", "240", "--"}) {
+            const float width = ImGui::CalcTextSize(value).x;
+            assert(std::fabs((scaled_anchor - width + width) / scale - scaled_anchor / scale) < 0.01f);
+        }
+        const float scaled_shift = mwm_metric_column_shift(1, step * scale, step * scale,
+            anchor * scale, number_width * scale, label_width * scale, suffix_width * scale, scale);
+        assert(std::fabs(scaled_shift / scale - shift1) < 0.01f);
+        ImGui::EndFrame();
+        ImGui::DestroyContext();
+    }
+    std::cout << "FSR 125/150/175/200% final font anchors and gaps verified\n";
 }
