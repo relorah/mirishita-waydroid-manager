@@ -15,6 +15,7 @@ import threading
 from collections import deque
 from pathlib import Path
 from shutil import which
+import bc250_gpu
 
 # The desktop may export GDK_BACKEND=x11 for other applications. The HUD
 # needs the host Wayland connection for layer-shell above fullscreen windows.
@@ -158,6 +159,7 @@ class AMDGPUSampler:
         self.device_path = None
         self.temp_path = None
         self._discover()
+        bc250_gpu.ensure_collector()
 
     def _discover(self):
         candidates = []
@@ -200,6 +202,12 @@ class AMDGPUSampler:
         return candidates[0][1] if candidates else None
 
     def sample_load(self):
+        if bc250_gpu.enabled() and self.device_path is not None:
+            try:
+                if int((self.device_path / "device").read_text().strip(), 16) == 0x13fe:
+                    return bc250_gpu.read_load(self.device_path.resolve().name)
+            except (OSError, ValueError):
+                return None
         if self.busy_path is None:
             self._discover()
         if self.busy_path is None:

@@ -68,7 +68,6 @@ if [[ "$backend" == gamescope ]]; then
     fi
   fi
   if [[ -f "$CFG_DIR/gamescope-fsr-enabled" && "$(cat "$CFG_DIR/gamescope-fsr-enabled")" != on ]]; then fsr_scale=100; fi
-  if [[ "$render" == rtscale && ( "$fsr_scale" == 175 || "$fsr_scale" == 200 ) ]]; then fsr_scale=150; fi
   if [[ "$fsr_scale" == 100 ]]; then sharp_enabled=off; else sharp_enabled=on; fi
   if [[ "$sharp" =~ ^([0-9]|1[0-9]|20)$ ]]; then sharp_level=$((21-sharp)); else sharp_level="?"; fi
   echo "Gamescope: FSR ${fsr_scale}% / RCAS $sharp_enabled / Sharpness level $sharp_level / additional CAS off"

@@ -34,6 +34,10 @@ trap 'exit 130' INT
 rm -f "$state/mirishita-fps"
 "$script_dir/fps-collector.sh" 0.2 "$state/mirishita-fps" >/dev/null 2>&1 &
 collector_pid=$!
+if [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test" ]]; then
+  export MWM_BC250_GPU_CACHE="$state/bc250-gpu"
+  python3 "$script_dir/bc250-gpu-collector.py" &
+fi
 # The bundled, source-built MangoApp aligns only the FPS integer portion.
 # Keep the system executable available as a fallback; never replace it.
 mango_executable="$MWM_REAL_MANGOAPP"

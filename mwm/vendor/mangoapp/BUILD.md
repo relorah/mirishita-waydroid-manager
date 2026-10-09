@@ -28,3 +28,11 @@ Expected: 9.99, 60.00, 120.00, 240.00 and --.-- all have integer anchor 60 at fo
 8a51bc4ef6aeed281a89a1808af4f6d33515471958f75183b719dcb237d869ae  scripts/mangoapp-native/mangoapp
 
 Additional opt-in layout: preserve the 285px outer width and native window padding. Reduce both label-to-value and value-to-temperature gaps to 80%, using two-digit values as the baseline. Integer anchors of GPU/CPU/FPS remain shared. FPS label uses the engine/frametime color, and the small superscript uses upstream font_small. Tests verify 80% gap arithmetic with actual font widths. Final screen appearance remains unverified.
+
+BC250 test build: opt-in MWM_BC250_GPU_CACHE reads the shared device-matched cache, expires after 2 seconds, and displays -- on invalid data. Read-only GRBM_STATUS sampling (2 ms, published every 0.5 seconds) uses the included bc250-gpu-probe.c and libdrm_amdgpu; no clock or voltage writes. Register choice references filippor/cyan-skillfish-governor commit 7b08fdcf542d1edd82f3a9077c902038019c9842. Rebuild probe: `cc -O2 scripts/bc250-gpu-probe.c $(pkg-config --cflags --libs libdrm_amdgpu) -o scripts/mangoapp-native/bc250-gpu-probe`. Enabled only when the existing config/mwm/bc250-gpu-test flag is present.
+
+Current packaged binary SHA256:
+3931971a3aa7498a780cd4a61215467d09b817249711f1e4a0d1d37178902274  scripts/mangoapp-native/mangoapp
+504b7d7e14b9234562674b7f34dece4fedf7740ed6a9aefb3132045ddd7c08af  scripts/mangoapp-native/bc250-gpu-probe
+
+BC250 register reference license: LICENSE-BC250-reference (MIT, copyright Marcus Medom Ryding). BC250 sampling is experimental and opt-in. The existing test flag is preserved by app updates. To enable it manually, create `${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test`; to disable it, remove that file and restart the overlay. Hardware activity is a sampled GPU-wide busy ratio, not a per-game load metric.
