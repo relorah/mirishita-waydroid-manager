@@ -1,0 +1,291 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+set -euo pipefail
+
+APP_ID="com.bandainamcoent.imas_millionlive_theaterdays"
+
+need_root() {
+  [[ $EUID -eq 0 ]] || { echo "root required" >&2; exit 100; }
+}
+
+wd() {
+  timeout --kill-after=3 20 waydroid shell -- "$@" 2>/dev/null | tr -d '\r'
+}
+
+need_root
+
+case "${1:-}" in
+  logcat-dump)
+    timeout --kill-after=3 20 waydroid shell -- logcat -d -t 1200
+    ;;
+  container-start)
+    exec systemctl start waydroid-container.service
+    ;;
+  container-stop)
+    exec systemctl stop waydroid-container.service
+    ;;
+  backup-cleanup-setup)
+    [[ $# -eq 2 ]] || exit 2
+    exec python /usr/local/libexec/mwm-waydroid-backup.py cleanup-setup "$2"
+    ;;
+  backup-status|backup-restore)
+    [[ $# -eq 1 ]] || exit 2
+    [[ -f /usr/local/libexec/mwm-waydroid-backup.py ]] || { echo 'Backup helper missing' >&2; exit 1; }
+    action=status
+    [[ "$1" != backup-restore ]] || action=restore
+    exec python /usr/local/libexec/mwm-waydroid-backup.py "$action"
+    ;;
+  runtime-state)
+    # Fixed read-only command: identify Android incarnation, not just host KWin.
+    wd sh -c 'set -e
+p=$(pidof system_server)
+case "$p" in ""|*[!0-9]*) exit 1 ;; esac
+start=$(awk "{print \$22}" /proc/$p/stat)
+case "$start" in ""|*[!0-9]*) exit 1 ;; esac
+[ "$(getprop sys.boot_completed)" = 1 ] || exit 1
+printf "system_server=%s:%s\n" "$p" "$start"
+for key in persist.waydroid.width persist.waydroid.height persist.waydroid.multi_windows persist.waydroid.uevent persist.waydroid.fake_touch persist.waydroid.width_padding persist.waydroid.height_padding; do
+ printf "%s=%s\n" "$key" "$(getprop "$key")"
+done
+wm size
+printf "MWM_RUNTIME_OK\n"'
+    ;;
+  boot-completed)
+    wd getprop sys.boot_completed
+    ;;
+  app-installed)
+    wd pm path "$APP_ID"
+    ;;
+  native-bridge)
+    wd getprop ro.dalvik.vm.native.bridge
+    ;;
+  launch-mirishita)
+    wd monkey -p "$APP_ID" 1
+    ;;
+  force-stop-app)
+    wd am force-stop "$APP_ID"
+    ;;
+  game-process-state)
+    wd sh -c 'pidof com.bandainamcoent.imas_millionlive_theaterdays || true; printf "MWM_PID_QUERY_OK\n"'
+    ;;
+  pidof-mirishita)
+    wd pidof "$APP_ID" || true
+    ;;
+
+  set-media-volume)
+    wd settings put system volume_music 15
+    ;;
+  get-media-volume)
+    wd settings get system volume_music
+    ;;
+  reset-wm-size)
+    wd wm size reset
+    ;;
+  wm-size)
+    wd wm size
+    ;;
+  display-frames)
+    wd dumpsys display | grep -E 'logicalFrame|physicalFrame' || true
+    ;;
+  foreground-package)
+    out="$(wd dumpsys activity activities || true)"
+    pkg="$(
+      printf '%s\n' "$out" |
+      sed -nE \
+        -e 's/.*mResumedActivity:.* u[0-9]+ ([^\/ ]+)\/.*/\1/p' \
+        -e 's/.*topResumedActivity=.* u[0-9]+ ([^\/ ]+)\/.*/\1/p' |
+      head -n1
+    )"
+    if [[ -z "$pkg" ]]; then
+      out="$(wd dumpsys window windows || true)"
+      pkg="$(
+        printf '%s\n' "$out" |
+        sed -nE 's/.*mCurrentFocus=.* ([^\/ ]+)\/.*/\1/p' |
+        head -n1
+      )"
+    fi
+    printf '%s\n' "$pkg"
+    ;;
+  sf-list)
+    wd dumpsys SurfaceFlinger --list
+    ;;
+  sf-latency)
+    shift
+    [[ $# -eq 1 ]] || { echo "usage: sf-latency <layer>" >&2; exit 2; }
+    exec waydroid shell -- dumpsys SurfaceFlinger --latency "$1"
+    ;;
+  rtscale-state)
+    wd sh -c 'if [ -e /data/local/tmp/gles_rtscale.conf ]; then echo present; else echo absent; fi'
+    ;;
+  rtscale-read)
+    wd cat /data/local/tmp/gles_rtscale.conf
+    ;;
+  rtscale-stat)
+    wd ls -lZ /data/local/tmp/gles_rtscale.conf || true
+    ;;
+  rtscale-log-mirishita)
+    pids="$(wd pidof "$APP_ID" || true)"
+    [[ -n "$pids" ]] || exit 0
+    logs="$(wd logcat -d || true)"
+    awk -v pids="$pids" '
+      BEGIN { n=split(pids,a," "); for (i=1;i<=n;i++) wanted[a[i]]=1 }
+      /GLES_RTSCALE:|GL_INVALID|EGL_BAD|FRAMEBUFFER_INCOMPLETE|Framebuffer incomplete|MESA.*[Ee]rror|gralloc.*[Ee]rror/ && wanted[$3] { print }
+    ' <<<"$logs" | tail -n 30
+    ;;
+  rtscale-surfaces)
+    out="$(wd dumpsys SurfaceFlinger || true)"
+    printf '%s\n' "$out" | awk -v app="$APP_ID" '
+      function parse_dim(line,    s,a,w,h) {
+        s=line; sub(/^.*activeBuffer=\[[[:space:]]*/, "", s); sub(/:.*/, "", s); gsub(/[[:space:]]/, "", s)
+        if (s !~ /^[0-9]+x[0-9]+$/) return ""
+        split(s,a,"x"); w=a[1]+0; h=a[2]+0
+        if (w <= 0 || h <= 0) return ""
+        return w "x" h
+      }
+      /^\+ BufferQueueLayer / {
+        if (index($0, app) > 0) {
+          if (index($0, "OverrideActivity#1") > 0) tag="#1"
+          else if (index($0, "OverrideActivity#0") > 0) tag="#0"
+          else tag="other"
+          wanted=1
+        } else { wanted=0; tag="" }
+        next
+      }
+      wanted && /activeBuffer=\[/ { dim=parse_dim($0); if (dim != "") print tag "=" dim; wanted=0; tag="" }
+    ' | awk '!seen[$0]++'
+    ;;
+  rtscale-surface-details)
+    out="$(wd dumpsys SurfaceFlinger || true)"
+    printf '%s\n' "$out" | awk -v app="$APP_ID" '
+      function tag_for(line) {
+        if (index(line, "OverrideActivity#1") > 0) return "#1"
+        if (index(line, "OverrideActivity#0") > 0) return "#0"
+        return ""
+      }
+      /^\* Layer / || /^\+ BufferQueueLayer / || /^  - Output Layer / {
+        t=tag_for($0); hit=(t != "" && index($0, app) > 0)
+        if (hit) { tag=t; count=0; print "layer=" tag " " $0 }
+        next
+      }
+      hit {
+        count++
+        if ($0 ~ /geomBufferSize=/ || $0 ~ /geomContentCrop=/ || $0 ~ /geomCrop=/ ||
+            $0 ~ /geomLayerBounds=/ || $0 ~ /activeBuffer=\[/ ||
+            $0 ~ /displayFrame=.*sourceCrop=/ || $0 ~ /tr=\[/) {
+          gsub(/^[[:space:]]+/, "", $0); print tag " " $0
+        }
+        if (count > 45) { hit=0; tag="" }
+      }
+    ' | awk '!seen[$0]++'
+    ;;
+  rtscale-display-state)
+    printf 'wm_size=%s\n' "$(wd wm size | tr '\n' ';' || true)"
+    printf 'persist.waydroid.width=%s\n' "$(wd getprop persist.waydroid.width || true)"
+    printf 'persist.waydroid.height=%s\n' "$(wd getprop persist.waydroid.height || true)"
+    printf 'persist.waydroid.width_padding=%s\n' "$(wd getprop persist.waydroid.width_padding || true)"
+    printf 'persist.waydroid.height_padding=%s\n' "$(wd getprop persist.waydroid.height_padding || true)"
+    printf 'persist.waydroid.multi_windows=%s\n' "$(wd getprop persist.waydroid.multi_windows || true)"
+    printf 'persist.waydroid.fake_touch=%s\n' "$(wd getprop persist.waydroid.fake_touch || true)"
+    ;;
+  mirishita-processes)
+    procs="$(wd ps -A || true)"
+    grep -F "$APP_ID" <<<"$procs" || true
+    ;;
+  rtscale-process-maps)
+    pids="$(wd pidof "$APP_ID" || true)"
+    [[ -n "$pids" ]] || exit 0
+    for pid in $pids; do
+      printf 'pid=%s\n' "$pid"
+      wd sh -c 'pid="$1"; test -r "/proc/$pid/maps" || exit 0; grep -E "libgallium_dri\\.so|libEGL_mesa\\.so|libGLES|libEGL|libnb\\.so|houdini" "/proc/$pid/maps" 2>/dev/null | sort -u || true' sh "$pid"
+    done
+    ;;
+  rtscale-android-lib-hashes)
+    wd sh -c 'for f in /vendor/lib64/libgallium_dri.so /vendor/lib64/egl/libEGL_mesa.so; do if [ -f "$f" ]; then (sha256sum "$f" 2>/dev/null || toybox sha256sum "$f" 2>/dev/null || true); ls -lZ "$f" 2>/dev/null || ls -l "$f" 2>/dev/null || true; else echo "missing $f"; fi; done'
+    ;;
+  rtscale-overlay-hashes)
+    for f in /var/lib/waydroid/overlay/vendor/lib64/libgallium_dri.so /var/lib/waydroid/overlay/vendor/lib64/egl/libEGL_mesa.so; do
+      if [[ -f "$f" ]]; then sha256sum "$f"; ls -l "$f"; else echo "missing $f"; fi
+    done
+    ;;
+  rtscale-remove)
+    # Waydroid CLI does not reliably propagate Android command exit codes.
+    wd sh -c 'rm -f /data/local/tmp/gles_rtscale.conf && if [ ! -e /data/local/tmp/gles_rtscale.conf ]; then echo MWM_RTSCALE_ABSENT; fi' | grep -x MWM_RTSCALE_ABSENT
+    ;;
+  rtscale-detect-base)
+    out="$(wd dumpsys SurfaceFlinger || true)"
+    candidates="$(
+      printf '%s\n' "$out" | awk -v app="$APP_ID" '
+        /^\+ BufferQueueLayer / { in_app = (index($0, app) > 0); next }
+        in_app && /activeBuffer=\[/ {
+          line=$0
+          sub(/^.*activeBuffer=\[[[:space:]]*/, "", line)
+          sub(/:.*/, "", line)
+          gsub(/[[:space:]]/, "", line)
+          if (line ~ /^[0-9]+x[0-9]+$/) print line
+          in_app=0
+        }'
+    )"
+    best=""
+    best_area=0
+    while IFS= read -r dim; do
+      [[ "$dim" =~ ^([0-9]+)x([0-9]+)$ ]] || continue
+      w="${BASH_REMATCH[1]}"
+      h="${BASH_REMATCH[2]}"
+      (( w > 0 && h > 0 )) || continue
+      area=$((w * h))
+      if (( area > best_area )); then
+        best_area=$area
+        best="${w}x${h}"
+      fi
+    done <<< "$candidates"
+    [[ -n "$best" ]] || exit 1
+    printf '%s\n' "$best"
+    ;;
+  rtscale-write)
+    shift
+    [[ $# -eq 3 || $# -eq 4 || $# -eq 5 ]] || { echo "usage: rtscale-write <scale> <base_width> <base_height> [surface=0|1] [zoom_fix=0|1]" >&2; exit 2; }
+    scale="$1"
+    base_w="$2"
+    base_h="$3"
+    surface="${4:-1}"
+    zoom_fix="${5:-1}"
+    [[ "$zoom_fix" == 0 || "$zoom_fix" == 1 ]] || { echo "invalid zoom fix flag" >&2; exit 2; }
+    [[ "$surface" == 0 || "$surface" == 1 ]] || { echo "invalid surface flag" >&2; exit 2; }
+    [[ "$scale" =~ ^([1-9]|10)$ ]] || { echo "invalid scale" >&2; exit 2; }
+    [[ "$base_w" =~ ^[0-9]+$ && "$base_h" =~ ^[0-9]+$ ]] || { echo "invalid base size" >&2; exit 2; }
+    (( base_w > 0 && base_h > 0 )) || { echo "invalid base size" >&2; exit 2; }
+
+    conf="$(cat <<EOF
+schema_version=1
+
+[application.0]
+name=$APP_ID
+base_width=$base_w
+base_height=$base_h
+scale=$scale
+surface=$surface
+texelsize=0
+zoom_fix=$zoom_fix
+EOF
+)"
+
+    # Create/update the file from inside Android so Android owns the path,
+    # permissions and SELinux labeling. Never chown Waydroid userdata from host.
+    wd sh -c '
+      set -e
+      mkdir -p /data/local/tmp
+      umask 022
+      tmp=/data/local/tmp/gles_rtscale.conf.tmp.$$
+      trap "rm -f \"$tmp\"" EXIT
+      printf "%s\n" "$1" > "$tmp"
+      chmod 0644 "$tmp"
+      mv -f "$tmp" /data/local/tmp/gles_rtscale.conf
+      restorecon /data/local/tmp/gles_rtscale.conf >/dev/null 2>&1 || true
+      printf "%s\n" MWM_RTSCALE_WRITTEN
+    ' sh "$conf"
+    ;;
+  *)
+    echo "invalid MWM root-helper action" >&2
+    exit 2
+    ;;
+esac

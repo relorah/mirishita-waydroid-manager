@@ -1,0 +1,352 @@
+vendor/lib64/libgbm_mesa.so
+
+Dynamic section at offset 0x2bf8 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libgbm_mesa.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x10a0
+ 0x0000000000000008 (RELASZ)             216 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          6
+ 0x0000000000000017 (JMPREL)             0x1178
+ 0x0000000000000002 (PLTRELSZ)           672 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x4db8
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x340
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0xb84
+ 0x000000000000000a (STRSZ)              1303 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0xa78
+ 0x000000000000001a (FINI_ARRAY)         0x4be8
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x9a0
+ 0x000000006ffffffe (VERNEED)            0xa28
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/dri_gbm.so
+
+Dynamic section at offset 0x2ab60 contains 26 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgallium_dri.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [dri_gbm.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x1010
+ 0x0000000000000008 (RELASZ)             31320 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          1303
+ 0x0000000000000017 (JMPREL)             0x8a68
+ 0x0000000000000002 (PLTRELSZ)           1752 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x2cd28
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x340
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0xb78
+ 0x000000000000000a (STRSZ)              1175 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0xb58
+ 0x000000000000001a (FINI_ARRAY)         0x2cb50
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0xa60
+ 0x000000006ffffffe (VERNEED)            0xaf8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/libgallium_dri.so
+
+Dynamic section at offset 0x2a878c0 contains 34 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc++.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [liblog.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libsync.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libLLVM.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libz.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm_amdgpu.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libgallium_dri.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0xae80
+ 0x0000000000000008 (RELASZ)             685464 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          28377
+ 0x0000000000000017 (JMPREL)             0xb2418
+ 0x0000000000000002 (PLTRELSZ)           16656 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x2a89d10
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x368
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x5bdc
+ 0x000000000000000a (STRSZ)              21153 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x5920
+ 0x0000000000000019 (INIT_ARRAY)         0x2a89748
+ 0x000000000000001b (INIT_ARRAYSZ)       376 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x2a89738
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x51c8
+ 0x000000006ffffffe (VERNEED)            0x5850
+ 0x000000006fffffff (VERNEEDNUM)         4
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/egl/libEGL_mesa.so
+
+Dynamic section at offset 0x5f6f0 contains 31 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgallium_dri.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libhardware.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [liblog.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libnativewindow.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libsync.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libEGL.so]
+ 0x000000000000001e (FLAGS)              SYMBOLIC BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x2918
+ 0x0000000000000008 (RELASZ)             61152 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          2542
+ 0x0000000000000017 (JMPREL)             0x117f8
+ 0x0000000000000002 (PLTRELSZ)           3888 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x61928
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x340
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x1ae0
+ 0x000000000000000a (STRSZ)              3636 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x1968
+ 0x000000000000001a (FINI_ARRAY)         0x616e0
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x1738
+ 0x000000006ffffffe (VERNEED)            0x18e4
+ 0x000000006fffffff (VERNEEDNUM)         3
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/egl/libGLESv1_CM_mesa.so
+
+Dynamic section at offset 0x5e38 contains 24 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgallium_dri.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libGLESv1_CM.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x1f40
+ 0x0000000000000008 (RELASZ)             120 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000017 (JMPREL)             0x1fb8
+ 0x0000000000000002 (PLTRELSZ)           96 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x7fd8
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x2d0
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x163c
+ 0x000000000000000a (STRSZ)              2307 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x1258
+ 0x000000000000001a (FINI_ARRAY)         0x7e28
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x10f8
+ 0x000000006ffffffe (VERNEED)            0x1228
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/egl/libGLESv2_mesa.so
+
+Dynamic section at offset 0xf678 contains 24 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libgallium_dri.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libGLESv2.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x4e40
+ 0x0000000000000008 (RELASZ)             120 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000017 (JMPREL)             0x4eb8
+ 0x0000000000000002 (PLTRELSZ)           96 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x11818
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x2d0
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x3304
+ 0x000000000000000a (STRSZ)              6966 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x27f8
+ 0x000000000000001a (FINI_ARRAY)         0x11668
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x24f0
+ 0x000000006ffffffe (VERNEED)            0x27c8
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/libLLVM.so
+
+Dynamic section at offset 0x55b9678 contains 30 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc++.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libLLVM.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x48e920
+ 0x0000000000000008 (RELASZ)             2123256 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          83043
+ 0x0000000000000017 (JMPREL)             0x694f18
+ 0x0000000000000002 (PLTRELSZ)           7752 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x55c31c0
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x368
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x14eb60
+ 0x000000000000000a (STRSZ)              3407292 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x10bb70
+ 0x0000000000000019 (INIT_ARRAY)         0x55ba760
+ 0x000000000000001b (INIT_ARRAYSZ)       3864 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x55ba750
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0xf7178
+ 0x000000006ffffffc (VERDEF)             0x10baa4
+ 0x000000006ffffffd (VERDEFNUM)          2
+ 0x000000006ffffffe (VERNEED)            0x10badc
+ 0x000000006fffffff (VERNEEDNUM)         3
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/libdrm.so
+
+Dynamic section at offset 0x15dc0 contains 23 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libdrm.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x3630
+ 0x0000000000000008 (RELASZ)             1992 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          82
+ 0x0000000000000017 (JMPREL)             0x3df8
+ 0x0000000000000002 (PLTRELSZ)           2040 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x17f38
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x308
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x25b8
+ 0x000000000000000a (STRSZ)              4209 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x1f80
+ 0x000000000000001a (FINI_ARRAY)         0x17db0
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x1d30
+ 0x000000006ffffffe (VERNEED)            0x1f60
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/libdrm_amdgpu.so
+
+Dynamic section at offset 0x9bc8 contains 24 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libdrm_amdgpu.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x2298
+ 0x0000000000000008 (RELASZ)             96 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          3
+ 0x0000000000000017 (JMPREL)             0x22f8
+ 0x0000000000000002 (PLTRELSZ)           1752 (bytes)
+ 0x0000000000000003 (PLTGOT)             0xbd60
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x308
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x162c
+ 0x000000000000000a (STRSZ)              3180 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x1350
+ 0x000000000000001a (FINI_ARRAY)         0xbbb8
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x11f0
+ 0x000000006ffffffe (VERNEED)            0x1330
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/libdrm_radeon.so
+
+Dynamic section at offset 0xa0c8 contains 24 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libdrm_radeon.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x1080
+ 0x0000000000000008 (RELASZ)             528 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          21
+ 0x0000000000000017 (JMPREL)             0x1290
+ 0x0000000000000002 (PLTRELSZ)           624 (bytes)
+ 0x0000000000000003 (PLTGOT)             0xc260
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x308
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0xb7c
+ 0x000000000000000a (STRSZ)              1284 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0xa10
+ 0x000000000000001a (FINI_ARRAY)         0xc0b8
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x968
+ 0x000000006ffffffe (VERNEED)            0x9f0
+ 0x000000006fffffff (VERNEEDNUM)         1
+ 0x0000000000000000 (NULL)               0x0
+
+vendor/lib64/hw/gralloc.gbm.so
+
+Dynamic section at offset 0x55c0 contains 33 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libdrm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libgbm_mesa.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [liblog.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libcutils.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libhardware.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc++.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [gralloc.gbm.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x1568
+ 0x0000000000000008 (RELASZ)             408 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          15
+ 0x0000000000000017 (JMPREL)             0x1700
+ 0x0000000000000002 (PLTRELSZ)           1536 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x77e0
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x308
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0xae4
+ 0x000000000000000a (STRSZ)              2692 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0xa50
+ 0x0000000000000019 (INIT_ARRAY)         0x75b8
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x75a8
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x980
+ 0x000000006ffffffe (VERNEED)            0xa0c
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x0000000000000000 (NULL)               0x0

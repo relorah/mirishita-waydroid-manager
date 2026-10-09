@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+.codex/
+.agents/
+.aws/
+.DS_Store
+Thumbs.db
+mwm/logs/

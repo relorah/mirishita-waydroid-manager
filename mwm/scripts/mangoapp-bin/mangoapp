@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+set -euo pipefail
+# Gamescope overlays are X11 clients, even when the game uses its Wayland socket.
+: "${MWM_REAL_MANGOAPP:?MangoApp executable was not resolved}"
+cfg="${XDG_CONFIG_HOME:-$HOME/.config}/mwm/MangoApp.conf"
+if [[ ! -f "$cfg" ]]; then
+  mkdir -p "$(dirname "$cfg")"
+  cp "$(dirname "$0")/../../config/MangoApp.conf" "$cfg"
+fi
+# Persist the saved visibility before the client starts, including respawns.
+mode="$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/performance-overlay-mode" 2>/dev/null || printf off)"
+visibility=1
+[[ "$mode" != mangoapp ]] || visibility=0
+temp="$(mktemp "${cfg}.start.XXXXXX")"
+trap 'rm -f "$temp"' EXIT
+sed '/^[[:space:]]*no_display/d' "$cfg" > "$temp"
+printf 'no_display=%s\n' "$visibility" >> "$temp"
+mv "$temp" "$cfg"
+trap - EXIT
+# Use only the MWM config.
+unset MANGOHUD_CONFIG
+export MANGOHUD_CONFIGFILE="$cfg"
+state="${XDG_STATE_HOME:-$HOME/.local/state}/mwm"
+mkdir -p "$state"
+if env -u WAYLAND_DISPLAY XDG_SESSION_TYPE=x11 SDL_VIDEODRIVER=x11 "$MWM_REAL_MANGOAPP" "$@"; then
+  exit 0
+else
+  rc=$?
+  printf '%s MangoApp failed rc=%s\n' "$(date --iso-8601=ns)" "$rc" >> "$state/mangoapp-failed"
+  # Avoid a tight Gamescope reaper loop if the optional overlay cannot start.
+  sleep 1
+  exit "$rc"
+fi
