@@ -5,12 +5,26 @@ source "$(dirname "$0")/common.sh"
 
 PKG="com.bandainamcoent.imas_millionlive_theaterdays"
 INTERVAL="${1:-0.2}"
+CACHE_FILE="${2:-}"
+CACHE_TMP="${CACHE_FILE:+${CACHE_FILE}.$$}"
+if [[ -n "$CACHE_FILE" ]]; then
+  mkdir -p "$(dirname "$CACHE_FILE")"
+  trap 'rm -f -- "$CACHE_TMP"' EXIT
+fi
 LAYER=""
 LAST_TS=""
 STALE_COUNT=0
 
 rh() {
   root_helper "$@" 2>/dev/null | tr -d '\r'
+}
+
+emit_metrics() {
+  printf '%s\n' "$1"
+  if [[ -n "$CACHE_FILE" ]]; then
+    printf '%s\n' "$1" > "$CACHE_TMP"
+    mv -f -- "$CACHE_TMP" "$CACHE_FILE"
+  fi
 }
 
 app_running() {
@@ -25,19 +39,19 @@ latency_for() {
 latest_ts() {
   awk '
     NR == 1 { next }
-    $1 ~ /^[0-9]+$/ && $1 > 0 { last=$1 }
+    $2 ~ /^[0-9]+$/ && $2 > 0 && $2 < 9e18 { last=$2 }
     END { if (last) print last; else print 0 }
   '
 }
 
 calc_metrics() {
-  # Output: "fps frametime_ms".  FPS uses a rolling history while frametime is
-  # the latest complete SurfaceFlinger interval, so Detailed mode can expose
-  # short pacing spikes instead of deriving 1000/FPS.
+  # Column 2 is Android actualPresentTime. Column 1 is desiredPresentTime.
+  # Ignore unsignaled fences (INT64_MAX) and average at most 30 intervals.
+  # Frametime is the latest actual presentation interval, not 1000/average FPS.
   awk '
     NR == 1 { next }
-    $1 ~ /^[0-9]+$/ && $1 > 0 {
-      v=$1+0
+    $2 ~ /^[0-9]+$/ && $2 > 0 && $2 < 9e18 {
+      v=$2+0
       if (n == 0 || v > t[n]) t[++n]=v
     }
     END {
@@ -73,9 +87,15 @@ find_layer() {
 }
 
 while true; do
+  # An attached but hidden MangoApp must not duplicate the MWM HUD collector.
+  if [[ -n "$CACHE_FILE" ]] && [[ "$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/performance-overlay-mode" 2>/dev/null || true)" != mangoapp ]]; then
+    emit_metrics '0.00 0.00'
+    sleep "$INTERVAL"
+    continue
+  fi
   if ! app_running; then
     LAYER=""; LAST_TS=""; STALE_COUNT=0
-    printf '0.00 0.00\n'
+    emit_metrics '0.00 0.00'
     sleep "$INTERVAL"
     continue
   fi
@@ -84,7 +104,7 @@ while true; do
     LAYER="$(find_layer)"
     LAST_TS=""; STALE_COUNT=0
     if [[ -z "$LAYER" ]]; then
-      printf '0.00 0.00\n'
+      emit_metrics '0.00 0.00'
       sleep "$INTERVAL"
       continue
     fi
@@ -96,7 +116,7 @@ while true; do
 
   if [[ "$TS" == "0" || -z "$TS" ]]; then
     LAYER=""; LAST_TS=""; STALE_COUNT=0
-    printf '0.00 0.00\n'
+    emit_metrics '0.00 0.00'
     sleep "$INTERVAL"
     continue
   fi
@@ -110,9 +130,9 @@ while true; do
 
   if (( STALE_COUNT >= 2 )); then
     LAYER=""; LAST_TS=""; STALE_COUNT=0
-    printf '0.00 0.00\n'
+    emit_metrics '0.00 0.00'
   else
-    printf '%s\n' "$METRICS"
+    emit_metrics "$METRICS"
   fi
   sleep "$INTERVAL"
 done

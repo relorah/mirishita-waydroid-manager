@@ -1,4 +1,4 @@
-# MWM 0.77 Setup Guide
+# MWM 0.80 Setup Guide
 
 MWM（Mirishita Waydroid Manager）は、Waydroidでミリシタをプレイできる環境に、RTScaleとGamescopeによる描画設定、表示設定、診断機能を追加するツールです。このガイドは独立RTScale実装版を対象とします。
 
@@ -15,7 +15,7 @@ MWMは非公式の独立プロジェクトです。各サービスの規約へ�
 
 インストーラーはホストへ依存パッケージを追加し、Waydroidの描画ファイルをoverlayとして導入します。MWMの設定反映では、Androidの表示寸法、入力、RTScale設定などを変更します。限定された管理処理を行うroot helperと、ユーザーごとのsudoers設定も導入します。
 
-RTScaleの原機能はmogareta7731氏によるものです。この版の描画payloadには、固定したMesaソースを基に再構成した独立実装を使用します。各描画部品の出典と版、バイナリのチェックサムは `payload/manifests/graphics-stack.lock` に記録し、ライセンス文は `LICENSES/` に収録しています。対応する描画ソースと再ビルド手順は準備後に追加します。
+MWMでは、mogareta7731氏が公開したRTScaleの機能とライブラリの挙動を参考に、解析・再構成してMesaへ組み込んだ独立実装を使用します。各描画部品の出典と版、バイナリのチェックサムは `payload/manifests/graphics-stack.lock` に記録し、ライセンス文は `LICENSES/` に収録しています。対応する描画ソースと再ビルド手順は準備後に追加します。
 
 ## インストール
 
@@ -131,10 +131,11 @@ GamescopeによるFSR1の拡大処理（EASU）とシャープニング（RCAS�
 | RTScale | Upscale |
 | --- | --- |
 | OFF | 125%／150%／175%／200% |
-| x1～x6 | 125%／150% |
-| x7～x10 | AMD FSR1を無効化 |
+| x1～x10 | 125%／150% |
 
 Sharpnessは1～21です。1が最小強度、21が最大強度です。変更後はApply→Start／Restartで反映します。
+
+RTScaleの倍率、FSR1のアップスケーリング倍率（EASU）、シャープニング強度（RCAS）が高い場合、描画の乱れやちらつき、フレーム落ちが発生することがあります。
 
 ## Display
 
@@ -148,7 +149,24 @@ Super（Windows）＋Fで全画面とウインドウを切り替えます。ウ�
 
 ### FPS Counter
 
-FPS CounterはOff、Minimal、Detailed、MangoAppから選択します。MinimalとDetailedはMWM HUDです。MangoAppはGamescopeが扱うカウンターです。
+FPS CounterはOff、Minimal、Detailed、MangoAppから選択します。MinimalとDetailedはMWM HUD、MangoAppはGamescope内に表示するMangoHudのカウンターです。
+
+0.80では、どの表示方式もAndroid内のミリシタ描画レイヤーを対象としたFPSを表示します。MWM HUDは直接取得し、MangoAppはMWMが取得した値を外部テキスト表示機能で読み込みます。表示の更新タイミングが異なるため、切替直後などは数値に差が出ることがあります。
+
+| 表示値 | 取得・計算方法 |
+| --- | --- |
+| FPS：Minimal／Detailed | `dumpsys SurfaceFlinger --latency` のミリシタ描画レイヤーから、実表示時刻（actualPresentTime、第2列）を取得。直近最大30フレーム間隔から更新頻度を計算します。 |
+| FPS：MangoApp | 上記と同じ計測処理の値を表示。Gamescope由来の標準FPS表示は無効にしています。 |
+| Frametime：Detailed | 上記時刻列の最後の有効な2フレームの間隔をミリ秒で表示。平均FPSの逆数とは異なります。 |
+| フレーム時間グラフ：MangoApp | GamescopeからMangoAppへ通知されるフレーム時間。Androidレイヤーを測るFPS欄とは計測箇所が異なります。 |
+| CPU／GPU：MWM HUD | ホスト全体のCPU使用率（`/proc/stat`）と、検出したAMD GPUの使用率（`gpu_busy_percent`）。ミリシタ単体の使用率ではありません。 |
+| CPU／GPU：MangoApp | MangoHudがホスト側から取得する負荷。取得方法や対象GPUはMangoHudの版と環境に依存します。 |
+
+FPSはAndroid内でのゲームレイヤーの表示更新頻度です。ミリシタ内部のレンダリング回数や、物理モニターに最終表示されたFPSを直接計測するものではありません。取得できない場合は `--.--` と表示します。
+
+0.77以前のMWM HUDは同じ時刻表の第1列（表示希望時刻）を使用し、MangoAppはGamescopeが通知する表示フレーム時間を使用していました。**従来のMWM HUDとMangoAppのFPSは別の指標であり、数値の一致は保証されません。**
+
+取得項目の意味は[AOSPのFrameTracker](https://android.googlesource.com/platform/frameworks/native/+/ee4bf4c9660809e7fb967cccfd6bdcfc67b3b113/services/surfaceflinger/FrameTracker.cpp)、MangoAppの計測・外部テキスト表示は[MangoHudの実装](https://github.com/flightlessmango/MangoHud/tree/master/src)を参照してください。
 
 MangoAppが導入済みの場合、Offで開始しても非表示のクライアントを用意し、Applyで表示を切り替えられます。既存クライアントがない場合はStart／Restartで起動し直してください。表示異常やクラッシュが起きる場合はMinimalまたはDetailedへ変更してください。
 
@@ -201,4 +219,4 @@ chmod +x uninstall.sh
 
 ## 不具合が起きた場合
 
-Applyで保存した設定を確認し、Save Diagnostic Logでログを取得してください。起動確認や描画が不安定な場合はFPS CounterをOff、RTScaleをOFF、AMD FSR1をOFFにして切り分けます。更新後の権限やhelperに関するエラーは、MWMを閉じてインストーラーを再実行してください。
+Save Diagnostic Logで診断ログを取得することができます。
