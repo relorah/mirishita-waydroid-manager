@@ -34,7 +34,14 @@ trap 'exit 130' INT
 rm -f "$state/mirishita-fps"
 "$script_dir/fps-collector.sh" 0.2 "$state/mirishita-fps" >/dev/null 2>&1 &
 collector_pid=$!
-env -u WAYLAND_DISPLAY XDG_SESSION_TYPE=x11 SDL_VIDEODRIVER=x11 "$MWM_REAL_MANGOAPP" "$@" &
+# The bundled, source-built MangoApp aligns only the FPS integer portion.
+# Keep the system executable available as a fallback; never replace it.
+mango_executable="$MWM_REAL_MANGOAPP"
+if [[ -x "$script_dir/mangoapp-native/mangoapp" ]]; then
+  mango_executable="$script_dir/mangoapp-native/mangoapp"
+  export MWM_MANGOAPP_FPS_INTEGER_ALIGN=1
+fi
+env -u WAYLAND_DISPLAY XDG_SESSION_TYPE=x11 SDL_VIDEODRIVER=x11 "$mango_executable" "$@" &
 mango_pid=$!
 if wait "$mango_pid"; then
   exit 0

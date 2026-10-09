@@ -1,3 +1,11 @@
+# 未リリース：MangoApp FPS行の修正
+
+- v0.80の幅285・高さ200・基本文字サイズ29を復元。
+- 実測FPS取得経路を維持し、`custom_text=FPS`と数値のみの`exec`でラベル／数値を別列に配置。
+- MangoHud 0.8.4のexec描画が使用する`font_size_secondary=29`を明示。
+- キャッシュ異常・鮮度、設定生成、外部コマンド実行、パスの引用を回帰テスト。
+- BC250での表示・切替・Verify ON/OFFは未検証。バージョン変更・push・Releaseなし。
+
 # MWM 0.82
 
 ## 0.82：MangoAppレイアウトを0.80系へ寄せる（実機検証待ち）
@@ -53,3 +61,15 @@ Linux runtime verification pending.
 Successful automatic launch minimizes MWM without a completion popup. Manual mode and failure notifications are retained.
 
 Independent RTScale test: source-built graphics stack, preserving0.75.2 application changes. Not a full equivalence claim or public release.
+
+
+追補：画像で文字サイズ・欠けの改善を確認。表示順はv0.80以前のGPU→CPU→FPS→グラフへ復元。
+
+
+FPS途切れ対策：MangoHud 0.8.4のShell::readOutputは50ms後に非同期出力を読む。Python起動が遅れると空文字でFPS欄を上書きするため、execの読込を軽量Bashスクリプトmangoapp-fps-text.shへ変更。計測・キャッシュ生成は変更なし。開いたファイルの鮮度（2秒）と0超240以下の値を検証する。Bash 5とGNU statが必要（CachyOS対象）。50ms読込検証30回で空出力0回、回帰テスト4件通過。shellcheckは環境に未導入。実画面の連続動作は要確認。
+
+
+起動待機の案内を「ミリシタが起動するまでお待ちください。」に変更。CPU/GPUはMWM HUDが小数点1桁、MangoHud 0.8.4標準欄は整数。FPSは実測値を小数点2桁で表示し、欠損・期限切れ時は--.--。
+
+
+FPSの整数部分の右端をCPU/GPUの数値へ揃えるため、MWM専用のMangoApp v0.8.4ビルドを同梱。小数部分は右へ続けて描画します。システム版は置換しません。実フォントの座標テスト（9.99／60.00／120.00／240.00／--.--）通過。ソース・ライセンス・ビルド情報は`mwm/vendor/mangoapp/BUILD.md`参照。実測FPS取得とCPU/GPU整数表示は維持。実画面の確認は未完了。

@@ -245,3 +245,33 @@ BC250で最小設定によるFPS表示は確認しましたが、CPU/GPU項目�
 ### v0.82 表示レイアウト
 
 MangoAppのレイアウトをv0.80に近づけるため固定領域（320×230）と3列配置を再導入し、文字サイズを24に設定しました。FPSはAndroid実測値を`exec`で表示します。実機での文字位置・重なりは未検証です。
+
+
+## MangoAppレイアウト修正（未リリース）
+
+v0.80の幅285・高さ200・基本文字サイズ29・3列を復元します。`legacy_layout=0`は実測FPSの外部表示に必要なため維持します。FPS行は`custom_text=FPS`と直後の`exec`に分け、ラベルを第1列、実測数値を第2列へ配置します。CPU/GPUとGamescopeのフレーム時間グラフは維持します。
+
+MangoHud **v0.8.4**の`HudElements::_exec()`と`custom_text()`は`font_secondary`を使用します。未指定時は通常`font_size`の0.55倍で、`font_size_text`はこの表示に適用されません。このため`font_size_secondary=29`を明示します。`exec`は次の列に進み、4文字相当の幅を基準に右揃えします。「FPS 60.06」全体を第1列へ置くと左側にはみ出し得るため、外部コマンドは数値のみを出力します。
+
+根拠：[hud_elements.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/hud_elements.cpp)、[overlay.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/overlay.cpp)、[overlay_params.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/overlay_params.cpp)、[font.cpp](https://github.com/flightlessmango/MangoHud/blob/v0.8.4/src/font.cpp)。調査した上流コミットは`992103e4fb744897826de04ea00a2f71e7018214`。CachyOSの配布パッチ差分は未確認です。
+
+設定生成・キャッシュ値／鮮度・実際の外部コマンド起動は`python3 -m unittest discover -s tests -v`で検証できます。BC250での描画は未検証です。以下の実機確認を行うまでは見た目の修正完了とは扱いません。
+
+1. 元のインストール内の`config/MangoApp.conf`と`scripts/mangoapp_fps.py`をバックアップし、両方を同時に更新する。
+2. MWMをStart／Restartし、FPSラベルと数値が同じ行・同じ文字サイズで見えること、CPU/GPUとグラフに重ならないことを確認する。起動後の`~/.config/mwm/MangoApp.conf`で`custom_text=FPS`と`font_size_secondary=29`を確認する。
+3. `~/.local/state/mwm/mirishita-fps`の値とFPS欄が更新されることを確認する（XDG_STATE_HOME設定時はその場所を使う）。停止・取得失敗では`--.--`となり、Gamescope FPSへ切り替わらないことを確認する。
+4. Off→MangoApp、再起動、Verify Waydroid Startup ON/OFFを確認する。異常があればバックアップした2ファイルを戻して再起動する。
+
+FPS取得経路（Androidレイヤー→fps-collector.sh→mirishita-fps→mangoapp_fps.py）は変更しません。グラフの測定元はGamescopeのままです。BC250のGPU使用率655%などは今回の表示修正の対象外です。
+
+
+追補：画像で文字サイズ・欠けの改善を確認。表示順はv0.80以前のGPU→CPU→FPS→グラフへ復元。
+
+
+FPS途切れ対策：MangoHud 0.8.4のShell::readOutputは50ms後に非同期出力を読む。Python起動が遅れると空文字でFPS欄を上書きするため、execの読込を軽量Bashスクリプトmangoapp-fps-text.shへ変更。計測・キャッシュ生成は変更なし。開いたファイルの鮮度（2秒）と0超240以下の値を検証する。Bash 5とGNU statが必要（CachyOS対象）。50ms読込検証30回で空出力0回、回帰テスト4件通過。shellcheckは環境に未導入。実画面の連続動作は要確認。
+
+
+起動待機の案内を「ミリシタが起動するまでお待ちください。」に変更。CPU/GPUはMWM HUDが小数点1桁、MangoHud 0.8.4標準欄は整数。FPSは実測値を小数点2桁で表示し、欠損・期限切れ時は--.--。
+
+
+FPSの整数部分の右端をCPU/GPUの数値へ揃えるため、MWM専用のMangoApp v0.8.4ビルドを同梱。小数部分は右へ続けて描画します。システム版は置換しません。実フォントの座標テスト（9.99／60.00／120.00／240.00／--.--）通過。ソース・ライセンス・ビルド情報は`mwm/vendor/mangoapp/BUILD.md`参照。実測FPS取得とCPU/GPU整数表示は維持。実画面の確認は未完了。

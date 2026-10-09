@@ -22,15 +22,15 @@ def fps_text(cache=None, now=None):
             values = stream.read().split()
         fps = float(values[0])
         if not (0 <= age <= 2 and math.isfinite(fps) and 0 < fps <= 240):
-            return "FPS --.--"
-        return f"FPS {fps:.2f}"
+            return "--.--"
+        return f"{fps:.2f}"
     except (OSError, ValueError, IndexError):
-        return "FPS --.--"
+        return "--.--"
 
 
 def render_config(visible):
     text = (ROOT / "config/MangoApp.conf").read_text(encoding="utf-8")
-    command = shlex.join([sys.executable, str(Path(__file__).resolve())])
+    command = shlex.join(["/bin/bash", str(Path(__file__).resolve().with_name("mangoapp-fps-text.sh"))])
     text = text.replace("@MWM_GAME_FPS@", command)
     lines = [line for line in text.splitlines() if not line.strip().startswith("no_display")]
     return "\n".join(lines) + f"\nno_display={0 if visible else 1}\n"

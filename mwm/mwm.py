@@ -71,7 +71,7 @@ class PreparationDialog(QDialog):
         layout = QVBoxLayout(self)
         label = QLabel("Waydroidの準備が完了するまでお待ちください。\n\n"
                        "Androidの起動、解像度の確認、保存設定の反映を行っています。\n"
-                       "準備が完了するまでミリシタを起動しないでください。")
+                       "ミリシタが起動するまでお待ちください。")
         label.setWordWrap(True)
         layout.addWidget(label)
         self.resize(440, 170)
