@@ -146,7 +146,6 @@ read_fsr_scale() {
   [[ "$enabled" == on ]] || { printf '100\n'; return; }
   [[ -f "$FSR_SCALE_FILE" ]] && v="$(tr -d '[:space:]' < "$FSR_SCALE_FILE" 2>/dev/null || true)"
   case "$v" in 125|150|175|200) ;; *) v=150 ;; esac
-  if [[ "$(read_render_mode)" == rtscale ]] && [[ "$v" == 175 || "$v" == 200 ]]; then v=150; fi
   printf '%s\n' "$v"
 }
 

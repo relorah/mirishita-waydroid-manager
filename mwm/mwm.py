@@ -223,6 +223,8 @@ class MainWindow(QMainWindow):
         self.gamescope_fsr_scale = QComboBox()
         self.gamescope_fsr_scale.addItem("125%", 125)
         self.gamescope_fsr_scale.addItem("150%", 150)
+        self.gamescope_fsr_scale.addItem("175%", 175)
+        self.gamescope_fsr_scale.addItem("200%", 200)
         self.gamescope_fsr_scale.currentIndexChanged.connect(self.update_gamescope_sharpness_label)
         self.gamescope_fsr_sharpness_enabled = QCheckBox("FSR Sharpness")
         self.gamescope_fsr_sharpness_enabled.setChecked(False)
@@ -630,9 +632,8 @@ class MainWindow(QMainWindow):
         if not hasattr(self, "backend"):
             return
         is_kwin = self.backend.currentData() == "kwin"
-        is_rtscale = self.selected_render_mode() == "rtscale"
         current = int(self.gamescope_fsr_scale.currentData() or 150)
-        values = (125, 150) if is_rtscale else (125, 150, 175, 200)
+        values = (125, 150, 175, 200)
         self.gamescope_fsr_scale.blockSignals(True)
         self.gamescope_fsr_scale.clear()
         for value in values:

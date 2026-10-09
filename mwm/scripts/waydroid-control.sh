@@ -338,6 +338,29 @@ auto_start_after_refresh() {
   echo "Mirishita: PID confirmed / short startup observation complete"
 }
 
+stop_mirishita_for_refresh() {
+  local query i
+  refresh_phase "Stopping Mirishita..."
+  # Called before creating the early-launch guard: this is an intentional stop.
+  if ! root_helper force-stop-app; then
+    echo "Could not stop Mirishita. Settings have not been applied." >&2
+    return 4
+  fi
+  for i in {1..20}; do
+    if ! query="$(root_helper game-process-state)" ||
+       ! grep -qx MWM_PID_QUERY_OK <<< "$query"; then
+      echo "Could not verify Mirishita stopped. Settings have not been applied." >&2
+      return 78
+    fi
+    if [[ -z "$(grep -v '^MWM_PID_QUERY_OK$' <<< "$query" | tr -d '[:space:]')" ]]; then
+      return 0
+    fi
+    sleep 0.25
+  done
+  echo "Mirishita is still running. Settings have not been applied." >&2
+  return 4
+}
+
 try_rts_fast_refresh() {
   local helper="$(dirname "$0")/rts-fast-state.py" old_config actual i
   LC_ALL=C waydroid status | grep -Eq 'Session:[[:space:]]*RUNNING' || return 10
@@ -348,10 +371,7 @@ try_rts_fast_refresh() {
   [[ -f "$old_config" ]] || return 10
   actual="$(root_helper rtscale-read)" || return 10
   [[ "$actual" == "$(cat "$old_config")" ]] || return 10
-  if mirishita_running; then
-    echo "Close Mirishita before Waydroid Refresh to change the RTScale multiplier." >&2
-    return 75
-  fi
+  stop_mirishita_for_refresh || return $?
   printf '%s RTScale fast Refresh started\n' "$(date --iso-8601=ns)" >> "${XDG_STATE_HOME:-$HOME/.local/state}/mwm/refresh-events.log"
   refresh_phase "Applying RTScale multiplier..."
   # Do not stop Android/compositor. Refuse early launch throughout the write.

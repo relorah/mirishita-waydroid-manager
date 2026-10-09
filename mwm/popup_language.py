@@ -1,5 +1,10 @@
 """Locale-aware user messages; keep technical diagnostic output unchanged."""
 TRANSLATIONS = {
+ 'Could not stop Mirishita. Settings have not been applied.':'ミリシタを終了できなかったため、設定の反映を中止しました。',
+ 'Could not verify Mirishita stopped. Settings have not been applied.':'ミリシタの終了を確認できなかったため、設定の反映を中止しました。',
+ 'Mirishita is still running. Settings have not been applied.':'ミリシタが終了しなかったため、設定の反映を中止しました。',
+ 'Stopping Mirishita...':'ミリシタを終了しています…',
+ 'Close Mirishita before Waydroid Refresh to change the RTScale multiplier.':'RTScaleの倍率を変更するには、ミリシタを終了してからStart／Restartを押してください。',
  'Uninstall MWM':'MWMのアンインストール', 'Waydroid Refresh':'Waydroidの再起動',
  'Backend mismatch':'描画環境の確認エラー', 'Detect Running Game':'起動中ゲームの検出',
  'Diagnostic Log':'診断ログ', 'RTScale Debug':'RTScaleの診断',
