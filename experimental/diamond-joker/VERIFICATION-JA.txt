@@ -1,0 +1,68 @@
+MWM Diamond Joker 実機検証・修正候補記録（中間保存）
+2026-10-13 / RX 9060 XT 8GB / RTScale x6 / FSR150
+
+状態：未完了。実行枠使用量上限のため中断。5時間枠2回の依頼を完遂した記録ではありません。
+元設定・元描画ライブラリ・helper・設定スクリプトへ復元済み。ゲームデータ削除・初期化なし、Release公開なし。
+
+1. 保全・正本
+main 2bca8b06762d7b13d5861618d3facd0262aa088e をfetch確認。AGENTS.mdとライセンス確認。
+元MWM作業ツリーはclean、未pushコミットなし。Mesa関連リポジトリもclean。
+設定、インストール全体、Git bundles、元描画ライブラリをwork/preservationに保全。
+作業ブランチ investigate/diamond-joker。対応RTScale統合済みソースとビルド環境をローカルで回収。
+MWM MIT、復元RTScale 0BSD、Mesaファイル別通知、LLVM Apache/例外、静的libelf LGPL3。
+ZIPには対応ソース・追加パッチ・ビルド/再リンク手順・通知を含める。
+
+2. 測定方法と限界
+同じDiamond Joker MV、同じユニット・衣装・3D高画質、各180秒採取、開始後20–145秒を集計。
+FPSはSurfaceFlinger actualPresentTime由来のゲーム短窓平均。raw present間隔を重複排除して分析。
+MangoAppグラフはGamescope側のフレーム時間。ゲームGPU実行時間そのものとは区別。
+GPU/VRAM/GTT/温度/電力/CPU/システムメモリとDRM fdinfoを採取。raw JSONLを同梱。
+性能採取中はビルド、連続スクリーンショット、診断GPU queryを併走しない。
+診断専用計測は性能比較とは別。
+実描画ゲーム・両Gamescope・MangoAppはRX9060XT renderD128、PCI03:00.0。
+HUD GPU0=RX9060XT、GPU1=内蔵610M renderD129/PCI0f:00.0。GPU取り違えは見つからない。
+
+3. 同一MVの性能
+x6-fsr150-summary.json: FPS平均58.544, 最低44.16; present p99 33.324ms, 最大46.002ms; GPU平均87.66%, VRAM最大4.717GiB
+x6-fsr150-run2-summary.json: FPS平均58.745, 最低41.45; present p99 33.338ms, 最大47.064ms; GPU平均88.01%, VRAM最大4.639GiB
+x6-no-fsr-summary.json: FPS平均59.613, 最低50.00; present p99 26.412ms, 最大45.538ms; GPU平均86.39%, VRAM最大4.452GiB
+x3-no-fsr-summary.json: FPS平均60.000, 最低60.00; present p99 16.683ms, 最大20.656ms; GPU平均26.91%, VRAM最大1.976GiB
+x3-fsr150-summary.json: FPS平均59.987, 最低59.50; present p99 20.722ms, 最大21.974ms; GPU平均27.43%, VRAM最大2.152GiB
+clean-storage2-x6-fsr150-run1-summary.json: FPS平均59.988, 最低59.51; present p99 20.768ms, 最大21.285ms; GPU平均61.99%, VRAM最大3.452GiB
+
+4. 原因と修正候補
+元x6ではGPU飽和と低下が一致。x3は60FPS、FSRを外してもx6に最低50FPSの低下が残る。
+VRAM最大約4.7GiB/実容量約7.95GiBで、VRAM容量枯渇の証拠はない。
+診断queryで7680x4320の4サンプルMSAA描画先・resolve・光源/ポスト処理を確認。
+x6全画面MSAAと演出描画のGPU負荷が低下の主因。単一シェーダーや帯域/演算の比率までは特定していない。
+opt-in msaa_samples=2：拡大対象MSAA描画先の物理サンプルのみ2へ減らす。
+4-index色/深度fetchは実サンプル数が2の場合だけ0,1,0,1へ写像し範囲外読みを防ぐ。
+GLES advertised limitsは変えない。未設定/default0は元の挙動。AA品質が変わるため同画質修正とは称さない。
+クリーンradeonsi専用ビルドでMV平均59.988/最低59.51、GPU平均61.99%、VRAM最大3.45GiB。
+最終11-driverビルドSHA256 9e149410493b09e8c7ae757b1a667e258e7b14cf8d43e574cb7fe155432ad8bf。
+この最終ビルドは自作GLESプローブで実機PASS、ゲーム起動と4人場面確認済みだが、最終ビルドでのMV性能採取は未完了。
+したがってZIPは検証済みの要素と未確認事項を含む実験候補であり、最終修正/全面検証済みとは扱わない。
+
+5. 光源がキャラへ被る問題（ユーザー指定のサビ直後4人カット）
+添付画像と同じ停止フレームを実機で保存した。顔の上側へ黄白色の強い光が重なっている。
+現在のMSAA2最終候補でも現象が残る。性能候補はこの問題を解決していない。
+先に比較したRGB残像/別カットが等倍でも現れることは、この4人カットの正否を証明しない。
+等倍x1・元x6・候補で同一4人カットを厳密に揃えた比較は未完了。
+分割カメラ、viewport/scissor、深度/光源座標、ゲーム本来の演出との区別を次に確認する必要がある。
+
+6. 回帰・復元
+自作色/深度MSAA texture/RBOプローブ：7680x4320 sample2、FBO complete、4-index resolveと左右深度64/191 PASS。
+scale1でsample4、未設定scale6でsample4の回帰PASS（RBO追加前プローブ）。
+helperオフライン5ケース、config parser7ケース、bash -n、git diff --check PASS。shellcheck未導入。
+旧overlayでmsaa2指定を拒否するguardを実機確認。
+candidate-control applyとrestoreを実機実行。元設定ディレクトリdiffなし、Android conf元と同一。
+復元libgallium SHAc948f8a46180779872b214f2597a36d1d0ee59abb32dc00274c0df9e57de331a。
+復元helper SHAc2c4b7fced1ce97954672baae34da8dd45495283d7845b1bd886ce7189fcd50e。
+復元set-rtscale SHA398fb2eea30dc589a03755d8e86bc4bb23280a84e0b033d2765dfefd0da61c5f。
+元x6/FSR150/ZoomFix1。追加設定rtscale-msaa-samplesは除去。debug shader dump propertyは元の空文字。
+作成した診断マーカー3個は不在確認。ゲームデータへ操作なし。
+
+7. 未確認事項
+最終11-driverビルドでMV性能反復、4人光源カットの等倍厳密比較・原因修正、他GPU/driver実機動作、長時間安定性。
+ゲームから得た私有shader/IR、ゲームデータ、APK、プラットフォーム私有バイナリは同梱しない。
+配布ビルドにはGPU診断/私有dump処理を含めない。自作プローブだけを同梱。
