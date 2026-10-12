@@ -243,13 +243,20 @@ printf "MWM_RUNTIME_OK\n"'
     ;;
   rtscale-write)
     shift
-    [[ $# -eq 3 || $# -eq 4 || $# -eq 5 ]] || { echo "usage: rtscale-write <scale> <base_width> <base_height> [surface=0|1] [zoom_fix=0|1]" >&2; exit 2; }
+    [[ $# -eq 3 || $# -eq 4 || $# -eq 5 || $# -eq 6 ]] || { echo "usage: rtscale-write <scale> <base_width> <base_height> [surface=0|1] [zoom_fix=0|1] [msaa_samples=0|2]" >&2; exit 2; }
     scale="$1"
     base_w="$2"
     base_h="$3"
     surface="${4:-1}"
     zoom_fix="${5:-1}"
+    msaa_samples="${6:-0}"
+    [[ "$msaa_samples" == 0 || "$msaa_samples" == 2 ]] || { echo "invalid MSAA sample policy" >&2; exit 2; }
+    if [[ "$msaa_samples" == 2 ]] && ! LC_ALL=C grep -aFq 'msaa_samples=%d (MWM reconstruction)' /var/lib/waydroid/overlay/vendor/lib64/libgallium_dri.so; then
+      echo "MSAA 2x requires the matching experimental Mesa overlay" >&2
+      exit 2
+    fi
     [[ "$zoom_fix" == 0 || "$zoom_fix" == 1 ]] || { echo "invalid zoom fix flag" >&2; exit 2; }
+    [[ "$msaa_samples" != 2 || "$zoom_fix" == 1 ]] || { echo "MSAA 2x requires RTScale Zoom Fix" >&2; exit 2; }
     [[ "$surface" == 0 || "$surface" == 1 ]] || { echo "invalid surface flag" >&2; exit 2; }
     [[ "$scale" =~ ^([1-9]|10)$ ]] || { echo "invalid scale" >&2; exit 2; }
     [[ "$base_w" =~ ^[0-9]+$ && "$base_h" =~ ^[0-9]+$ ]] || { echo "invalid base size" >&2; exit 2; }
@@ -268,6 +275,12 @@ texelsize=0
 zoom_fix=$zoom_fix
 EOF
 )"
+
+    # Keep legacy five-argument writes byte-compatible. The experimental policy
+    # is explicit; an absent key preserves application-requested samples.
+    if [[ $# -eq 6 ]]; then
+      conf+=$'\n'"msaa_samples=$msaa_samples"
+    fi
 
     # Create/update the file from inside Android so Android owns the path,
     # permissions and SELinux labeling. Never chown Waydroid userdata from host.
