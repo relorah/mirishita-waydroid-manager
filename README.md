@@ -39,7 +39,7 @@ Start／Restartでは実行中のミリシタを終了してから設定を反�
 - MWM HUD／MangoHud（MangoApp）
 - Mirishita Waydroid Manager（MWM）
 
-v0.83ではMangoAppの整数実測FPS・FSRサイズ補正・左右余白を整え、BC250用のGPU取得を同梱しました。ユーザーのBC250実機で最終表示とGPU取得を確認しています。詳細は[SETUP.md](SETUP.md#v083-mangoappとbc250)を参照してください。
+v0.83ではMangoAppの整数実測FPS・FSRサイズ補正・左右余白を整え、BC250用のGPU取得を同梱しました。ユーザーのBC250実機で最終表示とGPU取得を確認しています。詳細は[SETUP.md](docs/SETUP.md#v083-mangoappとbc250)を参照してください。
 
 ## テスト環境
 
@@ -52,7 +52,7 @@ v0.83ではMangoAppの整数実測FPS・FSRサイズ補正・左右余白を整�
 
 ## 導入と設定
 
-インストール、更新、各設定の使い方、バックアップとアンインストールは[SETUP.md](SETUP.md)を参照してください。
+インストール、更新、各設定の使い方、バックアップとアンインストールは[SETUP.md](docs/SETUP.md)を参照してください。
 
 ## ソースと再現手順の提供
 
