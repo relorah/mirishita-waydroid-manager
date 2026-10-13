@@ -2,7 +2,7 @@
 
 Linux環境で「アイドルマスター ミリオンライブ！ シアターデイズ（以下、ミリシタ）」を高画質で動作させるためのプロジェクトです。Waydroid上で動作するミリシタを対象に高解像度描画、画面のアスペクト比変更、マウスのタッチ入力化、FPS・CPU／GPU使用率の表示などを設定できます。
 
-本ツールは **ChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発**しています。Mesa GLES Render Scale（以下、RTScale）の技術公開と解説を行ったmogareta7731氏、Mesa・Waydroid・Gamescope・MangoHudをはじめとする上流プロジェクトの開発者に感謝します。
+本ツールは **ChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発**しています。Mesa GLES Render Scale（RTScale）の技術公開と解説を行ったmogareta7731氏、Mesa・Waydroid・Gamescope・MangoHudをはじめとする上流プロジェクトの開発者に感謝します。
 
 ## 免責事項
 
