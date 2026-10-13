@@ -27,7 +27,10 @@ PROFILES = ROOT / "config" / "game_profiles.json"
 APP_ID = "com.bandainamcoent.imas_millionlive_theaterdays"
 OBSOLETE_SETTINGS = ("gamescope-rtscale-fsr-enabled", "gamescope-window-mode", "gamescope-frame-generation", "mako-gamescope-fg.toml", "kwin-window-mode", "kwin-window-geometry", "kwin-window-state")
 try:
-    APP_VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    version_file = ROOT / "VERSION"
+    if not version_file.is_file():
+        version_file = ROOT.parent / "VERSION"
+    APP_VERSION = version_file.read_text(encoding="utf-8").strip()
 except OSError:
     APP_VERSION = "unknown"
 
