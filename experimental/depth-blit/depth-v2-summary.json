@@ -1,0 +1,15 @@
+{
+  "variant2_library_sha256": "cdf5ad1ee94bdddd1258e030c0239b894258ee2f5a64281665f53effd7ba67a2",
+  "pass_cases": 230,
+  "components": [
+    8,
+    96,
+    96,
+    12,
+    12,
+    6
+  ],
+  "deployed_library_sha256": "04c12b3cfa3c06d194f4101796d42d04de6a87e808f606c236c47e2ad9818851",
+  "binary_distributed": false,
+  "v2_game_tested": false
+}
