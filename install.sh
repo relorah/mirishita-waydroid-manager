@@ -5,7 +5,8 @@ IFS=$'\n\t'
 
 APP_ID="com.bandainamcoent.imas_millionlive_theaterdays"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-APP_VERSION="$(cat "$SCRIPT_DIR/VERSION")"
+source "$SCRIPT_DIR/mwm/config/versions.env"
+APP_VERSION="$(python -c 'import runpy,sys; print(runpy.run_path(sys.argv[1])["__version__"])' "$SCRIPT_DIR/mwm/version.py")"
 PAYLOAD="$SCRIPT_DIR/payload"
 PACKAGING="$SCRIPT_DIR/packaging"
 WD="/var/lib/waydroid"
@@ -94,6 +95,18 @@ install_packages() {
     python pyside6 gtk3 gtk-layer-shell python-gobject python-cairo polkit \
     zstd rsync gamescope qt6-tools
 
+  python - "$PYSIDE6_MIN_VERSION" <<'PY'
+import re, sys
+try:
+    import PySide6
+except ImportError:
+    sys.exit("PySide6 is unavailable after package installation")
+def parts(value):
+    return tuple(int(part) for part in re.findall(r"\d+", value)[:3])
+if parts(PySide6.__version__) < parts(sys.argv[1]):
+    sys.exit(f"PySide6 {PySide6.__version__} is older than required {sys.argv[1]}")
+PY
+
   if [[ "${XDG_CURRENT_DESKTOP:-}" == *KDE* ]] && ! command -v kdotool >/dev/null 2>&1; then
     say "Installing optional KDE Wayland window helper (kdotool)"
     if command -v paru >/dev/null 2>&1; then
@@ -149,7 +162,7 @@ backup_waydroid() {
   if (( backup_rc != 0 && backup_rc != 3 )); then
     die "Existing backup could not be verified. Installation aborted; backup retained."
   fi
-  if (( backup_rc == 3 )) && [[ -f "$APP_HOME/VERSION" ]]; then
+  if (( backup_rc == 3 )) && { [[ -f "$APP_HOME/version.py" ]] || [[ -f "$APP_HOME/VERSION" ]]; }; then
     warn "No original backup was found for this existing MWM installation."
     warn "A new backup will preserve the CURRENT Waydroid settings and MWM-modified graphics, not the original pre-install state."
     [[ -t 0 ]] || die "Run setup interactively to confirm backup of the current environment."
@@ -273,14 +286,12 @@ install_mwm_launcher() {
   # carry normalized timestamps. This prevents a stale script surviving an
   # update merely because size and mtime happen to match.
   rsync -a --delete --checksum --exclude=/logs/ --exclude=/.git/ --exclude=/.codex/ --exclude=/.agents/ --exclude=/.aws/ "$SCRIPT_DIR/mwm/" "$APP_HOME/"
-  install -m 0644 "$SCRIPT_DIR/VERSION" "$APP_HOME/VERSION"
-  cp -f "$SCRIPT_DIR/mwm/mwm.py" "$APP_HOME/MWM.py"
-  chmod +x "$APP_HOME/mwm.py" "$APP_HOME/MWM.py" "$APP_HOME/fps_overlay.py" "$APP_HOME/scripts/"*.sh "$APP_HOME/scripts/"*.py
+  chmod +x "$APP_HOME/mwm.py" "$APP_HOME/fps_overlay.py" "$APP_HOME/scripts/"*.sh "$APP_HOME/scripts/"*.py
   chmod +x "$APP_HOME/scripts/mangoapp-bin/mangoapp"
 
   cat > "$LOCAL_BIN/mwm" <<EOF2
 #!/usr/bin/env bash
-exec python "$APP_HOME/MWM.py" "\$@"
+exec python "$APP_HOME/mwm.py" "\$@"
 EOF2
   chmod +x "$LOCAL_BIN/mwm"
 

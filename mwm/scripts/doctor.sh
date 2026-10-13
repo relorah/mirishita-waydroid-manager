@@ -30,7 +30,7 @@ pass(){ echo "[PASS] $*"; }
 warn(){ echo "[WARN] $*"; }
 info(){ echo "[INFO] $*"; }
 
-version="$(cat "$MWM_DIR/VERSION" 2>/dev/null || cat "$MWM_DIR/../VERSION" 2>/dev/null || echo unknown)"
+version="$(python -c 'import runpy,sys; print(runpy.run_path(sys.argv[1])["__version__"])' "$MWM_DIR/version.py" 2>/dev/null || echo unknown)"
 echo "=== MWM v$version Doctor ==="
 echo "Source: $MWM_DIR"
 echo

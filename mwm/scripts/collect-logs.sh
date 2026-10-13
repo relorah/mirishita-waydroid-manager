@@ -27,7 +27,7 @@ file_section() {
   fi
 }
 {
-  printf 'MWM_DIAGNOSTIC format=2 version=%s collected=%s\n' "$(cat "$ROOT/VERSION")" "$(date --iso-8601=ns)"
+  printf 'MWM_DIAGNOSTIC format=2 version=%s collected=%s\n' "$(python -c 'import runpy,sys; print(runpy.run_path(sys.argv[1])["__version__"])' "$ROOT/version.py" 2>/dev/null || echo unknown)" "$(date --iso-8601=ns)"
   echo 'Command sections record collection_exit. A zero CLI exit is not proof that Android was reachable.'
   echo 'Gamescope raw lines without timestamps cannot establish ordering against other logs.'
   section 'MWM doctor' 30 "$ROOT/scripts/doctor.sh"
