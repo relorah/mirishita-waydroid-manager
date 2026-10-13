@@ -40,3 +40,7 @@ Current packaged binary SHA256:
 504b7d7e14b9234562674b7f34dece4fedf7740ed6a9aefb3132045ddd7c08af  scripts/mangoapp-native/bc250-gpu-probe
 
 The supplemental integer-alignment.patch uses zero context (apply with `git apply --unidiff-zero`); the two mwm_*.h headers are included separately. The source archive already contains all changes.
+
+## License files
+
+MangoHud: `LICENSE-MangoHud`; ImGui 1.91.6: `LICENSE-ImGui`; ImPlot 0.16: `LICENSE-ImPlot`. `implot-0.16-LICENSE.build` contains the separate Meson development team notice and is retained. Vulkan notices and `LICENSE-BC250-reference` are also retained. Notices embedded in the source archive remain intact.
