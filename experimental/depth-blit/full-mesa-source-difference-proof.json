@@ -1,0 +1,13 @@
+{
+  "base_archive_sha256": "6ddc1e4dbf0c5663d2ed70df3c6eed406211cffad6c0f406f53c2e87b236d9dd",
+  "mesa_files_checked": 11692,
+  "modified_paths": [
+    "src/mesa/src/mesa/main/blit.c",
+    "src/mesa/src/mesa/main/fbobject.c",
+    "src/mesa/src/mesa/main/gles_rtscale.h",
+    "src/mesa/src/mesa/main/gles_rtscale_config.c",
+    "src/mesa/src/mesa/main/teximage.c",
+    "src/mesa/src/mesa/main/uniform_query.cpp",
+    "src/mesa/src/mesa/state_tracker/st_program.c"
+  ]
+}
