@@ -61,7 +61,7 @@ Dynamic section at offset 0x2ab60 contains 26 entries:
 
 vendor/lib64/libgallium_dri.so
 
-Dynamic section at offset 0x2a878c0 contains 34 entries:
+Dynamic section at offset 0x2a881c0 contains 34 entries:
   Tag        Type                         Name/Value
  0x0000000000000001 (NEEDED)             Shared library: [libc++.so]
  0x0000000000000001 (NEEDED)             Shared library: [liblog.so]
@@ -82,16 +82,16 @@ Dynamic section at offset 0x2a878c0 contains 34 entries:
  0x000000006ffffff9 (RELACOUNT)          28377
  0x0000000000000017 (JMPREL)             0xb2418
  0x0000000000000002 (PLTRELSZ)           16656 (bytes)
- 0x0000000000000003 (PLTGOT)             0x2a89d10
+ 0x0000000000000003 (PLTGOT)             0x2a8a610
  0x0000000000000014 (PLTREL)             RELA
  0x0000000000000006 (SYMTAB)             0x368
  0x000000000000000b (SYMENT)             24 (bytes)
  0x0000000000000005 (STRTAB)             0x5bdc
  0x000000000000000a (STRSZ)              21153 (bytes)
  0x000000006ffffef5 (GNU_HASH)           0x5920
- 0x0000000000000019 (INIT_ARRAY)         0x2a89748
+ 0x0000000000000019 (INIT_ARRAY)         0x2a8a048
  0x000000000000001b (INIT_ARRAYSZ)       376 (bytes)
- 0x000000000000001a (FINI_ARRAY)         0x2a89738
+ 0x000000000000001a (FINI_ARRAY)         0x2a8a038
  0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
  0x000000006ffffff0 (VERSYM)             0x51c8
  0x000000006ffffffe (VERNEED)            0x5850

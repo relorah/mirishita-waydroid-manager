@@ -89,7 +89,15 @@ if [[ -f "$CFG_DIR/rtscale-zoom-fix" ]]; then
     *) echo "Invalid abnormal zoom fix setting; Apply settings again." >&2; exit 2 ;;
   esac
 fi
-written="$(root_helper rtscale-write "$VALUE" "$BASE_W" "$BASE_H" "$SURFACE" "$ZOOM_FIX")"
+# Experimental storage policy requires the matching patched Mesa candidate.
+# No file means the established five-argument path, including older helpers.
+MSAA_SAMPLES="$(cat "$CFG_DIR/rtscale-msaa-samples" 2>/dev/null || echo 0)"
+[[ "$MSAA_SAMPLES" == 0 || "$MSAA_SAMPLES" == 2 ]] || { echo "Invalid RTScale MSAA policy (allowed: 0 or 2)" >&2; exit 2; }
+args=("$VALUE" "$BASE_W" "$BASE_H" "$SURFACE" "$ZOOM_FIX")
+if [[ "$MSAA_SAMPLES" == 2 ]]; then
+  args+=(2)
+fi
+written="$(root_helper rtscale-write "${args[@]}")"
 if ! grep -qx MWM_RTSCALE_WRITTEN <<<"$written"; then
   echo "Mesa GLES Render Scale write was not confirmed inside Android. Update the MWM root helper with install.sh --update-app." >&2
   exit 1
@@ -115,5 +123,10 @@ do
     exit 1
   }
 done
+
+if [[ "$MSAA_SAMPLES" == 2 ]] && ! grep -Fqx "msaa_samples=2" <<<"$actual"; then
+  echo "RTScale MSAA policy write was not verified; update the matching candidate helper." >&2
+  exit 1
+fi
 
 echo "Mesa GLES Render Scale=${VALUE} base=${BASE_W}x${BASE_H} surface=${SURFACE} / ${BACKEND} ${RENDER_MODE} (Android-side verified)"
