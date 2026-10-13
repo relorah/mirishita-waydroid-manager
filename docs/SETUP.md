@@ -1,4 +1,4 @@
-# Mirishita Waydroid Manager (MWM) 0.83 Setup Guide
+# Mirishita Waydroid Manager (MWM) 0.84 Setup Guide
 
 MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理するツールです。
 
