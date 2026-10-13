@@ -403,11 +403,6 @@ try_rts_fast_refresh() {
   fi
   echo "Refreshed / backend=$(backend)"
   refresh_phase "Ready"
-  kill "$MWM_GUARD_PID" 2>/dev/null || true
-  wait "$MWM_GUARD_PID" 2>/dev/null || true
-  rm -f "$MWM_REFRESH_GUARD_FILE" "$MWM_REFRESH_GUARD_FILE.ready"
-  unset MWM_REFRESH_GUARD_FILE
-  trap - EXIT
   return 0
 }
 save_rts_fast_state() {
