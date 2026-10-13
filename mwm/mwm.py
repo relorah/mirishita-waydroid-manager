@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from version import __version__ as APP_VERSION
 
 from PySide6.QtCore import Qt, QThread, Signal, QTimer, QLockFile, QStandardPaths, QProcess, QLocale
 from PySide6.QtWidgets import (
@@ -26,11 +27,6 @@ SCRIPTS = ROOT / "scripts"
 PROFILES = ROOT / "config" / "game_profiles.json"
 APP_ID = "com.bandainamcoent.imas_millionlive_theaterdays"
 OBSOLETE_SETTINGS = ("gamescope-rtscale-fsr-enabled", "gamescope-window-mode", "gamescope-frame-generation", "mako-gamescope-fg.toml", "kwin-window-mode", "kwin-window-geometry", "kwin-window-state")
-try:
-    APP_VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-except OSError:
-    APP_VERSION = "unknown"
-
 KNOWN_NAMES = {
     APP_ID: "Mirishita",
     "jp.co.bandainamcoent.BNEI0242": "Deresute",

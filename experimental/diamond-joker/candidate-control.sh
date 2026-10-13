@@ -13,7 +13,7 @@ conf="${XDG_CONFIG_HOME:-$HOME/.config}/mwm"
 lib=/var/lib/waydroid/overlay/vendor/lib64/libgallium_dri.so
 helper=/usr/local/libexec/mwm-root-helper
 original=678c0b36443edc4a4a8945de98cc28040910ddce70c5e8e597e20f9900e9576b
-candidate=9e149410493b09e8c7ae757b1a667e258e7b14cf8d43e574cb7fe155432ad8bf
+candidate=04c12b3cfa3c06d194f4101796d42d04de6a87e808f606c236c47e2ad9818851
 hash() { sha256sum "$1" | cut -d ' ' -f1; }
 if [[ "$mode" == apply ]]; then
   [[ "$(hash "$lib")" == "$original" ]] || { echo "This candidate requires the verified v0.83 overlay checkpoint" >&2; exit 2; }

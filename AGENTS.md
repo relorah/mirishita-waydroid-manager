@@ -447,7 +447,7 @@ Keep the short RTScale attribution near the beginning of SETUP documentation and
 
 Primary RTScale source references should include both the Zenn and note articles listed above.
 
-Repository and packaged documentation should use the same canonical `README.md` / `SETUP.md` content where practical.
+Repository and packaged documentation should use the same canonical `README.md` / `docs/SETUP.md` content where practical.
 
 ## Git / Development Workflow
 

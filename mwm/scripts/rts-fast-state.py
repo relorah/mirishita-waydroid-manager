@@ -4,6 +4,7 @@
 import json, os, sys, subprocess
 from pathlib import Path
 from waydroid_dimensions import read_dimensions
+from version import __version__
 CFG=Path(os.environ.get("XDG_CONFIG_HOME",str(Path.home()/".config")))/"mwm"
 STATE=Path(os.environ.get("XDG_STATE_HOME",str(Path.home()/".local/state")))/"mwm/rts-fast-state.json"
 def compatible(old, value):
@@ -66,7 +67,7 @@ output_result(JSON.stringify(rows));""".replace('BACKEND',json.dumps(backend))
     # Session/compositor process identities plus host boot prevent stale PID reuse.
     fsr_enabled=(CFG/'gamescope-fsr-enabled').read_text().strip() if (CFG/'gamescope-fsr-enabled').exists() else 'off'
     fsr_profile='off' if backend=='gamescope' and int(scale)>=7 else fsr_enabled
-    return dict(version=(Path(__file__).parent.parent/'VERSION').read_text(),config=config,scale=scale,fsr_profile=fsr_profile,
+    return dict(version=__version__,config=config,scale=scale,fsr_profile=fsr_profile,
                 screens=screens,dimensions=read_dimensions(),identities=sorted(identities),
                 boot=Path('/proc/sys/kernel/random/boot_id').read_text(),runtime=runtime,surfaces=surfaces)
 def main():

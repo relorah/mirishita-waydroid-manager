@@ -49,6 +49,15 @@ int main(int argc, char **argv) {
  unsigned char left[4],right[4];glReadPixels(160,180,1,1,GL_RGBA,GL_UNSIGNED_BYTE,left);glReadPixels(480,180,1,1,GL_RGBA,GL_UNSIGNED_BYTE,right);
  printf("occluder_depth_left=%u background_depth_right=%u error=%x\n",left[1],right[1],glGetError());
  if(abs((int)left[1]-64)>2||abs((int)right[1]-191)>2)return 9;
+ const char *vfetch="#version 320 es\nprecision highp float;uniform highp sampler2DMS _VertexDepth;flat out float vd;void main(){vec2 p=vec2((gl_VertexID==1)?3.0:-1.0,(gl_VertexID==2)?3.0:-1.0);gl_Position=vec4(p,0,1);ivec2 c=ivec2(vec2(textureSize(_VertexDepth))*vec2(.25,.5));vd=texelFetch(_VertexDepth,c,2).r;}";
+ const char *vout="#version 320 es\nprecision highp float;flat in float vd;layout(location=0)out vec4 result;void main(){result=vec4(vd,0,0,1);}";
+ GLuint vsh=glCreateShader(GL_VERTEX_SHADER),fsh=glCreateShader(GL_FRAGMENT_SHADER);
+ glShaderSource(vsh,1,&vfetch,0);glCompileShader(vsh);glShaderSource(fsh,1,&vout,0);glCompileShader(fsh);
+ GLuint vp=glCreateProgram();glAttachShader(vp,vsh);glAttachShader(vp,fsh);glLinkProgram(vp);glGetProgramiv(vp,GL_LINK_STATUS,&ok);if(!ok){char log[4096];glGetProgramInfoLog(vp,4096,0,log);puts(log);return 13;}
+ glUseProgram(vp);glUniform1i(glGetUniformLocation(vp,"_VertexDepth"),1);glDrawArrays(GL_TRIANGLES,0,3);glReadPixels(160,180,1,1,GL_RGBA,GL_UNSIGNED_BYTE,left);
+ printf("vertex_msaa_sample2_depth=%u error=%x\n",left[0],glGetError());if(abs((int)left[0]-64)>2)return 14;
+
+
  glDeleteTextures(1,&color);glDeleteTextures(1,&depth);
  GLuint rb[2],rbfb;glGenRenderbuffers(2,rb);glGenFramebuffers(1,&rbfb);glBindFramebuffer(GL_FRAMEBUFFER,rbfb);
  glBindRenderbuffer(GL_RENDERBUFFER,rb[0]);glRenderbufferStorageMultisample(GL_RENDERBUFFER,4,GL_RGBA8,1280,720);

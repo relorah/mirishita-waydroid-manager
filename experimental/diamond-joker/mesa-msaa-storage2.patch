@@ -1,84 +1,33 @@
 --- a/src/mesa/main/gles_rtscale.h
 +++ b/src/mesa/main/gles_rtscale.h
-@@ -12,6 +12,7 @@
- struct rtscale_rule {
-    int scale, base_width, base_height;
-    bool surface, texelsize, zoom_fix;
+@@ -14,0 +15 @@
 +   int msaa_samples; /* 0: application requested, 2: scaled storage limit */
- };
- bool rtscale_dimensions(const struct rtscale_rule *, unsigned, int *, int *);
- bool rtscale_uniform(const struct rtscale_rule *, const char *, const float *, float *);
-@@ -23,6 +24,7 @@
- bool rtscale_renderbuffer_tracked(unsigned);
- bool rtscale_load(const char *, const char *, struct rtscale_rule *);
- const struct rtscale_rule *rtscale_current(void);
+@@ -25,0 +27 @@
 +bool rtscale_msaa_storage2(void);
- struct gl_context;
- struct gl_texture_object;
- bool rtscale_mesa_texture_attached(struct gl_context *, struct gl_texture_object *);
 --- a/src/mesa/main/gles_rtscale_config.c
 +++ b/src/mesa/main/gles_rtscale_config.c
-@@ -38,7 +38,7 @@
- bool rtscale_load(const char *path, const char *process, struct rtscale_rule *out)
- {
-    struct section list[64] = {0};
+@@ -41 +41 @@
 -   *out = (struct rtscale_rule){1, 0, 0, false, false, true};
 +   *out = (struct rtscale_rule){1, 0, 0, false, false, true, 0};
-    FILE *fp = fopen(path, "r");
-    if (!fp) return false;
-    char line[256];
-@@ -86,6 +86,7 @@
-       else if (!strcmp(key, "surface")) bit = 16;
-       else if (!strcmp(key, "texelsize")) bit = 32;
-       else if (!strcmp(key, "zoom_fix")) bit = 64;
+@@ -88,0 +89 @@
 +      else if (!strcmp(key, "msaa_samples")) bit = 128;
-       else continue;
-       if (sec->seen & bit) sec->valid = false;
-       sec->seen |= bit;
-@@ -93,7 +94,9 @@
-          if (!*value || strlen(value) >= sizeof(sec->name)) sec->valid = false;
-          else strcpy(sec->name, value);
-       } else {
+@@ -96 +97,3 @@
 -         if (!integer(value, &v) || v < (bit >= 16 ? 0 : 1) || (bit >= 16 && v > 1)) {
 +         if (!integer(value, &v) ||
 +             (bit == 128 ? (v != 0 && v != 2) :
 +              (v < (bit >= 16 ? 0 : 1) || (bit >= 16 && v > 1)))) {
-             sec->valid = false;
-             continue;
-          }
-@@ -103,6 +106,7 @@
-          if (bit == 16) sec->rule.surface = v != 0;
-          if (bit == 32) sec->rule.texelsize = v != 0;
-          if (bit == 64) sec->rule.zoom_fix = v != 0;
+@@ -105,0 +109 @@
 +         if (bit == 128) sec->rule.msaa_samples = v;
-       }
-    }
-    fclose(fp);
-@@ -123,7 +127,7 @@
-    }
-    return false;
- }
+@@ -126 +130 @@
 -static struct rtscale_rule active = {1, 0, 0, false, false, true};
 +static struct rtscale_rule active = {1, 0, 0, false, false, true, 0};
- static pthread_once_t once = PTHREAD_ONCE_INIT;
- static void initialize(void)
- {
-@@ -135,9 +139,9 @@
-    if (n) rtscale_load("/data/local/tmp/gles_rtscale.conf", process, &active);
- #ifdef __ANDROID__
-    __android_log_print(ANDROID_LOG_INFO, "MESA",
+@@ -138 +142 @@
 -                      "GLES_RTSCALE: scale=%d base=%dx%d surface=%d texelsize=%d zoom_fix=%d (MWM reconstruction)",
 +                      "GLES_RTSCALE: scale=%d base=%dx%d surface=%d texelsize=%d zoom_fix=%d msaa_samples=%d (MWM reconstruction)",
-                       active.scale, active.base_width, active.base_height,
+@@ -140 +144 @@
 -                      active.surface, active.texelsize, active.zoom_fix);
 +                      active.surface, active.texelsize, active.zoom_fix, active.msaa_samples);
- #endif
- }
- const struct rtscale_rule *rtscale_current(void)
-@@ -152,3 +156,10 @@
-       *h = (int)((uint32_t)*h * (uint32_t)r->scale);
-    }
- }
+@@ -154,0 +159,7 @@
 +
 +/* A sample limit applies only to this selected application's scaled targets. */
 +bool rtscale_msaa_storage2(void)
@@ -88,43 +37,43 @@
 +}
 --- a/src/mesa/main/teximage.c
 +++ b/src/mesa/main/teximage.c
-@@ -7162,6 +7162,9 @@
-       }
-    }
- 
+@@ -7164,0 +7165,3 @@
 +   if (rtscale_ms && samples >= 4 && rtscale_msaa_storage2())
 +      samples = 2;
 +
-    dimensionsOK = _mesa_legal_texture_dimensions(ctx, target, 0,
-          width, height, depth, 0);
- 
 --- a/src/mesa/main/fbobject.c
 +++ b/src/mesa/main/fbobject.c
-@@ -2774,6 +2774,10 @@
-                            GLsizei storageSamples)
- {
-    rb->RTScaleScaled = rtscale_renderbuffer(rtscale_current(), rb->Name, internalFormat, &width, &height);
+@@ -2776,0 +2777,4 @@
 +   if (rb->RTScaleScaled && samples >= 4 && rtscale_msaa_storage2()) {
 +      samples = 2;
 +      storageSamples = 2;
 +   }
-    const GLenum baseFormat = _mesa_base_fbo_format(ctx, internalFormat);
- 
-    assert(baseFormat != 0);
+--- a/src/mesa/main/uniform_query.cpp
++++ b/src/mesa/main/uniform_query.cpp
+@@ -0,0 +1,2 @@
++#ifdef __ANDROID__
++#endif
+@@ -1527,0 +1530,15 @@
++
++   /* Screen reciprocal dimensions and the promoted color sampler must use
++    * the same coordinate space. Preserve z: it is the camera aspect ratio,
++    * including quarter-width cameras used by the four-panel scene. */
++   float rt_pair_values[3];
++   if (count == 1 && values && basicType == GLSL_TYPE_FLOAT && src_components == 3 &&
++       uni->name.string && !strcmp(uni->name.string, "_ScreenRTSize") &&
++       uniform_rule.zoom_fix && uniform_rule.scale >= 2 &&
++       rtscale_sampler_scaled(ctx, shProg, "_ColorBuffer_TexelSize")) {
++      const float *raw = (const float *)values;
++      rt_pair_values[0] = raw[0] / uniform_rule.scale;
++      rt_pair_values[1] = raw[1] / uniform_rule.scale;
++      rt_pair_values[2] = raw[2];
++      values = rt_pair_values;
++   }
 --- a/src/mesa/state_tracker/st_program.c
 +++ b/src/mesa/state_tracker/st_program.c
-@@ -62,6 +62,7 @@
- #include "st_cb_drawpixels.h"
- #include "st_context.h"
- #include "st_program.h"
+@@ -64,0 +65 @@
 +#include "main/gles_rtscale.h"
- #include "st_atifs_to_nir.h"
- #include "st_nir.h"
- #include "st_shader_cache.h"
-@@ -1046,6 +1047,46 @@
-    return true;
- }
- 
+@@ -660,0 +662,40 @@
 +static bool
 +mwm_remap_msaa_fetch(nir_builder *b, nir_instr *instr, void *data)
 +{
@@ -165,16 +114,13 @@
 +   return true;
 +}
 +
- static struct st_fp_variant *
- st_create_fp_variant(struct st_context *st,
-                      struct gl_program *fp,
-@@ -1077,6 +1118,9 @@
-    state.report_compile_error = report_compile_error;
- 
-    bool finalize = false;
+@@ -815,0 +857,3 @@
 +   if (rtscale_msaa_storage2())
 +      NIR_PASS(finalize, state.ir.nir, nir_shader_instructions_pass, mwm_remap_msaa_fetch,
 +               nir_metadata_control_flow, NULL);
- 
-    if (fp->ati_fs) {
-       if (key->fog) {
+@@ -1048,0 +1093 @@
++
+@@ -1079,0 +1125,3 @@
++   if (rtscale_msaa_storage2())
++      NIR_PASS(finalize, state.ir.nir, nir_shader_instructions_pass, mwm_remap_msaa_fetch,
++               nir_metadata_control_flow, NULL);

@@ -70,7 +70,7 @@ def main():
     meta=load(folder)
     if identity(user)!=meta['identity']:raise RuntimeError('Existing backup belongs to a different environment')
     print('Original backup retained: '+str(folder));return
-   origin='existing-MWM' if (app/'VERSION').exists() or (WD/'overlay/vendor/lib64/egl/libEGL_mwm_iso.so').exists() else 'before-first-MWM'
+   origin='existing-MWM' if (app/'version.py').exists() or (app/'VERSION').exists() or (WD/'overlay/vendor/lib64/egl/libEGL_mwm_iso.so').exists() else 'before-first-MWM'
    temporary=slot/'baseline.incomplete'
    if temporary.exists():raise RuntimeError('Incomplete backup exists; inspect before retry')
    targeted.create(temporary,user,origin,sys.modules[__name__]);temporary.rename(folder)
