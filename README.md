@@ -12,10 +12,9 @@ MWMはWaydroidの描画ライブラリや表示・入力などを調整します
 
 ## 目的
 
-- RTScaleによる高解像度描画
-- 「3D高画質」「3D標準」モードのMV視聴に適した表示環境の構築
-- Waydroid上でのミリシタの表示・操作環境の改善
-- 描画・表示・操作設定の統合管理
+- Waydroid上のミリシタで高解像度描画を実現する
+- MVやライブの表示に合わせて画質や画面比率を調整する
+- 描画・表示・操作の設定を一元管理する
 
 ## 主な機能
 
@@ -36,8 +35,6 @@ MWMはWaydroidの描画ライブラリや表示・入力などを調整します
 - Gamescope／AMD FSR1
 - MWM HUD／MangoHud（MangoApp）
 - Mirishita Waydroid Manager（MWM）
-
-v0.83ではMangoAppの整数実測FPS・FSRサイズ補正・左右余白を整え、BC250用のGPU取得を同梱しました。ユーザーのBC250実機で最終表示とGPU取得を確認しています。詳細は[SETUP.md](docs/SETUP.md#v083-mangoappとbc250)を参照してください。
 
 ## テスト環境
 
