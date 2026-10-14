@@ -1,0 +1,17 @@
+--- a/src/mesa/main/blit.c
++++ b/src/mesa/main/blit.c
+@@ -682,6 +682,14 @@
+                            {&dstX0, &dstY0, &dstX1, &dstY1}};
+       for (unsigned f = 0; f < 2; f++) {
+          const struct gl_renderbuffer_attachment *att = &frames[f]->Attachment[BUFFER_COLOR0];
++         /* Without color storage, use an attachment selected by the mask.
++          * A missing depth attachment must not hide an available stencil. */
++         if (!att->Texture && !att->Renderbuffer &&
++             (mask & GL_DEPTH_BUFFER_BIT))
++            att = &frames[f]->Attachment[BUFFER_DEPTH];
++         if (!att->Texture && !att->Renderbuffer &&
++             (mask & GL_STENCIL_BUFFER_BIT))
++            att = &frames[f]->Attachment[BUFFER_STENCIL];
+          bool scaled = frames[f]->Name ? (att->Texture ? att->Texture->RTScaleScaled :
+                        att->Renderbuffer && att->Renderbuffer->RTScaleScaled) : rule->surface;
+          if (!scaled) continue;
