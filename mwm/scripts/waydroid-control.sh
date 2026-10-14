@@ -180,22 +180,8 @@ launch_mirishita() {
 }
 
 start_display_session() {
-  local b
-  b="$(backend)"
   python "$(dirname "$0")/kwin-fullscreen.py" stop || true
-  if [[ "$b" == gamescope ]]; then
-    "$GAMESCOPE_CTL" start 8>&- 7>&-
-    return $?
-  fi
-
-  # KWin direct path: no nested Gamescope compositor.  show-full-ui owns the
-  # normal Wayland surface and KWin presents it directly.
-  "$GAMESCOPE_CTL" stop >/dev/null 2>&1 || true
-  mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/mwm"
-  setsid waydroid show-full-ui >>"${XDG_STATE_HOME:-$HOME/.local/state}/mwm/kwin-direct.log" 2>&1 </dev/null 8>&- 7>&- &
-  disown 2>/dev/null || true
-  python "$(dirname "$0")/kwin-fullscreen.py" start 8>&- 7>&- || return $?
-  echo "KWin Direct: fullscreen monitor started"
+  "$GAMESCOPE_CTL" start 8>&- 7>&-
 }
 
 stop_display_session() {

@@ -126,17 +126,7 @@ def monitor():
 
 def main(action):
     if action=='stop': stop(); return
-    if not shutil.which('kdotool'): raise RuntimeError('kdotool is required for KWin fullscreen; install kdotool and retry')
-    if action=='wait':
-        # The wait loop retries transient property errors itself.
-        wait_ready(); return
-    if action=='run': monitor(); return
-    stop(); STATE.mkdir(parents=True,exist_ok=True)
-    with (STATE/'kwin-fullscreen.log').open('a') as log:
-        proc=subprocess.Popen([sys.executable,str(SELF),'run'],stdin=subprocess.DEVNULL,
-                              stdout=log,stderr=log,start_new_session=True)
-    time.sleep(.2)
-    if proc.poll() is not None: raise RuntimeError('KWin fullscreen monitor exited; see kwin-fullscreen.log')
+    raise RuntimeError('KWin Direct is disabled in MWM. Use Gamescope.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(); parser.add_argument('action',choices=('start','stop','wait','run'))

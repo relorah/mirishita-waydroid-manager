@@ -47,10 +47,10 @@ def descendants(pid):
     return sorted(found)
 
 
-def query(pids, target=None, geometry=None):
+def query(pids, target=None, geometry=None, span=False):
     # PID ownership avoids touching unrelated Gamescope applications.
     js = '''
-var pids = PIDS, target = TARGET, geometry = GEOMETRY;
+var pids = PIDS, target = TARGET, geometry = GEOMETRY, span = SPAN;
 var list = workspace.stackingOrder || [];
 for (var i=0; i<list.length; i++) {
  var w=list[i], cls=String(w.resourceClass || "").toLowerCase();
@@ -59,7 +59,9 @@ for (var i=0; i<list.length; i++) {
  var id=String(w.internalId);
  if (target !== null && id !== target) continue;
  if (geometry !== null) {
-   if (w.fullScreen || w.minimized) continue;
+   if (w.minimized) continue;
+   if(span) { w.fullScreen=false; w.noBorder=true; }
+   else if(w.fullScreen) continue;
    w.setMaximize(false,false);
    w.frameGeometry=geometry;
  }
@@ -71,7 +73,7 @@ for (var i=0; i<list.length; i++) {
  area:{x:a.x,y:a.y,width:a.width,height:a.height}}));
  break;
 }
-'''.replace('PIDS', json.dumps(pids)).replace('TARGET', json.dumps(target)).replace('GEOMETRY', json.dumps(geometry))
+'''.replace('PIDS', json.dumps(pids)).replace('TARGET', json.dumps(target)).replace('GEOMETRY', json.dumps(geometry)).replace('SPAN',json.dumps(span))
     try:
         result = subprocess.run(['kdotool','kwinscript','--inline',js],capture_output=True,text=True,timeout=2)
         for line in result.stdout.splitlines():
@@ -137,7 +139,9 @@ def main():
     parser.add_argument('--pid',type=int,required=True)
     parser.add_argument('--width',type=int,required=True)
     parser.add_argument('--height',type=int,required=True)
+    parser.add_argument('--span-layout',type=Path)
     args=parser.parse_args()
+    span=json.loads(args.span_layout.read_text()) if args.span_layout else None
     if not shutil.which('kdotool') or args.width<=0 or args.height<=0:
         return
     identity=process_identity(args.pid)
@@ -151,6 +155,10 @@ def main():
     try:
         while identity is not None and process_identity(args.pid)==identity:
             pids=descendants(args.pid)
+            if span is not None:
+                query(pids,geometry=span,span=True)
+                time.sleep(.35)
+                continue
             state=query(pids)
             if state:
                 key=state['id']

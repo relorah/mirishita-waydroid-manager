@@ -93,7 +93,15 @@ stop_gamescope() {
   [[ -s "$EXIT_FILE" ]] || printf '143\n' > "$EXIT_FILE"
 }
 
+gamescope_span_enabled() {
+  [[ "$(cat "$CFG_DIR/gamescope-span-enabled" 2>/dev/null || echo off)" == on ]]
+}
+
 host_screen_size() {
+  if gamescope_span_enabled; then
+    python "$(dirname "$0")/gamescope_span.py" size
+    return $?
+  fi
   local out
   out="$(QT_QPA_PLATFORM=wayland python - <<'PY' 2>/dev/null || true
 from PySide6.QtGui import QGuiApplication
@@ -185,7 +193,7 @@ gamescope_sharpness_option() {
 read_window_mode() {
   # Restore the known-working 0.5.72 Wayland presentation path. Window/fullscreen
   # switching is handled by Super+F after startup, without changing backend.
-  printf 'fullscreen\n'
+  if gamescope_span_enabled; then echo windowed; else echo fullscreen; fi
 }
 
 read_fg_mode() {
@@ -262,6 +270,9 @@ launch_outer() {
   local -a env_args=(-u MANGOHUD -u MANGOHUD_CONFIG -u MANGOAPP_MSG_TYPE -u MAKO_ENV -u MAKO_PROFILE -u DISABLE_MAKO
     "SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS=0" "SDL_VIDEODRIVER=wayland" "SDL_VIDEO_WAYLAND_WMCLASS=mwm-gamescope" "SDL_APP_ID=mwm-gamescope")
 
+  if gamescope_span_enabled; then
+    env_args+=("SDL_VIDEODRIVER=x11" "SDL_VIDEO_X11_WMCLASS=mwm-gamescope")
+  fi
   rm -f "$STATE_DIR/mangoapp-active" "$STATE_DIR/mangoapp-failed"
   local mango=off real_candidate
   # Keep MangoApp attached but hidden for MWM HUD modes, so live switching works.
@@ -314,7 +325,7 @@ start_no_fsr() {
     gamescope --backend "$(outer_backend "$fg")" --expose-wayland --keep-alive --force-windows-fullscreen
     -w "$iw" -h "$ih" -W "$ow" -H "$oh" -S fit -F linear
   )
-  [[ "$(read_window_mode)" == fullscreen ]] && args+=(-f)
+  if [[ "$(read_window_mode)" == fullscreen ]]; then args+=(-f); else args+=(-b); fi
   args+=(-- env DISABLE_MAKO=1 DISABLE_GAMESCOPE_WSI=1 ENABLE_GAMESCOPE_WSI=0 bash -c 'export WAYLAND_DISPLAY="${GAMESCOPE_WAYLAND_DISPLAY:?Gamescope Wayland socket unavailable}"; exec waydroid show-full-ui')
   write_session "$mode" "$iw" "$ih" "$ow" "$oh" 100 "$sharp_pct" "$iw" "$ih" "$pipeline" "$fg" "$overlay"
   : > "$LOG_FILE"
@@ -343,7 +354,7 @@ start_fsr_150() {
       args+=("$sharp_opt" 20)
     fi
   fi
-  [[ "$(read_window_mode)" == fullscreen ]] && args+=(-f)
+  if [[ "$(read_window_mode)" == fullscreen ]]; then args+=(-f); else args+=(-b); fi
   args+=(-- env DISABLE_MAKO=1 DISABLE_GAMESCOPE_WSI=1 ENABLE_GAMESCOPE_WSI=0 bash -c 'export WAYLAND_DISPLAY="${GAMESCOPE_WAYLAND_DISPLAY:?Gamescope Wayland socket unavailable}"; exec waydroid show-full-ui')
 
   write_session "$mode" "$iw" "$ih" "$ow" "$oh" 150 "$sharp_pct" "$tw" "$th" fsr-direct "$fg" "$overlay"
@@ -375,7 +386,7 @@ start_fsr_scaled() {
     gamescope --backend "$(outer_backend "$fg")" --expose-wayland --keep-alive --force-windows-fullscreen
     -w "$tw" -h "$th" -W "$ow" -H "$oh" -S fit -F linear
   )
-  [[ "$(read_window_mode)" == fullscreen ]] && outer+=(-f)
+  if [[ "$(read_window_mode)" == fullscreen ]]; then outer+=(-f); else outer+=(-b); fi
   outer+=(-- env SDL_VIDEODRIVER=x11 DISABLE_MAKO=1 DISABLE_GAMESCOPE_WSI=1 ENABLE_GAMESCOPE_WSI=0 bash -c 'export WAYLAND_DISPLAY="${GAMESCOPE_WAYLAND_DISPLAY:?Outer Gamescope Wayland socket unavailable}"; exec gamescope "$@"' mwm-inner)
   local -a inner=(
     --backend sdl --expose-wayland --keep-alive --force-windows-fullscreen
@@ -416,6 +427,10 @@ start_gamescope() {
   RUN_EXIT_FILE="$(mktemp "$STATE_DIR/gamescope-exit.XXXXXXXX")"
   ln -s "${RUN_EXIT_FILE##*/}" "$EXIT_FILE"
 
+  rm -f "$STATE_DIR/gamescope-span-layout.json"
+  if gamescope_span_enabled; then
+    python "$SCRIPT_DIR/gamescope_span.py" snapshot >/dev/null || return 4
+  fi
   local mode="auto" iw ih ow oh fsr_scale native_sharpness sharp_pct fg overlay render_mode
   [[ -f "$ASPECT_FILE" ]] && mode="$(tr -d '[:space:]' < "$ASPECT_FILE" 2>/dev/null || true)"
   [[ -z "${MWM_ASPECT_MODE_OVERRIDE:-}" ]] || mode="$MWM_ASPECT_MODE_OVERRIDE"
@@ -463,7 +478,9 @@ start_gamescope() {
     tail -100 "$LOG_FILE" >&2 || true
     return 1
   fi
-  setsid python3 "$SCRIPT_DIR/gamescope-window-fit.py" --pid "$pid" --width "$iw" --height "$ih" >>"$STATE_DIR/gamescope-window-fit.log" 2>&1 </dev/null 9>&- 8>&- 7>&- &
+  local -a fit_args=()
+  if gamescope_span_enabled; then fit_args+=(--span-layout "$STATE_DIR/gamescope-span-layout.json"); fi
+  setsid python3 "$SCRIPT_DIR/gamescope-window-fit.py" "${fit_args[@]}" --pid "$pid" --width "$iw" --height "$ih" >>"$STATE_DIR/gamescope-window-fit.log" 2>&1 </dev/null 9>&- 8>&- 7>&- &
 
   if [[ "$fsr_scale" == 100 ]]; then
     if [[ "$render_mode" == rtscale ]]; then

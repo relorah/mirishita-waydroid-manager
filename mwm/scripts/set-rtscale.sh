@@ -23,6 +23,10 @@ resolve_base() {
       echo "RTScale: Gamescope display size unavailable or invalid (${w}x${h}); Refresh must apply Display first." >&2
       return 1
     fi
+    if gamescope_span_enabled && [[ -f "$CFG_DIR/gamescope-span-rts-base.json" ]]; then
+      python "$(dirname "$0")/gamescope_span.py" rts-base "$w" "$h"
+      return $?
+    fi
     # RTScale matches the game's 720-high render targets, even though the
     # Android/Gamescope display is 1080-high (known-working checkpoint).
     w=$(( (10#$w * 720 + 540) / 1080 ))

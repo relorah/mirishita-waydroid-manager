@@ -86,3 +86,7 @@ refresh_phase() {
 read_waydroid_dimension() {
   python "$MWM_DIR/scripts/waydroid_dimensions.py" "$1"
 }
+
+gamescope_span_enabled() {
+  [[ "$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/gamescope-span-enabled" 2>/dev/null || echo off)" == on ]]
+}

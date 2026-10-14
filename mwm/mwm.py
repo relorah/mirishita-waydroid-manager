@@ -299,6 +299,14 @@ class MainWindow(QMainWindow):
         dgrid.addWidget(QLabel("FPS Counter"), 1, 0)
         dgrid.addWidget(self.overlay_mode, 1, 1, 1, 3)
 
+        self.span_displays = QCheckBox("Span Displays (Experimental)")
+        self.span_displays.setToolTip("Present Gamescope across all enabled displays using the current desktop layout. Auto follows their combined aspect ratio.")
+        try:
+            self.span_displays.setChecked((self.config_dir() / "gamescope-span-enabled").read_text().strip() == "on")
+        except FileNotFoundError:
+            pass
+        dgrid.addWidget(self.span_displays, 3, 0, 1, 4)
+
         self.custom_w_label = QLabel("Width")
         self.custom_w = QSpinBox()
         self.custom_w.setRange(320, 7680)
@@ -484,6 +492,7 @@ class MainWindow(QMainWindow):
         if aspect == "custom":
             aspect = f"{self.custom_w.value()}x720"
         expected = {
+            "gamescope-span-enabled": "on" if self.span_displays.isChecked() else "off",
             "rtscale-zoom-fix": "on" if self.zoom_fix.isChecked() else "off",
             "display-backend": str(self.backend.currentData()),
             "gamescope-render-mode": self.selected_render_mode(),
@@ -508,6 +517,8 @@ class MainWindow(QMainWindow):
                 saved = None
             if name in ("rtscale-zoom-fix", "auto-start-mirishita", "verify-waydroid-startup") and saved is None:
                 saved = "on"  # Backward-compatible default, no silent write.
+            if name == "gamescope-span-enabled" and saved is None:
+                saved = "off"
             if saved != value:
                 changed.append(name)
         for obsolete in OBSOLETE_SETTINGS:
@@ -763,7 +774,7 @@ class MainWindow(QMainWindow):
     def current_settings_snapshot(self):
         return (
             self.backend.currentIndex(), self.backend.currentData(), self.selected_render_mode(), self.scale.currentData(),
-            self.aspect.currentData(), int(self.custom_w.value()),
+            self.aspect.currentData(), int(self.custom_w.value()), self.span_displays.isChecked(),
             int(self.gamescope_fsr_scale.currentData()), int(self.gamescope_sharpness.value()),
             bool(self.gamescope_fsr_sharpness_enabled.isChecked()), bool(self.rtscale_fsr_enabled.isChecked()),
             self.overlay_mode.currentData(), bool(self.fake_touch.isChecked()), bool(self.zoom_fix.isChecked()), bool(self.auto_start.isChecked()), bool(self.verify_startup.isChecked()), bool(self.cas_enabled.isChecked()), int(self.cas_strength.value()),
@@ -823,6 +834,7 @@ class MainWindow(QMainWindow):
         )
         if answer != QMessageBox.StandardButton.Yes:
             return
+        self.span_displays.setChecked(False)
         self._reset_requested = True
         self.verify_startup.setChecked(True)
         self.auto_start.setChecked(True)
@@ -863,6 +875,7 @@ class MainWindow(QMainWindow):
             "gamescope-cas-enabled": "off",
             "gamescope-cas-strength": str(self.cas_strength.value()),
                 "mouse-as-touch": "on" if self.fake_touch.isChecked() else "off",
+                "gamescope-span-enabled": "on" if self.span_displays.isChecked() else "off",
                 "rtscale-zoom-fix": "on" if self.zoom_fix.isChecked() else "off",
                 "performance-overlay-mode": str(self.overlay_mode.currentData()),
                 "auto-start-mirishita": "on" if self.auto_start.isChecked() else "off",

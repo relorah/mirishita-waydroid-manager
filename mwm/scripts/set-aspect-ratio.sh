@@ -12,6 +12,10 @@ BACKEND=gamescope
 case "$BACKEND" in kwin|gamescope) ;; *) echo "Invalid display backend: $BACKEND" >&2; exit 2 ;; esac
 
 host_screen_size() {
+  if gamescope_span_enabled; then
+    python "$(dirname "$0")/gamescope_span.py" size
+    return $?
+  fi
   local out
   out="$(QT_QPA_PLATFORM=wayland python - <<'PY' 2>/dev/null || true
 from PySide6.QtGui import QGuiApplication

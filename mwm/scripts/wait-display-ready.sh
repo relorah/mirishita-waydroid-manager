@@ -16,6 +16,9 @@ for ((attempt=0; attempt<40; attempt++)); do
     ((stable+=1))
     if (( stable >= 4 )); then
       refresh_guard || exit $?
+      if gamescope_span_enabled; then
+        python "$(dirname "$0")/gamescope_span.py" wait || exit 4
+      fi
       echo "Display READY: ${w}x${h} / Android geometry stable"
       exit 0
     fi

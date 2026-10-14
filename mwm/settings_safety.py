@@ -4,8 +4,9 @@ from pathlib import Path
 from contextlib import contextmanager
 
 CHOICES = {
+ 'gamescope-span-enabled': {'on','off'},
  'verify-waydroid-startup': {'on','off'},
- 'display-backend': {'gamescope','kwin'}, 'gamescope-render-mode': {'fsr','rtscale'},
+ 'display-backend': {'gamescope'}, 'gamescope-render-mode': {'fsr','rtscale'},
  'rtscale-zoom-fix': {'on','off'}, 'gamescope-fsr-enabled': {'on','off'},
  'gamescope-fsr-sharpness-enabled': {'on','off'}, 'mouse-as-touch': {'on','off'},
  'auto-start-mirishita': {'on','off'}, 'performance-overlay-mode': {'off','minimal','detailed','mangoapp'},
