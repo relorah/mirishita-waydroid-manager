@@ -1,9 +1,10 @@
 format = 1
-status = "diamond-joker-real-machine-verified-amd-candidate"
+status = "diamond-joker-and-depth-blit-real-machine-verified-amd-candidate"
 target = "Waydroid Android 11 x86_64 / API 30"
 sources_archive = "sources/graphics-sources.tar.zst"
 local_patch = "experimental/diamond-joker/mesa-msaa-storage2.patch"
-source_provenance = "experimental/diamond-joker/README.md"
+additional_local_patch = "experimental/depth-blit/mesa-depth-only-blit.patch"
+source_provenance = "experimental/depth-blit/README.md"
 donor_equivalence = "independent reconstruction, not bit-identical ISO rebuild"
 gallium_drivers = "radeonsi,iris,crocus,r300,r600,nouveau,svga,virgl,softpipe,llvmpipe,zink"
 
@@ -37,7 +38,7 @@ files = ["vendor/lib64/libgallium_dri.so", "vendor/lib64/egl/libEGL_mesa.so", "v
 
 [[binary]]
 path = "vendor/lib64/libgallium_dri.so"
-sha256 = "04c12b3cfa3c06d194f4101796d42d04de6a87e808f606c236c47e2ad9818851"
+sha256 = "cdf5ad1ee94bdddd1258e030c0239b894258ee2f5a64281665f53effd7ba67a2"
 soname = "libgallium_dri.so"
 needed = ["libc++.so", "liblog.so", "libsync.so", "libdrm.so", "libLLVM.so", "libz.so", "libm.so", "libdrm_amdgpu.so", "libdl.so", "libc.so"]
 

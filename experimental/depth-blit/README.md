@@ -1,4 +1,4 @@
-# Experimental RTScale depth-only framebuffer blit correction
+# RTScale depth/stencil framebuffer blit correction
 
 The v0.84 RTScale rectangle conversion determines a framebuffer's coordinate space from COLOR0. A framebuffer with only a scaled depth/stencil attachment has no COLOR0. This leaves its blit rectangle in logical coordinates. A multisample source with COLOR0 and a depth-only destination consequently returns `GL_INVALID_OPERATION`; two depth-only endpoints can instead copy only a small physical subregion without returning an error.
 
@@ -17,7 +17,11 @@ The JSON results retain baseline failures as expected regressions; they are not 
 
 This is an independently reproduced API bug, **not a confirmed cause of the Thank You! 39-person loading interval or Diamond Joker FPS issue**. A 150-second OFF-profile trace recorded no Blit or CopyImage calls from the actual 39-person MV. The Blit trace was checked with an independent positive control; the CopyImage family did not receive its own positive control in that pass.
 
-The final v2 binary has only been exercised in isolated native GLES probes, not in the game. The first candidate startup ended with a Native Bridge (`libhoudini.so`) SIGSEGV; the restored v0.84 started normally, and a second first-variant startup completed the actual 39-person MV (x5/FSR150/standard MSAA: 59.945 FPS, maximum present interval 33.37ms). Causality is unresolved. The binary is withheld from this source candidate ZIP, the normal payload is unchanged, and no new Release or main merge has been made. Do not treat independent GLES passes as complete game compatibility validation.
+The final v2 binary was subsequently loaded by the actual Mirishita process on RX 9060 XT (the SHA256 was read through `/proc/<pid>/root/vendor/lib64/libgallium_dri.so`). It completed the true Thank You! 39-person free MV and Diamond Joker at x5/FSR150/default MSAA. Both Diamond Joker chorus endings were inspected, including the four-character close-up: facial/hair detail remained visible, with no newly observed white-fog or occlusion corruption. Diamond Joker was also replayed at x6/FSR150/opt-in MSAA2 without screenshot capture during the measured singing window. Detailed present intervals and the isolated first-run 50ms interval are documented in `../../docs/investigations/2026-10-14-pr5-final-game-validation.md`.
+
+The earlier first-variant Native Bridge SIGSEGV is retained as an unexplained observation, not attributed to this fix. A single occurrence is not a rejection criterion for this change; the final candidate's game validation is evaluated separately. Loading intervals are reference records, excluded from live-rendering defects and further investigation.
+
+This PR now updates the normal `payload/graphics/mesa-rtscale-overlay.tar.zst` and its SHA256 manifests to the final tested library. EGL/GLES wrapper binaries are byte-identical to v0.84; only the gallium library changes. The published v0.84 Release asset is not replaced. The test machine is restored to its starting library/configuration after validation. This is limited regression coverage on this machine, not full game or driver conformance.
 
 Packed DEPTH24_STENCIL8, DEPTH_COMPONENT16 Renderbuffers, unscaled STENCIL_INDEX8 controls, and full matching rectangles are covered. Other formats, partial/flipped rectangles, full GLES conformance, and other GPUs remain unverified. Game data, APKs, and the Native Bridge implementation were not modified.
 
@@ -30,7 +34,7 @@ Apply `../diamond-joker/mesa-msaa-storage2.patch` and then `mesa-depth-only-blit
 ```
 v0.84 / unpatched rebuild: 04c12b3cfa3c06d194f4101796d42d04de6a87e808f606c236c47e2ad9818851
 first variant (game startup failure observed once): 7e027d005deae4aab936206373d8969bd2ba4c362877a4863ee8a9cff7037efa
-final v2 (isolated GLES only): cdf5ad1ee94bdddd1258e030c0239b894258ee2f5a64281665f53effd7ba67a2
+final v2 (native GLES + actual game regression verified): cdf5ad1ee94bdddd1258e030c0239b894258ee2f5a64281665f53effd7ba67a2
 ```
 
 The existing Android API30 / NDK r27c / LLVM21 ABI-checks-ON configuration and all eleven gallium drivers were retained. Stage the build with Meson install; the distributed-stage candidate has no RPATH or RUNPATH. No CopyImage prototype is included.
@@ -43,4 +47,4 @@ x86_64-linux-android30-clang depth-stencil-blit-probe.c -L/path/to/mesa-stage/us
 
 Run outside game userdata with an isolated library path and an explicitly backed-up, process-matching RTScale test profile. Arguments for the stencil probe are `scale source_rb destination_rb mask_bits expected_physical_samples requested_samples`; mask bits 1/2/3 mean depth/stencil/both. `requested_samples=0` selects single-sample storage. The formats probe adds `format` as a final optional argument: 0=packed depth/stencil, 1=DEPTH_COMPONENT16, 2=STENCIL_INDEX8, 3=packed DEPTH24_STENCIL8 attached only to stencil. The original depth probe takes `scale expected_msaa2`.
 
-Preserve Mesa's per-file MIT notices, the reconstruction's 0BSD notices, upstream attribution, LLVM notices, and LGPL libelf source/relink requirements. The three independently written probes are 0BSD. This source-only bundle contains no Mesa binary, proprietary game source, shaders, APK, or Native Bridge payload.
+Preserve Mesa's per-file MIT notices, the reconstruction's 0BSD notices, upstream attribution, LLVM notices, and LGPL libelf source/relink requirements. The three independently written probes are 0BSD. The historical source-only ZIP contains no Mesa binary. The updated normal overlay and validation/fix ZIP include the tested Mesa library with corresponding source/build links and notices, and contain no proprietary game source, shaders, APK, or Native Bridge payload.
