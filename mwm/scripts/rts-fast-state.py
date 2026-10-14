@@ -4,6 +4,9 @@
 import json, os, sys, subprocess
 from pathlib import Path
 from waydroid_dimensions import read_dimensions
+# Direct script execution starts in scripts/, while version.py lives in the
+# application root in both the repository and installed layouts.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from version import __version__
 CFG=Path(os.environ.get("XDG_CONFIG_HOME",str(Path.home()/".config")))/"mwm"
 STATE=Path(os.environ.get("XDG_STATE_HOME",str(Path.home()/".local/state")))/"mwm/rts-fast-state.json"
