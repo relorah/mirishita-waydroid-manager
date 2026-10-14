@@ -60,8 +60,9 @@ for entry in Path('/proc').iterdir():
     except (OSError, PermissionError): pass
 PY
 
-say "Administrator authentication"
-sudo -v
+say "Checking administrator access"
+# Reuse already-authorized noninteractive access; otherwise authenticate as before.
+sudo -n true 2>/dev/null || sudo -v
 
 # Keep the normal sudo timestamp alive during setup instead of granting broad
 # temporary NOPASSWD access to tools such as python3 or tar.
