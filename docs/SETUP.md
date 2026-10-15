@@ -54,7 +54,7 @@ Reset to Defaultsは画面上の設定を初期値へ戻します。Applyで保�
 | 項目 | 内容 |
 | --- | --- |
 | RTScale | OFF／x1～x8。対象の内部描画を高解像度化します。高倍率ほどGPU負荷が増えます。 |
-| MSAA Sample Limit | MSAA（アンチエイリアス）のサンプル数を設定します。Original (Quality)はゲーム本来のサンプル数（最大4 Samples）を維持します。2 Samples (Performance)はRTScaleで拡大する対象のうち、4サンプル以上のものを2へ制限して負荷を抑えます。RTScale x2以上・Zoom Fix ONで適用されます。 |
+| MSAA Sample Limit | MSAA（アンチエイリアス）のサンプル数を設定します。Original (Quality)はゲーム本来の最大4 Samplesを維持します。2 Samples (Performance)はRTScaleで拡大する対象を最大4 Samplesから2Samplesへ制限して負荷を抑えます。 |
 | AMD FSR1 | レンダリング後の画像に、Gamescopeでアップスケーリング（EASU）とシャープニング（RCAS）を適用します。 |
 | Upscale | 125%／150%／175%／200%。 |
 | Sharpness | 1～21。1が最小強度、21が最大です。 |
