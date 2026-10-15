@@ -1,0 +1,301 @@
+{
+  "date": "2026-10-16",
+  "backend": "Gamescope",
+  "display": [
+    1920,
+    1080
+  ],
+  "fsr": "OFF",
+  "mesa_sha256": "f34d06ed52a6576dd1f558fc0c01b503f960e5933acf5be83e1e42611548a773",
+  "note": "Actual MV screenshots. Camera pose and timing are approximate, not pixel-synchronized. PNG originals are unchanged; README WebP previews are resized to 1280x720.",
+  "shots": [
+    {
+      "file": "ittan-mirai-off.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "mirai",
+      "rtscale": "off",
+      "source_frame": "ittan-standard-off/0042.png",
+      "sha256": "bb188b45e246b17b0e72f29d828ec3ccc361220177f32143d8d7c8e1455e6d7d"
+    },
+    {
+      "file": "ittan-mirai-x3.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "mirai",
+      "rtscale": "x3",
+      "source_frame": "ittan-standard-x3/0043.png",
+      "sha256": "c987ea84565d7644a6addf0f83320bc04db150f94aadf7b1c04ae88e54a4a6dc"
+    },
+    {
+      "file": "ittan-anna-off.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "anna",
+      "rtscale": "off",
+      "source_frame": "ittan-standard-off/0027.png",
+      "sha256": "5732a5cd0167c5004994b34aa995f5c36677db082064fd6eee095a49c125b6c0"
+    },
+    {
+      "file": "ittan-anna-x3.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "anna",
+      "rtscale": "x3",
+      "source_frame": "ittan-standard-x3/0027.png",
+      "sha256": "dc63c3e0bfaa2eb7d2d4e60f117da8c9dde658cfdd59e8bb4170384b3e3a8812"
+    },
+    {
+      "file": "ittan-kana-off.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "kana",
+      "rtscale": "off",
+      "source_frame": "ittan-standard-off/0020.png",
+      "sha256": "dafe16f8186a816e98f31c4cbc3f7ea9abd9def05232be461a5b4d0e2dd6cbcf"
+    },
+    {
+      "file": "ittan-kana-x3.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "kana",
+      "rtscale": "x3",
+      "source_frame": "ittan-standard-x3/0020.png",
+      "sha256": "2e144cd1f5fc91966eae19e96864bb25d2a40ae06910769f93e7aa0f11fea1ed"
+    },
+    {
+      "file": "ittan-tsumugi-off.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "tsumugi",
+      "rtscale": "off",
+      "source_frame": "ittan-standard-off/0067.png",
+      "sha256": "6d607f69affd4132c7810cfad1e10f7b946107ecdeaf8dd048d537726a4c2504"
+    },
+    {
+      "file": "ittan-tsumugi-x3.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "tsumugi",
+      "rtscale": "x3",
+      "source_frame": "ittan-standard-x3/0067.png",
+      "sha256": "f676aa7d94350e042731dbbc03c7a8dada79dd498e3fc0492bedc37c8e52bade"
+    },
+    {
+      "file": "ittan-group-wide-off.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "group-wide",
+      "rtscale": "off",
+      "source_frame": "ittan-standard-off/0022.png",
+      "sha256": "de24ace37ca452cdf8d8550577bb047bf0c06085b9058be8b82d59610b3697b3"
+    },
+    {
+      "file": "ittan-group-wide-x3.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "group-wide",
+      "rtscale": "x3",
+      "source_frame": "ittan-standard-x3/0022.png",
+      "sha256": "5142f91aa9f4b5ecc5e2bd9c3d0144278137fbc013f59224053b13afe43ab17d"
+    },
+    {
+      "file": "ittan-group-close-off.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "group-close",
+      "rtscale": "off",
+      "source_frame": "ittan-standard-off/0066.png",
+      "sha256": "5abd710c9a57e19f9a7169853af71c11ffcf1e6ed61c811bb72fefa2c97f244b"
+    },
+    {
+      "file": "ittan-group-close-x3.png",
+      "song": "ittan",
+      "quality": "3D標準",
+      "subject": "group-close",
+      "rtscale": "x3",
+      "source_frame": "ittan-standard-x3/0066.png",
+      "sha256": "ed11737075627f53d28bd3ffcdc313482e4ee7c1c4bf61e4c4041deb5014bcdc"
+    },
+    {
+      "file": "thank-you-reika-close-off.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "reika-close",
+      "rtscale": "off",
+      "source_frame": "thank-standard-off/0023.png",
+      "sha256": "469ce073b0bca8032a63a9af0428273b422363f86b89ad84b937b22dcea4e73e"
+    },
+    {
+      "file": "thank-you-reika-close-x3.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "reika-close",
+      "rtscale": "x3",
+      "source_frame": "thank-standard-x3/0023.png",
+      "sha256": "4f75c02ff1a9adf4d492968b9a1822402c21ac3b94600f949ac3a361d4d0c788"
+    },
+    {
+      "file": "thank-you-reika-stage-off.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "reika-stage",
+      "rtscale": "off",
+      "source_frame": "thank-standard-off/0047.png",
+      "sha256": "74d60ce775a534be1da0a7633ac38b914280502cc62e79c63e2124c85673e8f5"
+    },
+    {
+      "file": "thank-you-reika-stage-x3.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "reika-stage",
+      "rtscale": "x3",
+      "source_frame": "thank-standard-x3/0047.png",
+      "sha256": "fed90de28785744b84bd2fdc218c4cd8d1dd0918c9f4b4d7aac2af5b4f00f763"
+    },
+    {
+      "file": "thank-you-wide-stage-off.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "wide-stage",
+      "rtscale": "off",
+      "source_frame": "thank-standard-off/0043.png",
+      "sha256": "05cee5a7d1529c9e3d9e48bce211f84ba226973e803977951be7b3d8e45d3707"
+    },
+    {
+      "file": "thank-you-wide-stage-x3.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "wide-stage",
+      "rtscale": "x3",
+      "source_frame": "thank-standard-x3/0043.png",
+      "sha256": "384f58bee7add1759f62597f53484e0e6a3870c6ca21bae49e08ab8629b297a7"
+    },
+    {
+      "file": "thank-you-wide-lights-off.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "wide-lights",
+      "rtscale": "off",
+      "source_frame": "thank-standard-off/0055.png",
+      "sha256": "7d2c9bec92328376f04129f24957a48c3d9bb567aec669ca688b82bec50dd67c"
+    },
+    {
+      "file": "thank-you-wide-lights-x3.png",
+      "song": "thank-you",
+      "quality": "3D標準",
+      "subject": "wide-lights",
+      "rtscale": "x3",
+      "source_frame": "thank-standard-x3/0055.png",
+      "sha256": "1ea87e013996ad73cce50c3280930d931ec48f50b4bec715da46bb7163acb466"
+    },
+    {
+      "file": "diamond-megumi-off.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "megumi",
+      "rtscale": "off",
+      "source_frame": "diamond-high-off1080/0019.png",
+      "sha256": "1ea535fab27d90c3cfe5a801a93f1fd2673d232f9c481fa7de293daf611b8961"
+    },
+    {
+      "file": "diamond-megumi-x3.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "megumi",
+      "rtscale": "x3",
+      "source_frame": "diamond-high-x3/0008.png",
+      "sha256": "0d6df130c076944f93d00e6fa03d5350257523328d2773a4bd0d5ec8aff4cae6"
+    },
+    {
+      "file": "diamond-matsuri-off.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "matsuri",
+      "rtscale": "off",
+      "source_frame": "diamond-high-off1080/0026.png",
+      "sha256": "1c4820beb03acb7129cf3d18c3d4f99a8b30aa2f2ba646226ef19adbda49b0f8"
+    },
+    {
+      "file": "diamond-matsuri-x3.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "matsuri",
+      "rtscale": "x3",
+      "source_frame": "diamond-high-x3/0022.png",
+      "sha256": "32cd6bba711378ab0b25da6e4e3d0fedbf5442c877ce0c6667f1bad665580713"
+    },
+    {
+      "file": "diamond-tsubasa-off.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "tsubasa",
+      "rtscale": "off",
+      "source_frame": "diamond-high-off1080/0013.png",
+      "sha256": "9d1a1c5d143b651bf40ba78c442ebbfb51ab7636beb84fb2ea87156b32e1c6f2"
+    },
+    {
+      "file": "diamond-tsubasa-x3.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "tsubasa",
+      "rtscale": "x3",
+      "source_frame": "diamond-high-x3/0033.png",
+      "sha256": "8ec2102e979ae26e621ed82cea93a2d6932c9558b18aff2e9baf5c944eee0834"
+    },
+    {
+      "file": "diamond-takane-off.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "takane",
+      "rtscale": "off",
+      "source_frame": "diamond-high-off1080/0041.png",
+      "sha256": "01cdb4a3f5010939e3edea6a2a7be0c424e8a33c273352f7c4574c17ac748a87"
+    },
+    {
+      "file": "diamond-takane-x3.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "takane",
+      "rtscale": "x3",
+      "source_frame": "diamond-high-x3/0021.png",
+      "sha256": "30a046a338e45249f436b96abc9c1bf7318756274a3289393defb0c39c9923cd"
+    },
+    {
+      "file": "diamond-group-wide-off.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "group-wide",
+      "rtscale": "off",
+      "source_frame": "diamond-high-off1080/0033.png",
+      "sha256": "d079e5c74ff7d2a6e149378f63fe7d1a821f473e1893942af33aa20c1740c687"
+    },
+    {
+      "file": "diamond-group-wide-x3.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "group-wide",
+      "rtscale": "x3",
+      "source_frame": "diamond-high-x3/0007.png",
+      "sha256": "698a21e8eb07dee1298992e4525b51ac01d1545b7ac04c31ff7492e775750f0d"
+    },
+    {
+      "file": "diamond-group-close-off.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "group-close",
+      "rtscale": "off",
+      "source_frame": "diamond-high-off1080/0036.png",
+      "sha256": "7acd5c2410115b1f03d015f4d6efd4c3f5ba2e46e0c3740fad8f9f6ceba4e582"
+    },
+    {
+      "file": "diamond-group-close-x3.png",
+      "song": "diamond",
+      "quality": "3D高画質",
+      "subject": "group-close",
+      "rtscale": "x3",
+      "source_frame": "diamond-high-x3/0028.png",
+      "sha256": "ecb4cae6bd4215522572277e8834f0b38e77889bc5d6eb9eec3e6ef95d938c35"
+    }
+  ]
+}

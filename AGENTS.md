@@ -90,52 +90,16 @@ Rules:
 
 ### MWM RTScale profile
 
-Mirishita RTScale base resolution is fixed at:
-
-```text
-1316x720
-```
-
-This is independent of the Waydroid display resolution.
-
-Supported scale choices:
-
-```text
-OFF
-x1
-x2
-x3
-x4
-x5
-x6
-x7
-x8
-x9
-x10
-```
-
-Current initial value:
-
-```text
-x3
-```
-
+The v0.85 GUI supports OFF and x1 through x8; the initial value is OFF.
 Do not describe x3 as universally optimal. Suitable scale depends on hardware and content.
 
-Expected Mirishita profile:
+For the Gamescope RTScale profile, Android uses a 1080-high display. The RTScale
+base is calculated from its applied aspect ratio at 720-high (1280x720 for 16:9).
+Do not hard-code the historical 1316x720 base across display presets. Experimental
+Span Displays may supply a separately calculated base; keep that path distinct.
 
-```ini
-schema_version=1
-
-[application.0]
-name=com.bandainamcoent.imas_millionlive_theaterdays
-base_width=1316
-base_height=720
-scale=3
-surface=1
-texelsize=0
-```
-
+The RTScale configuration is removed when OFF. ON uses the Mirishita package,
+selected scale, surface=1, texelsize=0 and the selected Zoom Fix policy.
 Render Scale changes require a Waydroid restart for reliable application.
 
 ## RTScale Vendor Overlay
@@ -170,26 +134,16 @@ If exact provenance of a binary is unknown, say so explicitly. Do not invent a s
 
 ## Display
 
-MWM display presets:
+MWM aspect presets are Auto, 32:9, 21:9, 16:9, 4:3, 3:2 and Custom.
+Custom accepts width:height ratios (each 1 through 99), not a raw pixel width.
+The resulting 720-high base width must be between 320 and 7680.
 
-```text
-Auto (Full Screen)
-32:9 (2560x720)
-21:9 (1680x720)
-16:9 (1280x720)
-4:3 (960x720)
-3:2 (1080x720)
-Custom Width (x720)
-```
-
-Rules:
-
-- fixed presets always use height `720`,
-- custom mode changes width only,
-- custom width range is currently `320-7680`,
-- `Auto (Full Screen)` follows the host display,
-- do not use Android `wm size` override,
-- do not confuse Waydroid display resolution with the RTScale base `1316x720`.
+- The ordinary RTScale-OFF profile uses 720-high display dimensions.
+- The RTScale-ON Gamescope profile uses equivalent 1080-high dimensions.
+- Auto follows the host display aspect ratio.
+- Use the shared display_settings.py calculations for preview and validation.
+- Do not use Android wm size overrides.
+- Do not confuse Android display dimensions with the 720-high RTScale base.
 
 ## Mouse as Touch
 
