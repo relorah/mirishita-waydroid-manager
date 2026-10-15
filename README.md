@@ -48,8 +48,8 @@ MWMはミリシタの権利者および各ソフトウェアの開発元とは�
 
 mogareta7731氏が公開したRTScaleの技術情報を参考に、Waydroid向けに独立実装・調整を行っています。
 
-- [Mesa GLES Render Scale（Render Target Scale）について — mogareta7731氏](https://note.com/mogareta7731/n/n4db668be92b5)
-- [Mesa GLES Render Scaleの利用例 — mogareta7731氏](https://note.com/mogareta7731/n/n80aebd523379)
+- [Mesa GLES Render Scale（Render Target Scale）について](https://note.com/mogareta7731/n/n4db668be92b5)
+- [Mesa GLES Render Scaleの利用例](https://note.com/mogareta7731/n/n80aebd523379)
 
 ## テスト環境
 
