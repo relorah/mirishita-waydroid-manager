@@ -8,6 +8,8 @@ MWMはミリシタの権利者および各ソフトウェアの開発元とは�
 
 ## 描画比較
 
+Mesa GLES Render Scale（RTScale）を使った描画比較です。
+
 ### 3D標準
 
 | RTScale OFF | RTScale x3 + FSR |
@@ -33,7 +35,7 @@ RTScale x3 / FSR 150% / Sharpness 11
 - FPS・CPU／GPU使用率などの表示
 - RTScale Zoom Fixによる過度な拡大・描画ずれへの互換対応
 
-## 主な構成要素
+## 使用技術
 
 - CachyOS / AMD GPU
 - Waydroid（Android 11）
