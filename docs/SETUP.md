@@ -53,18 +53,18 @@ Reset to Defaultsは画面上の設定を初期値へ戻します。Applyで保�
 
 | 項目 | 内容 |
 | --- | --- |
-| RTScale | OFF／x1～x8。対象の3Dレンダリングを高解像度化します。高倍率ほどGPU負荷が増えます。 |
-| MSAA Sample Limit | Original (Quality)はゲーム本来のサンプル数を維持します。2 Samples (Performance)はRTScaleで拡大する対象の4サンプル以上を2へ制限し、負荷を抑えます。RTScale x2以上・Zoom Fix ONで適用されます。 |
-| AMD FSR1 | レンダリング後の画像に、Gamescopeでアップスケーリング（EASU）とシャープニング（RCAS）を適用します。OFFで下位項目をグレーアウトします。 |
-| Upscale | 125%／150%／175%／200%。初期選択は125%。 |
+| RTScale | OFF／x1～x8。対象の内部描画を高解像度化します。高倍率ほどGPU負荷が増えます。 |
+| MSAA Sample Limit | MSAA（アンチエイリアス）のサンプル数を設定します。Original (Quality)はゲーム本来のサンプル数（最大4 Samples）を維持します。2 Samples (Performance)はRTScaleで拡大する対象のうち、4サンプル以上のものを2へ制限して負荷を抑えます。RTScale x2以上・Zoom Fix ONで適用されます。 |
+| AMD FSR1 | レンダリング後の画像に、Gamescopeでアップスケーリング（EASU）とシャープニング（RCAS）を適用します。 |
+| Upscale | 125%／150%／175%／200%。 |
 | Sharpness | 1～21。1が最小強度、21が最大です。 |
-| Aspect Ratio | Auto／32:9／21:9／16:9／4:3／3:2／Custom。Customは横・縦の比率を1～99で入力します。初期値は16:9です。 |
+| Aspect Ratio | Auto／32:9／21:9／16:9／4:3／3:2／Custom。Customは横・縦の比率を入力します。初期値は16:9です。 |
 
 比率に応じた表示寸法を `Resolution: 1920x1080` の形式で表示します。Customの入力欄は解像度ではなく横：縦の比率です。極端に横長・縦長の比率は指定できません。指定可能な範囲を超えた場合は、表示される案内に従って比率を調整してください。
 
 RTScale ONではWaydroid表示を高さ1080相当とし、RTScaleの基準寸法は別に高さ720で管理します。OSスケール、表示寸法、RTScale倍率は別の設定です。
 
-Super（Windows）＋Fで全画面とウィンドウを切り替えます。複数モニターでは、Waydroid起動時にカーソルがある画面へ表示されます。使用したい画面へカーソルを移してStart／Restartを押し、表示されるまでその画面に置いてください。MaintenanceのSpan Displaysは複数画面にまたがって表示する試験機能です。
+Super（Windows）＋Fで全画面とウィンドウを切り替えます。複数モニターでは、Waydroid起動時にカーソルがある画面へ表示されます。使用したい画面へカーソルを移してStart／Restartを押し、表示されるまでその画面に置いてください。
 
 ## Options
 
@@ -75,7 +75,7 @@ Super（Windows）＋Fで全画面とウィンドウを切り替えます。複�
 | Mouse as Touch | マウス操作をAndroidのタッチ入力として扱います。 |
 | RTScale Zoom Fix | RTScale使用時の過度な拡大や、光の合成などに生じる描画ずれを補正します。通常はONで使用してください。 |
 
-Verify ONの場合、ミリシタの起動処理中はMWMの操作を制限します。途中でミリシタを手動起動すると処理を中断するため、ゲームを終了してStart／Restartをやり直してください。Auto Launch OFFでは準備完了後に手動起動します。
+Verify ONの場合、ミリシタの起動処理中はMWMの操作を制限します。途中でミリシタを手動起動すると処理を中断するため、ゲームを終了してStart／Restartをやり直してください。
 
 ## FPS Counter
 
@@ -83,18 +83,16 @@ Off／Minimal／Detailed／MangoAppから選択します。MinimalとDetailedは
 
 | 数値 | 計測対象 |
 | --- | --- |
-| FPS：全方式 | SurfaceFlingerのミリシタ描画レイヤーの実表示時刻から計算する、Android側の表示更新頻度。MangoAppは整数に丸めます。 |
+| FPS：全方式 | SurfaceFlingerのミリシタ描画レイヤーの実表示時刻から計算する、Android側の表示更新頻度。MangoAppもMWM HUDと同じ値を表示します。 |
 | Frametime：Detailed | Android側の直近の有効なフレーム間隔。 |
-| グラフ：MangoApp | Gamescope側のフレーム時間。FPS欄とは計測箇所が異なります。 |
+| グラフ：MangoApp | Gamescope側のフレーム時間です。Android側のFPS表示とは計測対象が異なるため、一定の時間差（ms）には換算できません。 |
 | CPU／GPU | ホスト側の負荷。ミリシタ単体の使用率ではありません。 |
 
-更新タイミングにより表示値が異なる場合があります。取得できない場合はMWM HUDで `--.--`、MangoAppで `--` を表示します。
-
-対応セッションでは起動中に表示方式を切り替えられます。
+FPS Counterの表示方式は、起動中でも切り替えられます。
 
 ### BC250のGPU使用率（試験機能）
 
-BC250でGPU使用率を正常に取得できない場合に使用する試験機能です。GPUの状態レジスター（GRBM_STATUS）の稼働フラグを一定間隔で読み取り、稼働していた割合からGPU全体の活動率を推定します。MWM HUDとMangoAppは、この計測値を表示します。
+BC250でGPU使用率を正常に取得できない場合に使用する試験機能です。GPUの状態レジスター（GRBM_STATUS）の稼働フラグを一定間隔で読み取り、稼働していた割合からGPU全体の活動率を推定します。
 
 手動で有効にする場合は次を実行し、HUDを起動し直してください。無効にする場合は同じファイルを削除します。
 
@@ -108,8 +106,6 @@ touch "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test"
 RTScale使用時、特定の光源やエフェクトで、処理がキャラクターの前面に重なる、白飛びする、描画位置がずれるなどの異常が発生する場合があります。**RTScale Zoom FixをONにしても、すべての描画異常を解消できるわけではありません。**
 
 RTScaleやFSR1の拡大倍率を高くすると、負荷の増加により描画の乱れやフレーム落ちが発生する場合があります。RCASの強度を上げると、輪郭の強調やちらつきが目立つ場合があります。
-
-Span Displaysは、モニターの解像度・配置・OSスケールの組み合わせにより、画面の継ぎ目や余白にずれが生じる場合があります。RTScaleの適用に、環境に合わせた基準寸法の調整が必要になる場合があります。
 
 ## 診断ログ
 
