@@ -44,12 +44,10 @@ RTScale x3 / FSR 150% / Sharpness 11
 
 ## 使用技術
 
-- CachyOS / AMD GPU
-- Waydroid（Android 11）
+- CachyOS / Waydroid（Android 11）
 - Mesa GLES Render Scale（RTScale）とMWM独立実装
 - Gamescope / AMD FSR1
 - 独自実装のMWM HUD / MangoHud（MangoApp）
-- Mirishita Waydroid Manager（MWM）
 
 ## テスト環境
 
