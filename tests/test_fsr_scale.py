@@ -28,8 +28,8 @@ class FSRScaleTests(unittest.TestCase):
 
     def test_defaults_invalid_and_disabled(self):
         for mode in ('rtscale','fsr'):
-            self.assertEqual(self.read_scale(mode),150)
-            self.assertEqual(self.read_scale(mode,999),150)
+            self.assertEqual(self.read_scale(mode),125)
+            self.assertEqual(self.read_scale(mode,999),125)
             self.assertEqual(self.read_scale(mode,200,enabled='off'),100)
 
     def test_legacy_rtscale_setting(self):

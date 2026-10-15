@@ -27,7 +27,7 @@ Packed DEPTH24_STENCIL8, DEPTH_COMPONENT16 Renderbuffers, unscaled STENCIL_INDEX
 
 ## Sources and build provenance
 
-Mesa upstream base: `acbb4f6b8de2768b5ea7d6a83a8e52a263eac5cc`, 26.3.0-devel. Use the integrated base archive in the existing [v0.83 package](https://github.com/relorah/mirishita-waydroid-manager/releases/download/v0.83/MWM_v0.83.zip), member `MWM_v0.83/payload/sources/graphics-sources.tar.zst`, SHA256 `6ddc1e4dbf0c5663d2ed70df3c6eed406211cffad6c0f406f53c2e87b236d9dd`. Follow that archive's BUILD.md and libelf relink instructions; do not rerun integrate.py.
+Mesa upstream base: `acbb4f6b8de2768b5ea7d6a83a8e52a263eac5cc`, 26.3.0-devel. Use the integrated base archive in the existing [v0.83 package](https://github.com/relorah/mltd-waydroid-manager/releases/download/v0.83/MWM_v0.83.zip), member `MWM_v0.83/payload/sources/graphics-sources.tar.zst`, SHA256 `6ddc1e4dbf0c5663d2ed70df3c6eed406211cffad6c0f406f53c2e87b236d9dd`. Follow that archive's BUILD.md and libelf relink instructions; do not rerun integrate.py.
 
 Apply `../msaa/mesa-msaa-storage2.patch` and then `mesa-depth-only-blit.patch` at the Mesa source root with `patch -p1`. Reapplying both patches to the base archive produced byte-identical copies of all seven changed source files. A comparison of all 11,692 Mesa source files found changes in exactly those seven files. The unpatched local rebuild is byte-identical to the installed v0.84 gallium library:
 
