@@ -2,6 +2,8 @@
 
 CachyOS + AMD GPU環境で「アイドルマスター ミリオンライブ！ シアターデイズ（以下、ミリシタ）」を高解像度描画するためのプロジェクトです。本ツールはChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発しています。
 
+Mesa GLES Render Scale（以下、RTScale）の技術情報を公開した[mogareta7731氏](https://zenn.dev/mogareta7731)、ならびにMesa・Waydroid・Gamescope・MangoHudなどの開発者に感謝します。
+
 ## 免責事項
 
 MWMはミリシタの権利者および各ソフトウェアの開発元とは関係のない非公式ツールです。利用規約を確認のうえ、ご自身の判断でご利用ください。利用に伴う不具合、データ消失、アカウントへの影響などについて、作者は法令上許容される範囲で責任を負いません。
@@ -66,7 +68,3 @@ mogareta7731氏が公開したRTScaleの技術情報を参考に、Waydroid向�
 ## 開発状況
 
 実験的な開発中のツールです。
-
-## 謝辞
-
-Mesa GLES Render Scale（以下、RTScale）の技術情報を公開した[mogareta7731氏](https://zenn.dev/mogareta7731)、ならびにMesa・Waydroid・Gamescope・MangoHudなどの開発者に感謝します。
