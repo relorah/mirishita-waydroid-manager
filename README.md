@@ -1,40 +1,43 @@
 # Mirishita Waydroid Manager (MWM)
 
-Linux環境で「アイドルマスター ミリオンライブ！ シアターデイズ（以下、ミリシタ）」を高画質で動作させるためのプロジェクトです。Waydroid上で動作するミリシタを対象に高解像度描画、画面のアスペクト比変更、マウスのタッチ入力化、FPS・CPU／GPU使用率の表示などを設定できます。
+「アイドルマスター ミリオンライブ！ シアターデイズ（以下、ミリシタ）」をCachyOS + AMD GPU環境で高解像度描画するためのプロジェクトです。Waydroid上のミリシタを対象に、描画解像度、画面比率、マウス入力、HUDなどを設定できます。
 
-本ツールは **ChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発**しています。Mesa GLES Render Scale（RTScale）の技術公開と解説を行ったmogareta7731氏、Mesa・Waydroid・Gamescope・MangoHudをはじめとする上流プロジェクトの開発者に感謝します。
+本ツールは **ChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発**しています。Mesa GLES Render Scale（以下、RTScale）の[技術公開と解説を行ったmogareta7731氏](https://note.com/mogareta7731/n/n4db668be92b5)と、Mesa・Waydroid・Gamescope・MangoHudなどの開発者に感謝します。
 
 ## 免責事項
 
-MWMはミリシタの権利者や各ソフトウェアの開発元とは関係のない非公式ツールです。利用規約をご確認のうえ、ご自身の判断でご利用ください。動作や規約への適合は保証されません。利用に伴う不具合、データ消失、アカウントへの影響などについて、作者は法令上許容される範囲で責任を負いません。
-
-MWMはWaydroidの描画ライブラリや表示・入力などを調整します。Mesa由来の描画ライブラリとMWM向けRTScale実装を導入します。本ツールはミリシタのAPKやゲームデータを同梱・改変せず、チートなどの不正な用途を目的としていません。
+MWMはミリシタの権利者および各ソフトウェアの開発元とは関係のない非公式ツールです。利用規約を確認のうえ、自己責任でご利用ください。ミリシタのAPKやゲームデータは同梱・改変しません。
 
 ## 目的
 
-- Waydroid上のミリシタで高解像度描画を実現する
-- MVやライブの表示に合わせて画質や画面比率を調整する
-- 描画・表示・操作の設定を一元管理する
+- Waydroid上でミリシタの高解像度描画を実現する
 
 ## 主な機能
 
-- RTScaleによる描画倍率（整数倍）の設定
+- RTScaleによる内部描画解像度の高倍率化
 - AMD FSR1によるアップスケーリングとシャープニング
 - 描画アスペクト比の設定
 - マウス操作のタッチ入力化
 - FPS・CPU／GPU使用率などの表示
 - RTScale Zoom Fixによる過度な拡大・描画ずれへの互換対応
-- 診断ログの一括保存
-- MWMの変更対象のバックアップと、アンインストール時の復元
 
 ## 主な構成要素
 
 - CachyOS／Arch系Linux
-- Waydroid
+- Waydroid（Android 11）
 - Mesa GLES Render Scale（RTScale）とMWM独立実装
 - Gamescope／AMD FSR1
 - MWM HUD／MangoHud（MangoApp）
 - Mirishita Waydroid Manager（MWM）
+
+## 描画比較
+
+同一場面をRTScale OFFとRTScale x3 + FSR 150% / Sharpness 11で比較する画像枠です。画像は未提供のため、以下はプレースホルダーです。
+
+| 画質設定 | RTScale OFF | RTScale x3 + FSR 150% / Sharpness 11 |
+| --- | --- | --- |
+| 3D標準 | 画像未提供（プレースホルダー） | 画像未提供（プレースホルダー） |
+| 3D高画質 | 画像未提供（プレースホルダー） | 画像未提供（プレースホルダー） |
 
 ## テスト環境
 
@@ -52,9 +55,3 @@ MWMはWaydroidの描画ライブラリや表示・入力などを調整します
 ## 開発状況
 
 実験的な開発中のツールです。
-
-## 0.85の変更
-
-MSAA設定の追加とUIの調整。
-
-描画ライブラリの変更・出典は[描画ソース資料](docs/graphics/msaa/README.md)を参照してください。
