@@ -266,6 +266,8 @@ reset_mwm_state() {
   printf 'auto\n' > "$cfg/aspect-ratio"
   printf 'off\n' > "$cfg/kwin-rtscale"
   printf 'on\n' > "$cfg/rtscale-zoom-fix"
+  printf '0\n' > "$cfg/rtscale-msaa-samples"
+  printf '16:9\n' > "$cfg/custom-aspect"
   printf '10\n' > "$cfg/gamescope-sharpness"
   printf '150\n' > "$cfg/gamescope-fsr-scale"
   printf 'on\n' > "$cfg/mouse-as-touch"

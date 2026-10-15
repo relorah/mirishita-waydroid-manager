@@ -4,6 +4,7 @@ from pathlib import Path
 from contextlib import contextmanager
 
 CHOICES = {
+ 'rtscale-msaa-samples': {'0','2'},
  'gamescope-span-enabled': {'on','off'},
  'verify-waydroid-startup': {'on','off'},
  'display-backend': {'gamescope'}, 'gamescope-render-mode': {'fsr','rtscale'},
@@ -19,6 +20,10 @@ def validate(values):
  for key,value in values.items():
   value=value.strip()
   if key in CHOICES and value not in CHOICES[key]: raise ValueError(f'Invalid {key}: {value}')
+  if key=='custom-aspect':
+   import re
+   m=re.fullmatch(r'(\d{1,2}):(\d{1,2})',value)
+   if not m or not all(1<=int(v)<=99 for v in m.groups()):raise ValueError('Invalid custom aspect ratio')
   if key=='aspect-ratio' and value not in {'auto','32:9','21:9','16:9','4:3','3:2'}:
    import re
    m=re.fullmatch(r'(\d+)x720',value)

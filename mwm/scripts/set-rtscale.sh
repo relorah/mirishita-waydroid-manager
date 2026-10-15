@@ -98,8 +98,10 @@ fi
 MSAA_SAMPLES="$(cat "$CFG_DIR/rtscale-msaa-samples" 2>/dev/null || echo 0)"
 [[ "$MSAA_SAMPLES" == 0 || "$MSAA_SAMPLES" == 2 ]] || { echo "Invalid RTScale MSAA policy (allowed: 0 or 2)" >&2; exit 2; }
 args=("$VALUE" "$BASE_W" "$BASE_H" "$SURFACE" "$ZOOM_FIX")
-if [[ "$MSAA_SAMPLES" == 2 ]]; then
+if [[ "$MSAA_SAMPLES" == 2 && "$ZOOM_FIX" == 1 && "$VALUE" -ge 2 ]]; then
   args+=(2)
+else
+  MSAA_SAMPLES=0
 fi
 written="$(root_helper rtscale-write "${args[@]}")"
 if ! grep -qx MWM_RTSCALE_WRITTEN <<<"$written"; then

@@ -1,11 +1,15 @@
+# MWM 0.85
+
+- MSAA設定の追加とUIの調整。
+
 # MWM 0.84（Diamond Joker 実機検証候補）
 
 - RTScale x6の光源処理で、拡大した色バッファと逆数画面寸法の座標を揃えるMesa修正候補を追加。1回目・2回目サビ終わりで顔や髪を覆う白飛びの改善を実機確認しました。
 - 任意のMSAA2設定をroot helper／設定スクリプトへ追加。対応するMesa候補が必要で、既定は従来のサンプル数です。AA品質変更を伴います。
 - RX9060XT 8GB、x6／FSR150の主要2回測定で最低59.51／59.52 FPS、25ms超の提示間隔0。元条件は最低41.45〜44.16 FPSでした。
-- 対応ソースパッチ、独立GLES回帰プローブ、適用／復元手順、検証記録を `experimental/diamond-joker/` に保存。検証済みMesaをpayloadへ反映し、配布物のハッシュを更新。対応バイナリと完全ソースは検証ZIPでも共有します。
+- 対応ソースパッチ、独立GLES回帰プローブ、適用／復元手順、検証記録を `docs/graphics/msaa/` に保存。検証済みMesaをpayloadへ反映し、配布物のハッシュを更新。対応バイナリと完全ソースは検証ZIPでも共有します。
 
-詳細と未確認事項は [実機検証記録](../experimental/diamond-joker/VERIFICATION-JA.txt) を参照してください。GitHub Releaseは公開していません。元設定へ復元済み。他GPU・全曲は未検証です。
+詳細と未確認事項は [実機検証記録](graphics/msaa/VERIFICATION-JA.md) を参照してください。GitHub Releaseは公開していません。元設定へ復元済み。他GPU・全曲は未検証です。
 
 # MWM 0.83
 

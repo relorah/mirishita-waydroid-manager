@@ -10,17 +10,19 @@ import sys
 import time
 from pathlib import Path
 from version import __version__ as APP_VERSION
+from display_settings import dimensions, ratio_width, legacy_ratio
+from ui_help import help_row, local
 
 from PySide6.QtCore import Qt, QThread, Signal, QTimer, QLockFile, QStandardPaths, QProcess, QLocale
 from PySide6.QtWidgets import (
     QApplication, QCheckBox, QComboBox, QDialog, QFileDialog, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QMainWindow, QMessageBox, QPushButton,
     QPlainTextEdit, QStackedWidget, QTabWidget, QToolButton, QVBoxLayout,
-    QWidget, QInputDialog, QSpinBox, QSlider, QToolTip,
+    QWidget, QInputDialog, QSpinBox, QSlider,
 )
 
 from popup_language import LocalizedMessageBox
-QMessageBox = LocalizedMessageBox(QMessageBox, True)
+QMessageBox = LocalizedMessageBox(QMessageBox, QLocale.system().language() == QLocale.Language.Japanese)
 
 ROOT = Path(__file__).resolve().parent
 SCRIPTS = ROOT / "scripts"
@@ -61,13 +63,12 @@ class PreparationDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
         self.busy = True
-        self.setWindowTitle("Waydroidを準備しています")
+        self.setWindowTitle(local("Preparing Waydroid", "Waydroidを準備しています"))
         self.setWindowModality(Qt.ApplicationModal)
         self.setWindowFlag(Qt.WindowCloseButtonHint, False)
         layout = QVBoxLayout(self)
-        label = QLabel("Waydroidの準備が完了するまでお待ちください。\n\n"
-                       "Androidの起動、解像度の確認、保存設定の反映を行っています。\n"
-                       "ミリシタが起動するまでお待ちください。")
+        label = QLabel(local("Please wait while Waydroid starts and saved settings are applied. Do not launch Mirishita until preparation finishes.",
+                             "Waydroidの準備が完了するまでお待ちください。\nAndroidの起動、解像度の確認、保存設定の反映を行っています。\n準備が完了するまでミリシタを起動しないでください。"))
         label.setWordWrap(True)
         layout.addWidget(label)
         self.resize(440, 170)
@@ -108,7 +109,7 @@ class Card(QFrame):
         super().__init__()
         self.setObjectName("Card")
         self.v = QVBoxLayout(self)
-        self.v.setContentsMargins(14, 10, 14, 10)
+        self.v.setContentsMargins(10, 8, 10, 8)
         self.v.setSpacing(7)
         title_label = QLabel(title)
         title_label.setObjectName("CardTitle")
@@ -158,8 +159,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(f"MWM v{APP_VERSION}")
-        self.resize(430, 640)
-        self.setMinimumSize(390, 540)
+        self.resize(520, 700)
+        self.setMinimumSize(0, 0)
         self.worker = None
         self.fps_overlay_proc = None
         self.applied_once = False
@@ -174,7 +175,7 @@ class MainWindow(QMainWindow):
         root = QWidget()
         self.setCentralWidget(root)
         main = QVBoxLayout(root)
-        main.setContentsMargins(14, 12, 14, 12)
+        main.setContentsMargins(10, 10, 10, 10)
         main.setSpacing(9)
 
         title = QLabel("Mirishita Waydroid Manager")
@@ -197,10 +198,11 @@ class MainWindow(QMainWindow):
         self.backend.setMinimumWidth(self.backend.sizeHint().width())
         self.backend.currentIndexChanged.connect(self.update_backend_controls)
         render_card = Card("Render Settings")
-        render_card.v.setContentsMargins(14, 4, 14, 4)
+        render_card.v.setContentsMargins(10, 8, 10, 8)
         render_card.v.setSpacing(2)
         render_card.v.setAlignment(Qt.AlignTop)
-        label_column_width = max(QLabel("FPS Counter").sizeHint().width(), QCheckBox("FSR Sharpness").sizeHint().width(), QCheckBox("AMD FSR1").sizeHint().width())
+        label_column_width = QLabel("MSAA Sample Limit (?)").sizeHint().width() + 6
+        self._field_labels = []
         render_grid = QGridLayout()
         render_grid.setColumnMinimumWidth(0, label_column_width)
         render_grid.setContentsMargins(0, 0, 0, 0)
@@ -213,9 +215,23 @@ class MainWindow(QMainWindow):
             self.scale.addItem(f"x{i}", str(i))
         self.scale.setCurrentText("OFF")
         self.scale_label = QLabel("RTScale")
-        self.scale.setToolTip("Gamescope: OFF uses standard rendering. Select a multiplier to use RTScale. Configure FSR below.")
-        render_grid.addWidget(self.scale_label, 1, 0)
+        self.scale.setToolTip("")
+        scale_row = help_row(self.scale_label, "RTScale")
+        self._field_labels.append(scale_row)
+        render_grid.addWidget(scale_row, 1, 0)
         render_grid.addWidget(self.scale, 1, 1, 1, 2)
+        self.msaa_samples = QComboBox()
+        self.msaa_samples.addItem("Original (Quality)", "0")
+        self.msaa_samples.addItem("2 Samples (Performance)", "2")
+        try:
+            msaa_value = (self.config_dir() / "rtscale-msaa-samples").read_text().strip()
+        except OSError:
+            msaa_value = "0"
+        self.msaa_samples.setCurrentIndex(max(0, self.msaa_samples.findData(msaa_value)))
+        msaa_row = help_row(QLabel("MSAA Sample Limit"), "MSAA Sample Limit")
+        self._field_labels.append(msaa_row)
+        render_grid.addWidget(msaa_row, 2, 0)
+        render_grid.addWidget(self.msaa_samples, 2, 1, 1, 2)
         self.gamescope_fsr_scale = QComboBox()
         self.gamescope_fsr_scale.addItem("125%", 125)
         self.gamescope_fsr_scale.addItem("150%", 150)
@@ -225,7 +241,7 @@ class MainWindow(QMainWindow):
         self.gamescope_fsr_sharpness_enabled = QCheckBox("FSR Sharpness")
         self.gamescope_fsr_sharpness_enabled.setChecked(False)
         self.gamescope_fsr_sharpness_enabled.toggled.connect(self.update_gamescope_sharpness_label)
-        self.gamescope_fsr_sharpness_enabled.setToolTip("FSR1 sharpening strength.")
+        self.gamescope_fsr_sharpness_enabled.setToolTip("")
         self.gamescope_sharpness_label = QLabel("Sharpness")
         self.gamescope_sharpness = QSlider(Qt.Horizontal)
         self.gamescope_sharpness.setRange(1, 21)
@@ -237,15 +253,19 @@ class MainWindow(QMainWindow):
         self.gamescope_sharpness.valueChanged.connect(self.on_gamescope_sharpness_changed)
         self.fsr_scale_label = QLabel("Upscale")
         self.rtscale_fsr_enabled = QCheckBox("AMD FSR1")
-        self.rtscale_fsr_enabled.setToolTip("Enable FSR1 upscaling and sharpening.")
+        self.rtscale_fsr_enabled.setToolTip("")
         self.rtscale_fsr_enabled.toggled.connect(self.update_gamescope_sharpness_label)
         self.scale.currentIndexChanged.connect(self.update_backend_controls)
-        render_grid.addWidget(self.fsr_scale_label, 3, 0)
-        render_grid.addWidget(self.rtscale_fsr_enabled, 2, 0, 1, 3)
-        render_grid.addWidget(self.gamescope_fsr_scale, 3, 1, 1, 2)
-        render_grid.addWidget(self.gamescope_sharpness_label, 4, 0)
-        render_grid.addWidget(self.gamescope_sharpness, 4, 1)
-        render_grid.addWidget(self.gamescope_sharpness_value, 4, 2)
+        upscale_row = help_row(self.fsr_scale_label, "Upscale")
+        self._field_labels.append(upscale_row)
+        render_grid.addWidget(upscale_row, 4, 0)
+        render_grid.addWidget(help_row(self.rtscale_fsr_enabled, "AMD FSR1"), 3, 0, 1, 3)
+        render_grid.addWidget(self.gamescope_fsr_scale, 4, 1, 1, 2)
+        sharp_row = help_row(self.gamescope_sharpness_label, "Sharpness")
+        self._field_labels.append(sharp_row)
+        render_grid.addWidget(sharp_row, 5, 0)
+        render_grid.addWidget(self.gamescope_sharpness, 5, 1)
+        render_grid.addWidget(self.gamescope_sharpness_value, 5, 2)
         self.cas_enabled = QCheckBox("CAS")
         self.cas_strength = QSlider(Qt.Horizontal)
         self.cas_strength.setRange(0, 100)
@@ -261,12 +281,12 @@ class MainWindow(QMainWindow):
         self.cas_enabled.hide()
         self.cas_strength.hide()
         self.cas_value.hide()
-        render_grid.setColumnStretch(0, 2)
+        render_grid.setColumnStretch(0, 0)
         render_grid.setColumnStretch(1, 3)
         render_grid.setColumnStretch(2, 0)
         render_card.v.addLayout(render_grid)
         hv.addWidget(render_card)
-        self.setMinimumWidth(max(430, render_card.minimumSizeHint().width() + 40))
+        self._render_card = render_card
 
         display = Card("Display")
         dgrid = QGridLayout()
@@ -277,59 +297,74 @@ class MainWindow(QMainWindow):
         self.aspect = QComboBox()
         for label, value in [
             ("Auto", "auto"),
-            ("32:9 (2560x720)", "32:9"),
-            ("21:9 (1680x720)", "21:9"),
-            ("16:9 (1280x720)", "16:9"),
-            ("4:3 (960x720)", "4:3"),
-            ("3:2 (1080x720)", "3:2"),
-            ("Custom Width (x720)", "custom"),
+            ("32:9", "32:9"),
+            ("21:9", "21:9"),
+            ("16:9", "16:9"),
+            ("4:3", "4:3"),
+            ("3:2", "3:2"),
+            ("Custom", "custom"),
         ]:
             self.aspect.addItem(label, value)
         self.aspect.currentIndexChanged.connect(self.update_custom_aspect_visibility)
-        self.aspect.setToolTip("Choose the internal Waydroid aspect ratio presented through Gamescope.")
-        dgrid.addWidget(QLabel("Aspect Ratio"), 0, 0)
-        dgrid.addWidget(self.aspect, 0, 1, 1, 3)
+        self.aspect.setToolTip("")
+        aspect_row = help_row(QLabel("Aspect Ratio"), "Aspect Ratio")
+        self._field_labels.append(aspect_row)
+        dgrid.addWidget(aspect_row, 0, 0)
+        dgrid.addWidget(self.aspect, 0, 1)
 
         self.overlay_mode = QComboBox()
         self.overlay_mode.addItem("Off", "off")
         self.overlay_mode.addItem("Minimal", "minimal")
         self.overlay_mode.addItem("Detailed", "detailed")
         self.overlay_mode.addItem("MangoApp", "mangoapp")
-        self.overlay_mode.setToolTip("Minimal and Detailed use the MWM HUD. Start/Restart is required for MangoApp if its client is not running.")
-        dgrid.addWidget(QLabel("FPS Counter"), 1, 0)
-        dgrid.addWidget(self.overlay_mode, 1, 1, 1, 3)
+        self.overlay_mode.setToolTip("")
+        fps_row = help_row(QLabel("FPS Counter"), "FPS Counter")
+        self._field_labels.append(fps_row)
+        dgrid.addWidget(fps_row, 2, 0)
+        dgrid.addWidget(self.overlay_mode, 2, 1)
 
         self.span_displays = QCheckBox("Span Displays (Experimental)")
-        self.span_displays.setToolTip("Present Gamescope across all enabled displays using the current desktop layout. Auto follows their combined aspect ratio.")
+        self.span_displays.setToolTip("")
         try:
             self.span_displays.setChecked((self.config_dir() / "gamescope-span-enabled").read_text().strip() == "on")
         except FileNotFoundError:
             pass
-        dgrid.addWidget(self.span_displays, 3, 0, 1, 4)
+        self.span_displays.toggled.connect(self.update_resolution_preview)
 
-        self.custom_w_label = QLabel("Width")
         self.custom_w = QSpinBox()
-        self.custom_w.setRange(320, 7680)
-        self.custom_w.setValue(1280)
-        self.custom_w.setSuffix(" px")
-        self.custom_sep = QLabel("×")
-        self.custom_h_label = QLabel("720 px")
-        dgrid.addWidget(self.custom_w_label, 2, 0)
-        dgrid.addWidget(self.custom_w, 2, 1)
-        dgrid.addWidget(self.custom_sep, 2, 2)
-        dgrid.addWidget(self.custom_h_label, 2, 3)
-        dgrid.setColumnStretch(0, 2)
-        dgrid.setColumnStretch(1, 3)
-        dgrid.setColumnStretch(2, 0)
-        dgrid.setColumnStretch(3, 0)
+        self.custom_h = QSpinBox()
+        for box, value in ((self.custom_w, 16), (self.custom_h, 9)):
+            box.setRange(1, 99)
+            box.setValue(value)
+            box.setFixedWidth(box.sizeHint().width())
+            box.valueChanged.connect(self.update_resolution_preview)
+        self.custom_w.setAccessibleName("Aspect ratio width")
+        self.custom_h.setAccessibleName("Aspect ratio height")
+        self.custom_sep = QLabel(":")
+        self.resolution = QLabel("Resolution: --")
+        self.resolution.setMinimumWidth(self.resolution.fontMetrics().horizontalAdvance("Resolution: 11520x1080"))
+        self.ratio_line = QWidget()
+        ratio_layout = QHBoxLayout(self.ratio_line)
+        ratio_layout.setContentsMargins(0, 0, 0, 0)
+        ratio_layout.setSpacing(4)
+        for widget in (self.custom_w, self.custom_sep, self.custom_h):
+            ratio_layout.addWidget(widget)
+        ratio_layout.addSpacing(6)
+        ratio_layout.addWidget(self.resolution)
+        ratio_layout.addStretch(1)
+        self.ratio_line.setMinimumWidth(self.custom_w.width() + self.custom_h.width()
+                                        + self.resolution.minimumWidth() + self.custom_sep.sizeHint().width() + 26)
+        dgrid.addWidget(self.ratio_line, 1, 1)
+        dgrid.setColumnStretch(0, 0)
+        dgrid.setColumnStretch(1, 1)
         display.v.addLayout(dgrid)
         hv.addWidget(display)
 
         assist = Card("Options")
         self.zoom_fix = QCheckBox("RTScale Zoom Fix")
-        self.zoom_fix.setToolTip("Save with Apply, then Start/Restart. Compatibility adjustments for zoom and rendering with RTScale.")
+        self.zoom_fix.setToolTip("")
         self.auto_start = QCheckBox("Auto Launch Mirishita")
-        self.auto_start.setToolTip("For verification. When disabled, wait on the Android home screen. Save changes with Apply.")
+        self.auto_start.setToolTip("")
         try:
             auto_value = (self.config_dir() / "auto-start-mirishita").read_text(encoding="utf-8").strip()
         except (OSError, UnicodeError):
@@ -341,17 +376,19 @@ class MainWindow(QMainWindow):
         except OSError:
             verify_value = "on"
         self.verify_startup.setChecked(verify_value != "off")
-        self.verify_startup.setToolTip("OFFではStart／Restart押下でGamescopeを起動し直します。起動済みのゲームは終了します。設定反映後の起動確認を省略し、ミリシタは手動で起動します。")
+        self.verify_startup.setToolTip("")
         self.verify_startup.toggled.connect(self.auto_start.setEnabled)
         self.auto_start.setEnabled(self.verify_startup.isChecked())
-        self.auto_start.setToolTip("Verify Waydroid StartupがONのとき、設定反映と確認の後にミリシタを自動起動します。")
-        assist.v.addWidget(self.verify_startup)
+        self.auto_start.setToolTip("")
+        assist.v.addWidget(help_row(self.verify_startup, "Verify Waydroid Startup"))
 
-        assist.v.addWidget(self.auto_start)
+        assist.v.addWidget(help_row(self.auto_start, "Auto Launch Mirishita"))
         self.fake_touch = QCheckBox("Mouse as Touch")
-        assist.v.addWidget(self.fake_touch)
-        assist.v.addWidget(self.zoom_fix)
+        assist.v.addWidget(help_row(self.fake_touch, "Mouse as Touch"))
+        assist.v.addWidget(help_row(self.zoom_fix, "RTScale Zoom Fix"))
+        self.zoom_fix.toggled.connect(self.update_msaa_controls)
         hv.addWidget(assist)
+        hv.addSpacing(48)
         hv.addStretch(1)
         self.tabs.addTab(home, "Home")
 
@@ -392,6 +429,7 @@ class MainWindow(QMainWindow):
             b.clicked.connect(fn)
             mbuttons.addWidget(b, 1)
         mcard.v.addLayout(mbuttons)
+        mcard.v.addWidget(help_row(self.span_displays, "Span Displays (Experimental)"))
         mv.addWidget(mcard)
 
         debug_card = Card("RTScale Debug")
@@ -439,10 +477,10 @@ class MainWindow(QMainWindow):
         self.btn_save = QPushButton("Apply")
         self.btn_refresh = QPushButton("Start")
         self.btn_cancel = QPushButton("Cancel")
-        self.btn_cancel.setToolTip("Close MWM. Settings already saved with Apply are retained.")
+        self.btn_cancel.setToolTip("")
         self.btn_refresh.setObjectName("PrimaryButton")
-        self.btn_save.setToolTip("Save settings. Apply rendering settings with Waydroid Refresh.")
-        self.btn_refresh.setToolTip("Start or restart Waydroid and apply saved settings. With startup verification enabled, Auto Launch Mirishita starts the game after preparation.")
+        self.btn_save.setToolTip("")
+        self.btn_refresh.setToolTip("")
         self.btn_reset_defaults.clicked.connect(self.reset_ui_defaults)
         self.btn_save.clicked.connect(self.apply_settings)
         self.btn_refresh.clicked.connect(self.refresh_runtime)
@@ -469,7 +507,14 @@ class MainWindow(QMainWindow):
         self.update_backend_controls()
         self.update_custom_aspect_visibility()
         self.check_saved_settings_consistency()
+        self.update_msaa_controls()
+        self.update_resolution_preview()
+        for control in self.findChildren(QWidget):
+            control.setToolTip("")
+        for label in self._field_labels:
+            label.setFixedWidth(label_column_width)
         self._initial_loading = False
+        QTimer.singleShot(0, self.fit_initial_size)
 
         self._runtime_running = False
         self._runtime_probe = QProcess(self)
@@ -490,10 +535,16 @@ class MainWindow(QMainWindow):
         """Require Apply when legacy/invalid disk values differ from loaded UI."""
         aspect = self.aspect.currentData()
         if aspect == "custom":
-            aspect = f"{self.custom_w.value()}x720"
+            try:
+                aspect = f"{ratio_width(self.custom_w.value(), self.custom_h.value())}x720"
+            except ValueError:
+                self._needs_backend_migration = True
+                return
         expected = {
             "gamescope-span-enabled": "on" if self.span_displays.isChecked() else "off",
             "rtscale-zoom-fix": "on" if self.zoom_fix.isChecked() else "off",
+            "rtscale-msaa-samples": str(self.msaa_samples.currentData()),
+            "custom-aspect": f"{self.custom_w.value()}:{self.custom_h.value()}",
             "display-backend": str(self.backend.currentData()),
             "gamescope-render-mode": self.selected_render_mode(),
             "aspect-ratio": aspect,
@@ -517,6 +568,10 @@ class MainWindow(QMainWindow):
                 saved = None
             if name in ("rtscale-zoom-fix", "auto-start-mirishita", "verify-waydroid-startup") and saved is None:
                 saved = "on"  # Backward-compatible default, no silent write.
+            if name == "rtscale-msaa-samples" and saved is None:
+                saved = "0"
+            if name == "custom-aspect" and saved is None:
+                saved = value
             if name == "gamescope-span-enabled" and saved is None:
                 saved = "off"
             if saved != value:
@@ -588,7 +643,7 @@ class MainWindow(QMainWindow):
 
     def update_gamescope_sharpness_label(self, *_args):
         active = self.rtscale_fsr_enabled.isChecked() and self.backend.currentData() == "gamescope"
-        self.rtscale_fsr_enabled.setToolTip("Enable FSR1 upscaling and sharpening together.")
+
         for control in (self.gamescope_fsr_scale, self.fsr_scale_label, self.gamescope_sharpness_label, self.gamescope_sharpness, self.gamescope_sharpness_value):
             control.setEnabled(active)
 
@@ -660,11 +715,42 @@ class MainWindow(QMainWindow):
             control.hide()
         self.rtscale_fsr_enabled.setEnabled(not is_kwin)
         self.update_gamescope_sharpness_label()
+        self.update_msaa_controls()
+        self.update_resolution_preview()
+
+    def fit_initial_size(self):
+        self.layout().activate()
+        width = self.minimumSizeHint().width()
+        self.setMinimumWidth(width)
+        self.resize(width, max(700, self.minimumSizeHint().height()))
+
+    def update_msaa_controls(self, *_args):
+        if not hasattr(self, "zoom_fix"):
+            return
+        self.msaa_samples.setEnabled(self.scale.currentData() not in ("off", "1") and self.zoom_fix.isChecked())
+
+    def update_resolution_preview(self, *_args):
+        if not hasattr(self, "resolution"):
+            return
+        screen = QApplication.primaryScreen()
+        size = (screen.geometry().width(), screen.geometry().height()) if screen else (0, 0)
+        if self.aspect.currentData() == "auto" and self.span_displays.isChecked():
+            self.resolution.setText("Resolution: Auto (Span)")
+            return
+        try:
+            width, height = dimensions(self.aspect.currentData(), self.scale.currentData() != "off",
+                                       (self.custom_w.value(), self.custom_h.value()), size)
+            self.resolution.setText(f"Resolution: {width}x{height}")
+        except (ValueError, KeyError):
+            self.resolution.setText("Resolution: --")
 
     def update_custom_aspect_visibility(self, *_args):
         visible = self.aspect.currentData() == "custom"
-        for w in (self.custom_w_label, self.custom_w, self.custom_sep, self.custom_h_label):
-            w.setVisible(visible)
+        if not hasattr(self, "custom_h"):
+            return
+        for widget in (self.custom_w, self.custom_h, self.custom_sep):
+            widget.setVisible(visible)
+        self.update_resolution_preview()
 
     def log(self, text):
         self.output.appendPlainText(text)
@@ -707,26 +793,17 @@ class MainWindow(QMainWindow):
     def load_current_aspect(self):
         try:
             value = (self.config_dir() / "aspect-ratio").read_text(encoding="utf-8").strip().lower()
-        except Exception:
+        except OSError:
             value = "auto"
-        idx = self.aspect.findData(value)
-        if idx >= 0:
-            self.aspect.setCurrentIndex(idx)
-            return
-        separator = "x" if "x" in value else (":" if ":" in value else None)
-        if separator:
-            try:
-                w, h = (int(x) for x in value.split(separator, 1))
-                if w > 0 and h > 0:
-                    w = round(720 * w / h)
-                    if w % 2:
-                        w += 1
-                    idx = self.aspect.findData("custom")
-                    if idx >= 0:
-                        self.aspect.setCurrentIndex(idx)
-                        self.custom_w.setValue(max(self.custom_w.minimum(), min(self.custom_w.maximum(), w)))
-            except Exception:
-                pass
+        try:
+            custom = (self.config_dir() / "custom-aspect").read_text().strip()
+        except OSError:
+            custom = value if ("x" in value or value not in ("auto", "32:9", "21:9", "16:9", "4:3", "3:2")) else "16:9"
+        width, height = legacy_ratio(custom)
+        self.custom_w.setValue(width)
+        self.custom_h.setValue(height)
+        index = self.aspect.findData(value)
+        self.aspect.setCurrentIndex(index if index >= 0 else self.aspect.findData("custom"))
 
     def performance_overlay_mode_state_path(self):
         return self.config_dir() / "performance-overlay-mode"
@@ -774,7 +851,7 @@ class MainWindow(QMainWindow):
     def current_settings_snapshot(self):
         return (
             self.backend.currentIndex(), self.backend.currentData(), self.selected_render_mode(), self.scale.currentData(),
-            self.aspect.currentData(), int(self.custom_w.value()), self.span_displays.isChecked(),
+            self.aspect.currentData(), int(self.custom_w.value()), int(self.custom_h.value()), self.msaa_samples.currentData(), self.span_displays.isChecked(),
             int(self.gamescope_fsr_scale.currentData()), int(self.gamescope_sharpness.value()),
             bool(self.gamescope_fsr_sharpness_enabled.isChecked()), bool(self.rtscale_fsr_enabled.isChecked()),
             self.overlay_mode.currentData(), bool(self.fake_touch.isChecked()), bool(self.zoom_fix.isChecked()), bool(self.auto_start.isChecked()), bool(self.verify_startup.isChecked()), bool(self.cas_enabled.isChecked()), int(self.cas_strength.value()),
@@ -825,10 +902,9 @@ class MainWindow(QMainWindow):
 
     def reset_ui_defaults(self):
         answer = QMessageBox.question(
-            self, "初期設定に戻す",
-            "画面上の設定を初期設定に戻しますか？\n"
-            "編集中の変更は失われます。\n"
-            "保存するには、確認後にApplyを押してください。",
+            self, local("Reset to Defaults", "初期設定に戻す"),
+            local("Reset the displayed settings? Unsaved changes will be lost. Click Apply afterwards to save.",
+                  "画面上の設定を初期値に戻しますか？編集中の変更は失われます。保存するにはApplyを押してください。"),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
@@ -842,7 +918,9 @@ class MainWindow(QMainWindow):
         self.rtscale_fsr_enabled.setChecked(False)
         idx = self.scale.findData("off"); self.scale.setCurrentIndex(idx if idx >= 0 else 0)
         idx = self.aspect.findData("auto"); self.aspect.setCurrentIndex(idx if idx >= 0 else 0)
-        self.custom_w.setValue(1280)
+        self.custom_w.setValue(16)
+        self.custom_h.setValue(9)
+        self.msaa_samples.setCurrentIndex(0)
         idx = self.gamescope_fsr_scale.findData(150); self.gamescope_fsr_scale.setCurrentIndex(idx if idx >= 0 else 0)
         self.gamescope_sharpness.setValue(11)
         self.cas_enabled.setChecked(False)
@@ -862,7 +940,7 @@ class MainWindow(QMainWindow):
         try:
             aspect = self.aspect.currentData()
             if aspect == "custom":
-                aspect = f"{self.custom_w.value()}x720"
+                aspect = f"{ratio_width(self.custom_w.value(), self.custom_h.value())}x720"
             values = {
                 "display-backend": str(self.backend.currentData()),
                 "gamescope-render-mode": self.selected_render_mode(),
@@ -877,6 +955,8 @@ class MainWindow(QMainWindow):
                 "mouse-as-touch": "on" if self.fake_touch.isChecked() else "off",
                 "gamescope-span-enabled": "on" if self.span_displays.isChecked() else "off",
                 "rtscale-zoom-fix": "on" if self.zoom_fix.isChecked() else "off",
+                "rtscale-msaa-samples": str(self.msaa_samples.currentData()),
+                "custom-aspect": f"{self.custom_w.value()}:{self.custom_h.value()}",
                 "performance-overlay-mode": str(self.overlay_mode.currentData()),
                 "auto-start-mirishita": "on" if self.auto_start.isChecked() else "off",
             "verify-waydroid-startup": "on" if self.verify_startup.isChecked() else "off",
@@ -1111,7 +1191,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.information(self, "MWM", "This app is already registered.")
                 return
             suggested = KNOWN_NAMES.get(pkg, pkg)
-            name, ok = QInputDialog.getText(self, "起動中のゲームを登録", f"パッケージ：{pkg}\n\n表示名：", text=suggested)
+            name, ok = QInputDialog.getText(self, local("Register Running Game", "起動中のゲームを登録"), local(f"Package: {pkg}\n\nDisplay name:", f"パッケージ：{pkg}\n\n表示名："), text=suggested)
             if not ok:
                 return
             profiles[pkg] = {
@@ -1214,18 +1294,6 @@ if __name__ == "__main__":
             color: #f2f2f2;
             padding: 2px;
         }
-        #HelpButton {
-            border: 1px solid #4a4d54;
-            border-radius: 11px;
-            min-width: 22px;
-            max-width: 22px;
-            min-height: 22px;
-            max-height: 22px;
-            font-weight: 700;
-            color: #d7dbe0;
-            background: #35383e;
-        }
-        #HelpButton:hover { background: #41454c; }
         QPushButton {
             background: #35383e;
             border: 1px solid #4a4d54;

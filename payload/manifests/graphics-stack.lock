@@ -2,9 +2,9 @@ format = 1
 status = "diamond-joker-and-depth-blit-real-machine-verified-amd-candidate"
 target = "Waydroid Android 11 x86_64 / API 30"
 sources_archive = "sources/graphics-sources.tar.zst"
-local_patch = "experimental/diamond-joker/mesa-msaa-storage2.patch"
-additional_local_patch = "experimental/depth-blit/mesa-depth-only-blit.patch"
-source_provenance = "experimental/depth-blit/README.md"
+local_patch = "docs/graphics/msaa/mesa-msaa-storage2.patch"
+additional_local_patch = "docs/graphics/depth-blit/mesa-depth-only-blit.patch"
+source_provenance = "docs/graphics/depth-blit/README.md"
 donor_equivalence = "independent reconstruction, not bit-identical ISO rebuild"
 gallium_drivers = "radeonsi,iris,crocus,r300,r600,nouveau,svga,virgl,softpipe,llvmpipe,zink"
 

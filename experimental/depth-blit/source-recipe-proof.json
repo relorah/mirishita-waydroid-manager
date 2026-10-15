@@ -1,9 +1,0 @@
-{
-  "src/mesa/main/gles_rtscale.h": true,
-  "src/mesa/main/gles_rtscale_config.c": true,
-  "src/mesa/main/teximage.c": true,
-  "src/mesa/main/fbobject.c": true,
-  "src/mesa/main/uniform_query.cpp": true,
-  "src/mesa/state_tracker/st_program.c": true,
-  "src/mesa/main/blit.c": true
-}

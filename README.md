@@ -53,6 +53,8 @@ MWMはWaydroidの描画ライブラリや表示・入力などを調整します
 
 実験的な開発中のツールです。
 
-## v0.84 修正候補
+## 0.85の変更
 
-Diamond Jokerの光源座標補正と、任意MSAA2によるx6のGPU負荷対策を実機検証しました。対応Mesaバイナリは検証ZIPで共有し、ソース・検証記録・適用／復元手順は[修正候補](experimental/diamond-joker/README.md)にまとめています。
+MSAA設定の追加とUIの調整。
+
+描画ライブラリの変更・出典は[描画ソース資料](docs/graphics/msaa/README.md)を参照してください。

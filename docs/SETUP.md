@@ -1,4 +1,4 @@
-# Mirishita Waydroid Manager (MWM) 0.84 Setup Guide
+# Mirishita Waydroid Manager (MWM) 0.85 Setup Guide
 
 MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理するツールです。
 
@@ -56,10 +56,15 @@ Reset to Defaultsは画面上の設定を初期値へ戻します。Applyで保�
 | 項目 | 内容 |
 | --- | --- |
 | RTScale | OFF／x1～x10。重い場面では倍率を下げてください。 |
+| MSAA Sample Limit | Original (Quality)はゲーム本来のサンプル数を維持。2 Samples (Performance)は拡大対象の4サンプル以上を2へ制限します。RTScale x2以上・Zoom Fix ONで操作できます。 |
 | AMD FSR1 | Gamescopeによる拡大（EASU）とシャープニング（RCAS）。OFFで下位項目をグレーアウトします。 |
 | Upscale | 125%／150%／175%／200%。初期選択は150%。RTScale併用時の175%／200%は実機確認待ちです。 |
 | Sharpness | 1～21。1が最小強度、21が最大です。 |
-| Aspect Ratio | Auto／32:9／21:9／16:9／4:3／3:2／Custom Width。Custom Widthは320～7680、基準高さ720。 |
+| Aspect Ratio | Auto／32:9／21:9／16:9／4:3／3:2／Custom。Customのみ横・縦を1～99で入力でき、初期値は16:9です。上下ボタンでも変更できます。 |
+
+比率に応じたWaydroid表示寸法を `Resolution: 1920x1080` の形式で表示します。Customの入力欄は解像度ではなく横：縦の比率です。基準高さ720へ換算した幅が320～7680に収まる範囲で指定してください。
+
+項目名の横の `(?)` をクリックすると説明を表示します。ホバーでは表示しません。説明とポップアップはOS言語が日本語なら日本語、それ以外は英語です。
 
 RTScale ONではWaydroid表示を高さ1080相当とし、RTScaleの基準寸法は別に高さ720で管理します。OSスケール、表示寸法、RTScale倍率は別の設定です。
 

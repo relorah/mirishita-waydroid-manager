@@ -1,5 +1,7 @@
 """Locale-aware user messages; keep technical diagnostic output unchanged."""
 TRANSLATIONS = {
+ 'Aspect ratio values must be between 1 and 99.':'アスペクト比の横・縦は1～99で指定してください。',
+ 'This aspect ratio exceeds the supported display range.':'このアスペクト比は対応する表示寸法の範囲を超えています。',
  'Could not stop Mirishita. Settings have not been applied.':'ミリシタを終了できなかったため、設定の反映を中止しました。',
  'Could not verify Mirishita stopped. Settings have not been applied.':'ミリシタの終了を確認できなかったため、設定の反映を中止しました。',
  'Mirishita is still running. Settings have not been applied.':'ミリシタが終了しなかったため、設定の反映を中止しました。',
