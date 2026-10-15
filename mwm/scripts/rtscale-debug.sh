@@ -25,7 +25,7 @@ render_mode() {
 saved_scale() {
   local v="3"
   [[ -f "$CFG_DIR/kwin-rtscale" ]] && v="$(tr -d '[:space:]' < "$CFG_DIR/kwin-rtscale" 2>/dev/null || true)"
-  case "$v" in off|[1-9]|10) echo "$v" ;; *) echo 3 ;; esac
+  case "$v" in off|[1-8]) echo "$v" ;; 9|10) echo 8 ;; *) echo 3 ;; esac
 }
 
 expected_base() {

@@ -12,7 +12,7 @@ CHOICES = {
  'gamescope-fsr-sharpness-enabled': {'on','off'}, 'mouse-as-touch': {'on','off'},
  'auto-start-mirishita': {'on','off'}, 'performance-overlay-mode': {'off','minimal','detailed','mangoapp'},
  'gamescope-fsr-scale': {'100','125','150','175','200'},
- 'kwin-rtscale': {'off'} | {str(i) for i in range(1,11)},
+ 'kwin-rtscale': {'off'} | {str(i) for i in range(1,9)},
  'gamescope-cas-enabled': {'on','off'}, 'gamescope-cas-strength': {str(i) for i in range(101)},
  'gamescope-sharpness': {str(i) for i in range(21)},
 }

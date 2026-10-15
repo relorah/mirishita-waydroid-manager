@@ -11,8 +11,8 @@ from version import __version__
 CFG=Path(os.environ.get("XDG_CONFIG_HOME",str(Path.home()/".config")))/"mwm"
 STATE=Path(os.environ.get("XDG_STATE_HOME",str(Path.home()/".local/state")))/"mwm/rts-fast-state.json"
 def compatible(old, value):
-    if old.get('scale') not in [str(i) for i in range(1,11)]: return False
-    if value.get('scale') not in [str(i) for i in range(1,11)]: return False
+    if old.get('scale') not in [str(i) for i in range(1,9)]: return False
+    if value.get('scale') not in [str(i) for i in range(1,9)]: return False
     if old['scale']==value['scale']: return False
     return {k:v for k,v in old.items() if k!='scale'} == {k:v for k,v in value.items() if k!='scale'}
 
@@ -26,7 +26,7 @@ def current():
     if not screens: raise RuntimeError("No screen")
     config={p.name:p.read_text() for p in CFG.iterdir() if p.is_file() and p.name != "kwin-rtscale"}
     scale=(CFG/"kwin-rtscale").read_text().strip()
-    if scale not in [str(i) for i in range(1,11)]: raise RuntimeError("RTScale not enabled")
+    if scale not in [str(i) for i in range(1,9)]: raise RuntimeError("RTScale not enabled")
     identities=[]
     for p in Path('/proc').iterdir():
         if not p.name.isdigit(): continue

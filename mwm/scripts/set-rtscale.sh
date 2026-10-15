@@ -72,8 +72,8 @@ if [[ "$VALUE" == "off" ]]; then
   exit 0
 fi
 
-[[ "$VALUE" =~ ^([1-9]|10)$ ]] || {
-  echo "invalid scale: $VALUE (allowed: 1-10)" >&2
+[[ "$VALUE" =~ ^[1-8]$ ]] || {
+  echo "invalid scale: $VALUE (allowed: 1-8)" >&2
   exit 2
 }
 printf '%s\n' "$VALUE" > "$SCALE_STATE"

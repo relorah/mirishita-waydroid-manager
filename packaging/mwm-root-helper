@@ -258,7 +258,7 @@ printf "MWM_RUNTIME_OK\n"'
     [[ "$zoom_fix" == 0 || "$zoom_fix" == 1 ]] || { echo "invalid zoom fix flag" >&2; exit 2; }
     [[ "$msaa_samples" != 2 || "$zoom_fix" == 1 ]] || { echo "MSAA 2x requires RTScale Zoom Fix" >&2; exit 2; }
     [[ "$surface" == 0 || "$surface" == 1 ]] || { echo "invalid surface flag" >&2; exit 2; }
-    [[ "$scale" =~ ^([1-9]|10)$ ]] || { echo "invalid scale" >&2; exit 2; }
+    [[ "$scale" =~ ^[1-8]$ ]] || { echo "invalid scale" >&2; exit 2; }
     [[ "$base_w" =~ ^[0-9]+$ && "$base_h" =~ ^[0-9]+$ ]] || { echo "invalid base size" >&2; exit 2; }
     (( base_w > 0 && base_h > 0 )) || { echo "invalid base size" >&2; exit 2; }
 

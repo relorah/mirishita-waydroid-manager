@@ -53,14 +53,14 @@ echo "Display preset: $aspect"
 if [[ "$backend" == gamescope ]]; then
   "$(dirname "$0")/gamescope-control.sh" status 2>/dev/null || true
   sharp="$(cat "$CFG_DIR/gamescope-sharpness" 2>/dev/null || echo 10)"
-  fsr_scale="$(cat "$CFG_DIR/gamescope-fsr-scale" 2>/dev/null || echo 150)"
+  fsr_scale="$(cat "$CFG_DIR/gamescope-fsr-scale" 2>/dev/null || echo 125)"
   overlay_mode="$(cat "$CFG_DIR/performance-overlay-mode" 2>/dev/null || echo off)"
   if [[ "$sharp" =~ ^([0-9]|1[0-9]|20)$ ]]; then
     sharp_pct=$(( (20 - sharp) * 5 ))
   else
     sharp_pct="?"
   fi
-  case "$fsr_scale" in 100|125|150|175|200) ;; *) warn "Invalid FSR scale: $fsr_scale"; fsr_scale=150 ;; esac
+  case "$fsr_scale" in 100|125|150|175|200) ;; *) warn "Invalid FSR scale: $fsr_scale"; fsr_scale=125 ;; esac
   if [[ "$render" == rtscale ]]; then
     echo "Gamescope + RTScale: scale $(cat "$CFG_DIR/kwin-rtscale" 2>/dev/null || echo 3) / 1080-high display / fullscreen"
     if [[ ! -f "$CFG_DIR/gamescope-fsr-enabled" ]]; then
@@ -147,7 +147,7 @@ else
       (( target_base % 2 == 0 )) || ((target_base++))
       [[ "$base_w" == "$target_base" && "$base_h" == 720 ]] && pass "KWin RTScale base matches applied display aspect" || warn "KWin RTScale base differs from applied display aspect"
     fi
-    [[ "$scale" =~ ^([1-9]|10)$ ]] && pass "RTScale configured x$scale" || warn "RTScale scale invalid"
+    [[ "$scale" =~ ^[1-8]$ ]] && pass "RTScale configured x$scale" || warn "RTScale scale invalid"
   else
     info "RTScale OFF"
   fi

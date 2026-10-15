@@ -36,7 +36,7 @@ saved_render_mode() {
 saved_scale() {
   local v="off"
   [[ -f "$RTSCALE_STATE" ]] && v="$(tr -d '[:space:]' < "$RTSCALE_STATE" 2>/dev/null || true)"
-  case "$v" in off|[1-9]|10) echo "$v" ;; *) echo off ;; esac
+  case "$v" in off|[1-8]) echo "$v" ;; 9|10) echo 8 ;; *) echo off ;; esac
 }
 
 mouse_as_touch_enabled() {

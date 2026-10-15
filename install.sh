@@ -269,7 +269,7 @@ reset_mwm_state() {
   printf '0\n' > "$cfg/rtscale-msaa-samples"
   printf '16:9\n' > "$cfg/custom-aspect"
   printf '10\n' > "$cfg/gamescope-sharpness"
-  printf '150\n' > "$cfg/gamescope-fsr-scale"
+  printf '125\n' > "$cfg/gamescope-fsr-scale"
   printf 'on\n' > "$cfg/mouse-as-touch"
   printf 'on\n' > "$cfg/auto-start-mirishita"
   printf 'on\n' > "$cfg/verify-waydroid-startup"
@@ -280,6 +280,13 @@ reset_mwm_state() {
 
 install_mwm_launcher() {
   say "Installing MWM desktop application"
+  local cfg="${XDG_CONFIG_HOME:-$HOME/.config}/mwm" migrated_scale
+  if [[ -f "$cfg/kwin-rtscale" ]] && [[ "$(tr -d '[:space:]' < "$cfg/kwin-rtscale")" =~ ^(9|10)$ ]]; then
+    migrated_scale="$(mktemp "$cfg/.kwin-rtscale.XXXXXX")"
+    printf '8\n' > "$migrated_scale"
+    mv -f -- "$migrated_scale" "$cfg/kwin-rtscale"
+    ok "Previous RTScale x9/x10 setting adjusted to x8"
+  fi
   if [[ -f "$APP_HOME/scripts/kwin-fullscreen.py" ]]; then
     python "$APP_HOME/scripts/kwin-fullscreen.py" stop || die "Could not stop previous fullscreen monitor"
   fi

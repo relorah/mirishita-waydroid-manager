@@ -211,7 +211,7 @@ class MainWindow(QMainWindow):
         self.backend.hide()
         self.scale = QComboBox()
         self.scale.addItem("OFF", "off")
-        for i in range(1, 11):
+        for i in range(1, 9):
             self.scale.addItem(f"x{i}", str(i))
         self.scale.setCurrentText("OFF")
         self.scale_label = QLabel("RTScale")
@@ -421,7 +421,7 @@ class MainWindow(QMainWindow):
         mbuttons.setSpacing(5)
         for label, fn in [
             ("Doctor", self.doctor),
-            ("Save Diagnostic Log", self.logs),
+            ("Save Log", self.logs),
             ("Uninstall MWM", self.uninstall),
         ]:
             b = QPushButton(label)
@@ -671,9 +671,9 @@ class MainWindow(QMainWindow):
         try:
             fsr_scale = int(self.gamescope_fsr_scale_state_path().read_text(encoding="utf-8").strip())
         except Exception:
-            fsr_scale = 150
+            fsr_scale = 125
         if fsr_scale not in tuple(self.gamescope_fsr_scale.itemData(i) for i in range(self.gamescope_fsr_scale.count())):
-            fsr_scale = 150
+            fsr_scale = 125
         idx = self.gamescope_fsr_scale.findData(fsr_scale)
         self.gamescope_fsr_scale.setCurrentIndex(idx if idx >= 0 else 0)
         try:
@@ -694,13 +694,13 @@ class MainWindow(QMainWindow):
         if not hasattr(self, "backend"):
             return
         is_kwin = self.backend.currentData() == "kwin"
-        current = int(self.gamescope_fsr_scale.currentData() or 150)
+        current = int(self.gamescope_fsr_scale.currentData() or 125)
         values = (125, 150, 175, 200)
         self.gamescope_fsr_scale.blockSignals(True)
         self.gamescope_fsr_scale.clear()
         for value in values:
             self.gamescope_fsr_scale.addItem(f"{value}%", value)
-        self.gamescope_fsr_scale.setCurrentIndex(values.index(current if current in values else 150))
+        self.gamescope_fsr_scale.setCurrentIndex(values.index(current if current in values else 125))
         self.gamescope_fsr_scale.blockSignals(False)
         self.scale_label.setVisible(True)
         self.scale.setVisible(True)
@@ -783,7 +783,9 @@ class MainWindow(QMainWindow):
             saved = (self.config_dir() / "kwin-rtscale").read_text(encoding="utf-8").strip()
         except Exception:
             saved = "off"
-        if saved not in (["off"] + [str(i) for i in range(1, 11)]):
+        if saved in ("9", "10"):
+            saved = "8"
+        if saved not in (["off"] + [str(i) for i in range(1, 9)]):
             saved = "off"
         self._kwin_scale_cache = saved
         idx = self.scale.findData(saved)
@@ -921,7 +923,7 @@ class MainWindow(QMainWindow):
         self.custom_w.setValue(16)
         self.custom_h.setValue(9)
         self.msaa_samples.setCurrentIndex(0)
-        idx = self.gamescope_fsr_scale.findData(150); self.gamescope_fsr_scale.setCurrentIndex(idx if idx >= 0 else 0)
+        idx = self.gamescope_fsr_scale.findData(125); self.gamescope_fsr_scale.setCurrentIndex(idx if idx >= 0 else 0)
         self.gamescope_sharpness.setValue(11)
         self.cas_enabled.setChecked(False)
         self.cas_strength.setValue(50)

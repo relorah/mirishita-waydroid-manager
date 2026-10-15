@@ -12,11 +12,9 @@ MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理す
 
 ## 導入するもの
 
-ホストへ依存パッケージ、本体、ランチャー、限定した管理処理を行うroot helperとsudoers設定を導入します。Waydroidには描画ライブラリをoverlayとして導入し、表示・入力・RTScaleなどの設定を変更します。
+ホストへ依存パッケージ、MWM本体、ランチャー、管理処理用のroot helperとsudoers設定を導入します。Waydroidには描画ライブラリをoverlayとして導入し、表示・入力・RTScaleなどの設定を変更します。
 
 RTScaleは、mogareta7731氏が公開した原機能とライブラリの挙動を参考に解析・再構成し、Mesaへ組み込んだMWM独立実装を使用します。描画部品の出典・版は `payload/manifests/graphics-stack.lock`、ライセンスは `LICENSES/` に記載しています。
-
-MWMは非公式ツールです。動作や利用規約への適合を保証しません。利用者の判断で使用し、重要なデータは事前に保全してください。
 
 ## インストール・更新
 
@@ -45,7 +43,7 @@ chmod +x install.sh
 2. **Apply**で保存します。
 3. **Start**で起動します。起動中は**Restart**になります。
 
-ApplyはMWMの設定保存と、起動状態に応じたFPS Counterの更新を行います。AndroidとGamescopeへ描画・表示設定を反映するには、Start／Restartを押してください。Restartはプレイ中のゲームも終了します。未保存の変更がある間はStart／Restartを押せません。
+Applyは設定保存と、起動状態に応じたFPS Counterの更新を行います。AndroidとGamescopeへ描画・表示設定を反映するには、Start／Restartを押してください。Restartはプレイ中のゲームも終了します。未保存の変更がある間はStart／Restartを押せません。
 
 初期値はRTScale OFF、AMD FSR1 OFF、Aspect Ratio Auto、FPS Counter Offです。Optionsの4項目はONです。準備確認後にミリシタを自動起動し、MWMを最小化します。
 
@@ -55,22 +53,18 @@ Reset to Defaultsは画面上の設定を初期値へ戻します。Applyで保�
 
 | 項目 | 内容 |
 | --- | --- |
-| RTScale | OFF／x1～x10。重い場面では倍率を下げてください。 |
-| MSAA Sample Limit | Original (Quality)はゲーム本来のサンプル数を維持。2 Samples (Performance)は拡大対象の4サンプル以上を2へ制限します。RTScale x2以上・Zoom Fix ONで操作できます。 |
-| AMD FSR1 | Gamescopeによる拡大（EASU）とシャープニング（RCAS）。OFFで下位項目をグレーアウトします。 |
-| Upscale | 125%／150%／175%／200%。初期選択は150%。RTScale併用時の175%／200%は実機確認待ちです。 |
+| RTScale | OFF／x1～x8。対象の3Dレンダリングを高解像度化します。高倍率ほどGPU負荷が増えます。 |
+| MSAA Sample Limit | Original (Quality)はゲーム本来のサンプル数を維持します。2 Samples (Performance)はRTScaleで拡大する対象の4サンプル以上を2へ制限し、負荷を抑えます。RTScale x2以上・Zoom Fix ONで適用されます。 |
+| AMD FSR1 | レンダリング後の画像に、Gamescopeでアップスケーリング（EASU）とシャープニング（RCAS）を適用します。OFFで下位項目をグレーアウトします。 |
+| Upscale | 125%／150%／175%／200%。初期選択は125%。 |
 | Sharpness | 1～21。1が最小強度、21が最大です。 |
-| Aspect Ratio | Auto／32:9／21:9／16:9／4:3／3:2／Custom。Customのみ横・縦を1～99で入力でき、初期値は16:9です。上下ボタンでも変更できます。 |
+| Aspect Ratio | Auto／32:9／21:9／16:9／4:3／3:2／Custom。Customは横・縦の比率を1～99で入力します。初期値は16:9です。 |
 
-比率に応じたWaydroid表示寸法を `Resolution: 1920x1080` の形式で表示します。Customの入力欄は解像度ではなく横：縦の比率です。基準高さ720へ換算した幅が320～7680に収まる範囲で指定してください。
-
-項目名の横の `(?)` をクリックすると説明を表示します。ホバーでは表示しません。説明とポップアップはOS言語が日本語なら日本語、それ以外は英語です。
+比率に応じた表示寸法を `Resolution: 1920x1080` の形式で表示します。Customの入力欄は解像度ではなく横：縦の比率です。極端に横長・縦長の比率は指定できません。指定可能な範囲を超えた場合は、表示される案内に従って比率を調整してください。
 
 RTScale ONではWaydroid表示を高さ1080相当とし、RTScaleの基準寸法は別に高さ720で管理します。OSスケール、表示寸法、RTScale倍率は別の設定です。
 
-拡大倍率を高くすると負荷が増え、描画の乱れやフレーム落ちが発生することがあります。シャープニングを強くすると輪郭の強調やちらつきが目立つ場合があります。
-
-Super（Windows）＋Fで全画面とウィンドウを切り替えます。複数モニターでは、Waydroid起動時にカーソルがある画面へ表示されます。使用したい画面にカーソルを移してStart／Restartを押し、表示されるまでその画面に置いてください。
+Super（Windows）＋Fで全画面とウィンドウを切り替えます。複数モニターでは、Waydroid起動時にカーソルがある画面へ表示されます。使用したい画面へカーソルを移してStart／Restartを押し、表示されるまでその画面に置いてください。MaintenanceのSpan Displaysは複数画面にまたがって表示する試験機能です。
 
 ## Options
 
@@ -79,11 +73,9 @@ Super（Windows）＋Fで全画面とウィンドウを切り替えます。複�
 | Verify Waydroid Startup | Android起動・設定反映・解像度・表示の継続を確認します。OFFでは必須設定の反映後、表示確認と安定待機を省略します。 |
 | Auto Launch Mirishita | 準備確認後にミリシタを自動起動します。Verify OFFではグレーアウトし、手動起動になります。 |
 | Mouse as Touch | マウス操作をAndroidのタッチ入力として扱います。 |
-| RTScale Zoom Fix | RTScale使用時の過度な拡大や描画範囲のずれへの互換設定です。 |
+| RTScale Zoom Fix | RTScale使用時の過度な拡大や、光の合成などに生じる描画ずれを補正します。通常はONで使用してください。 |
 
-Verify ONの準備中はMWMの操作を制限します。途中でミリシタを手動起動すると処理を中断するため、ゲームを終了してStart／Restartをやり直してください。Auto Launch OFFでは準備完了後に手動起動します。
-
-Optionsの変更もApply→Start／Restartで反映します。
+Verify ONの場合、ミリシタの起動処理中はMWMの操作を制限します。途中でミリシタを手動起動すると処理を中断するため、ゲームを終了してStart／Restartをやり直してください。Auto Launch OFFでは準備完了後に手動起動します。
 
 ## FPS Counter
 
@@ -96,9 +88,9 @@ Off／Minimal／Detailed／MangoAppから選択します。MinimalとDetailedは
 | グラフ：MangoApp | Gamescope側のフレーム時間。FPS欄とは計測箇所が異なります。 |
 | CPU／GPU | ホスト側の負荷。ミリシタ単体の使用率ではありません。 |
 
-FPSはゲーム内部の描画回数やモニターの最終表示FPSとは区別されます。更新タイミングにより表示値が異なる場合があります。取得できない場合はMWM HUDで `--.--`、MangoAppで `--` を表示します。
+更新タイミングにより表示値が異なる場合があります。取得できない場合はMWM HUDで `--.--`、MangoAppで `--` を表示します。
 
-対応セッションでは起動中に表示方式を切り替えられます。設定ファイルの直接編集は起動・切り替え時に上書きされます。ソース・ライセンス・ビルド方法は `mwm/vendor/mangoapp/BUILD.md` を参照してください。
+対応セッションでは起動中に表示方式を切り替えられます。
 
 ### BC250のGPU使用率（試験機能）
 
@@ -111,9 +103,17 @@ mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/mwm"
 touch "${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test"
 ```
 
+## 既知の不具合
+
+RTScale使用時、特定の光源やエフェクトで、処理がキャラクターの前面に重なる、白飛びする、描画位置がずれるなどの異常が発生する場合があります。**RTScale Zoom FixをONにしても、すべての描画異常を解消できるわけではありません。**
+
+RTScaleやFSR1の拡大倍率を高くすると、負荷の増加により描画の乱れやフレーム落ちが発生する場合があります。RCASの強度を上げると、輪郭の強調やちらつきが目立つ場合があります。
+
+Span Displaysは、モニターの解像度・配置・OSスケールの組み合わせにより、画面の継ぎ目や余白にずれが生じる場合があります。RTScaleの適用に、環境に合わせた基準寸法の調整が必要になる場合があります。
+
 ## 診断ログ
 
-MaintenanceのDoctorで環境を確認できます。**Save Diagnostic Log**で診断情報を1ファイルへ保存できます。
+MaintenanceのDoctorで環境を確認できます。**Save Log**で診断情報をファイルへ保存することができます。
 
 ```text
 ~/.local/share/mwm/logs/mwm-yyyyMMdd-hhmmss.log
@@ -123,7 +123,7 @@ RTScale Debugでは診断情報の表示・更新・コピー・クリアがで�
 
 ## バックアップ・アンインストール
 
-初回導入時に、MWMが変更する描画ファイルと表示・入力・音声・RTScale設定を保存します。バックアップ先は `/var/lib/mwm-backups/<UID>/baseline/` です。更新や配布フォルダーの削除後も保持します。復元対象はMWMによる変更箇所で、アプリ・ゲームデータは保持します。
+初回導入時に、MWMが変更する描画ファイルと表示・入力・音声・RTScale設定を保存します。保存先は `/var/lib/mwm-backups/<UID>/baseline/` です。更新や配布フォルダーの削除後も保持します。復元対象はMWMによる変更箇所で、アプリ・ゲームデータは保持します。
 
 Maintenanceの**Uninstall MWM**を押すか、配布ファイルの展開先で実行します。
 

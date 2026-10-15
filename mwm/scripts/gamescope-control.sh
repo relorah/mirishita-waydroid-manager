@@ -142,7 +142,7 @@ mode_to_internal() {
 }
 
 read_fsr_scale() {
-  local v="150"
+  local v="125"
   local enabled
   if [[ -f "$CFG_DIR/gamescope-fsr-enabled" ]]; then
     enabled="$(cat "$CFG_DIR/gamescope-fsr-enabled")"
@@ -153,7 +153,7 @@ read_fsr_scale() {
   fi
   [[ "$enabled" == on ]] || { printf '100\n'; return; }
   [[ -f "$FSR_SCALE_FILE" ]] && v="$(tr -d '[:space:]' < "$FSR_SCALE_FILE" 2>/dev/null || true)"
-  case "$v" in 125|150|175|200) ;; *) v=150 ;; esac
+  case "$v" in 125|150|175|200) ;; *) v=125 ;; esac
   printf '%s\n' "$v"
 }
 

@@ -1,6 +1,7 @@
 # MWM 0.85
 
-- MSAA設定の追加とUIの調整。
+- MSAA設定の追加とUIの調整。RTScale上限をx8、FSRの初期選択を125%へ変更。
+- Save Logへ名称を統一し、SETUPに既知の描画異常を追記。
 
 # MWM 0.84（Diamond Joker 実機検証候補）
 
