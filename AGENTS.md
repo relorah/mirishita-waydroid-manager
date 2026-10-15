@@ -2,7 +2,7 @@
 
 ## Project Scope
 
-This repository is for **Mirishita Waydroid Manager (MWM)**.
+This repository is for **MLTD Waydroid Manager (MWM)**.
 
 MWM manages an **already working** Mirishita environment on Waydroid. It is not a general Waydroid installer and it must not absorb initial Android / Google Play / Native Bridge setup into the public manager.
 

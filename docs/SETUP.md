@@ -1,4 +1,4 @@
-# Mirishita Waydroid Manager (MWM) 0.85 Setup Guide
+# MLTD Waydroid Manager (MWM) 0.85 Setup Guide
 
 MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理するツールです。
 
@@ -37,7 +37,7 @@ chmod +x install.sh
 
 ## 基本操作
 
-アプリメニューのMirishita Waydroid Manager、または `~/.local/bin/mwm` で起動します。
+アプリメニューのMLTD Waydroid Manager、または `~/.local/bin/mwm` で起動します。
 
 1. Homeで描画・表示・Optionsを設定します。
 2. **Apply**で保存します。

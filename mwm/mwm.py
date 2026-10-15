@@ -178,7 +178,7 @@ class MainWindow(QMainWindow):
         main.setContentsMargins(10, 10, 10, 10)
         main.setSpacing(9)
 
-        title = QLabel("Mirishita Waydroid Manager")
+        title = QLabel("MLTD Waydroid Manager")
         title.setObjectName("AppTitle")
         main.addWidget(title)
 

@@ -1,4 +1,4 @@
-# Mirishita Waydroid Manager (MWM)
+# MLTD Waydroid Manager (MWM)
 
 CachyOS + AMD GPU環境で「アイドルマスター ミリオンライブ！ シアターデイズ（以下、ミリシタ）」を高解像度描画するためのプロジェクトです。本ツールはChatGPTおよびCodexを用いて作成・改修し、コード確認と実機検証を重ねて開発しています。
 

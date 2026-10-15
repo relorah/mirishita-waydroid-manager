@@ -308,7 +308,7 @@ EOF2
   cat > "$DESKTOP_DIR/mwm.desktop" <<EOF2
 [Desktop Entry]
 Type=Application
-Name=Mirishita Waydroid Manager
+Name=MLTD Waydroid Manager
 GenericName=MWM
 Comment=Manage an existing Mirishita Waydroid environment
 Exec=$LOCAL_BIN/mwm
