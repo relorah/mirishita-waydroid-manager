@@ -17,7 +17,7 @@ class SpanTests(unittest.TestCase):
         for fields in ([],dict(display_width=3408,display_height=1080,base_width=2388,base_height=720),dict(display_width=3424,display_height=1080,base_width=2388,base_height=2160)):
             with self.assertRaises(ValueError):span.calibrated_base(fields,3424,1080)
 
-    def test_test_system_fractional_and_offset(self):
+    def test_fractional_scale_and_offset(self):
         self.assertEqual(span.geometry([output(3840,2160,1.45,0,0),output(1920,1080,1,2649,410)]),dict(x=0,y=0,width=4569,height=1490))
 
     def test_negative_origin_and_disabled_output(self):
