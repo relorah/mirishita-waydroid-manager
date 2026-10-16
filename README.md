@@ -36,7 +36,7 @@ Gamescope・表示1920×1080・FSR OFFで撮影した実機MVです。同じ画�
 | --- | --- |
 | ![4人・OFF](docs/images/readme/diamond-group-close-off.webp) | ![4人・x3](docs/images/readme/diamond-group-close-x3.webp) |
 
-原寸PNGと撮影情報はリリース添付の `MWM_v0.85_README_originals.zip` に収録します。画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
+画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
 
 ## 主な機能
 
