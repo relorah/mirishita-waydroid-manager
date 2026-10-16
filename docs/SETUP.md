@@ -1,4 +1,4 @@
-# MLTD Waydroid Manager (MWM) 0.85 Setup Guide
+# MLTD Waydroid Manager (MWM) 0.90 Setup Guide
 
 MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理するツールです。
 
@@ -14,7 +14,7 @@ MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理す
 
 ホストへ依存パッケージ、MWM本体、ランチャー、管理処理用のroot helperとsudoers設定を導入します。Waydroidには描画ライブラリをoverlayとして導入し、表示・入力・RTScaleなどの設定を変更します。
 
-RTScaleは、mogareta7731氏が公開した原機能とライブラリの挙動を参考に解析・再構成し、Mesaへ組み込んだMWM独立実装を使用します。描画部品の出典・版は `payload/manifests/graphics-stack.lock`、ライセンスは `LICENSES/` に記載しています。
+RTScaleは、mogareta7731氏が公開した原機能とライブラリの挙動を参考に解析・再構成し、Mesaへ組み込んだMWM独立実装を使用します。描画部品の出典・版は `packaging/payload/manifests/graphics-stack.lock`、ライセンスは `LICENSES/` に記載しています。
 
 ## インストール・更新
 

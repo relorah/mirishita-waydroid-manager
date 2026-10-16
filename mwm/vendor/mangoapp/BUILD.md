@@ -19,13 +19,13 @@ Test integer anchors with the same ImGui and MangoHud font:
 
 ```bash
 cc -c src/font_unispace.c -o font_unispace.o
-c++ -std=c++17 -Isubprojects/imgui-1.91.6 -Isrc /path/to/MWM/tests/test_fps_alignment.cpp font_unispace.o build/subprojects/imgui-1.91.6/libimgui.a -o test-fps-alignment
+c++ -std=c++17 -Isubprojects/imgui-1.91.6 -Isrc /path/to/MWM/packaging/tests/test_fps_alignment.cpp font_unispace.o build/subprojects/imgui-1.91.6/libimgui.a -o test-fps-alignment
 ./test-fps-alignment
 ```
 
 Current layout: GPU/CPU/FPS integer anchors are shared; FPS uses a red label and small superscript. The generated config applies a 0.9 presentation factor and, for dual Gamescope pipelines, max(target_width/output_width, target_height/output_height). Native padding, margin, graph height, and unit spacing follow that factor. Temperatures end at the final column WorkMaxX; the graph ends at the content right edge. Font reload recomputes the number anchor. Small font rasterization differences remain possible.
 
-Additional tests: build tests/test_hud_margins.cpp with the same command as test_fps_alignment.cpp. Actual ImGui tables verify symmetric margins for fit ratios 1/1.25/1.5/1.75/2 within 1.1 pixels of table/window rounding. The BC250 user approved the final appearance.
+Additional tests: build packaging/tests/test_hud_margins.cpp with the same command as test_fps_alignment.cpp. Actual ImGui tables verify symmetric margins for fit ratios 1/1.25/1.5/1.75/2 within 1.1 pixels of table/window rounding. The BC250 user approved the final appearance.
 
 BC250 read-only sampling is experimental and opt-in via `${XDG_CONFIG_HOME:-$HOME/.config}/mwm/bc250-gpu-test`. The flag is preserved by updates. GRBM_STATUS bit 31 is sampled every 2 ms and published every 0.5 seconds; the shared cache checks device identity and expires after 2 seconds. No clock or voltage writes. The GPU-wide activity ratio is not per-game load. Register selection references https://github.com/filippor/cyan-skillfish-governor at commit 7b08fdcf542d1edd82f3a9077c902038019c9842; its MIT license is included as LICENSE-BC250-reference.
 

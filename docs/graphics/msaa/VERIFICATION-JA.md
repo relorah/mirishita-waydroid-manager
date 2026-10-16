@@ -1,6 +1,6 @@
 MWM v0.84 Diamond Joker 実機検証・修正候補（2026-10-13）
-正本：https://github.com/relorah/mirishita-waydroid-manager
-Draft PR：https://github.com/relorah/mirishita-waydroid-manager/pull/1
+正本：https://github.com/relorah/mltd-waydroid-manager
+Draft PR：https://github.com/relorah/mltd-waydroid-manager/pull/1
 対象：RX 9060 XT 8GB、Waydroid Android11 x86_64、RTScale x6、FSR150、3D高画質。
 
 確認・保全

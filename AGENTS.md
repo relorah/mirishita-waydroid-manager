@@ -90,7 +90,7 @@ Rules:
 
 ### MWM RTScale profile
 
-The v0.85 GUI supports OFF and x1 through x8; the initial value is OFF.
+The v0.90 GUI supports OFF and x1 through x8; the initial value is OFF.
 Do not describe x3 as universally optimal. Suitable scale depends on hardware and content.
 
 For the Gamescope RTScale profile, Android uses a 1080-high display. The RTScale
@@ -107,7 +107,7 @@ Render Scale changes require a Waydroid restart for reliable application.
 The public package may contain:
 
 ```text
-payload/rtscale-vendor-overlay.tar.zst
+packaging/payload/graphics/mesa-rtscale-overlay.tar.zst
 ```
 
 This overlay is built / assembled for Waydroid using the RTScale implementation and build information published by mogareta7731 together with upstream third-party components.
@@ -436,3 +436,10 @@ For third-party components, preserve:
 - local modifications.
 
 Do not add a binary dependency to a public release without documenting where it came from and under what terms it is redistributed.
+
+## Public layout and documentation
+
+- Runtime payload lives in packaging/payload; development tests live in packaging/tests.
+- Normal distribution ZIPs exclude tests, development tools and verification records.
+- docs contains SETUP.md and RTScale correction/verification material only. General investigations, release-preparation notes and image galleries stay local.
+- Edit README.md only when the user explicitly supplies or requests its content. Do not append routine update history to README or create changelog documents.
