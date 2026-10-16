@@ -16,6 +16,8 @@ MWMは、Waydroid上のミリシタの描画・表示・入力設定を管理す
 
 RTScaleは、mogareta7731氏が公開した原機能とライブラリの挙動を参考に解析・再構成し、Mesaへ組み込んだMWM独立実装を使用します。描画部品の出典・版は `packaging/payload/manifests/graphics-stack.lock`、ライセンスは `LICENSES/` に記載しています。
 
+修正内容・検証範囲と対応ソースの利用方法は[RTScaleの修正・検証資料](RTSCALE.md)を参照してください。
+
 ## インストール・更新
 
 ゲームとMWMを終了し、配布ファイルを展開したフォルダーで実行します。

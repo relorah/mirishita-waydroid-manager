@@ -7,15 +7,16 @@ from pathlib import Path,PurePosixPath
 GRAPHICS_BASE_SHA256='6ddc1e4dbf0c5663d2ed70df3c6eed406211cffad6c0f406f53c2e87b236d9dd'
 RUNTIME_ROOT={'install.sh','uninstall.sh','MWM.py','README.md','LICENSE'}
 HELPERS={'packaging/mwm-root-helper','packaging/mwm-waydroid-backup.py','packaging/mwm_targeted_backup.py'}
+USER_DOCS={'docs/SETUP.md','docs/RTSCALE.md'}
 def digest(path):
     with path.open('rb') as stream:return hashlib.file_digest(stream,'sha256').hexdigest()
 def runtime_file(name):
     if name.startswith('packaging/payload/sources/'):return False
     if name.startswith('mwm/vendor/mangoapp/') and (name.endswith(('.tar.gz','.patch','.h')) or name.endswith('/BUILD.md')):return False
     if name.startswith('mwm/') and name.endswith(('.c','.h','.cpp')):return False
-    return name in RUNTIME_ROOT or name in HELPERS or name=='docs/SETUP.md' or name.startswith(('mwm/','LICENSES/','packaging/payload/'))
+    return name in RUNTIME_ROOT or name in HELPERS or name in USER_DOCS or name.startswith(('mwm/','LICENSES/','packaging/payload/'))
 def source_file(name):
-    if name in RUNTIME_ROOT or name=='packaging/anonymize-build-paths.py' or name=='docs/SETUP.md' or name in HELPERS:return True
+    if name in RUNTIME_ROOT or name=='packaging/anonymize-build-paths.py' or name in USER_DOCS or name in HELPERS:return True
     if name.startswith(('LICENSES/','docs/graphics/','packaging/tests/graphics/','packaging/payload/manifests/')):return True
     return name.startswith('mwm/') and not name.startswith(('mwm/scripts/mangoapp-native/','mwm/scripts/mangoapp-bin/'))
 def add_bytes(archive,name,data,timestamp,mode=0o644):
