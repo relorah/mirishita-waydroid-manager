@@ -6,7 +6,7 @@ CachyOS + AMD GPU環境で「アイドルマスター ミリオンライブ！ �
 
 Mesa GLES Render Scale（以下、RTScale）の技術情報を公開した[mogareta7731氏](https://zenn.dev/mogareta7731)、ならびにMesa・Waydroid・Gamescope・MangoHudなどの開発者に感謝します。
 
-MWMで使用するRTScaleは、mogareta7731氏が公開した技術情報を参考に、Waydroid向けに独立実装・調整しています。
+MWMで使用するRTScaleは、mogareta7731氏が公開した技術情報をもとに独立実装したものです。
 
 - [Mesa GLES Render Scale（Render Target Scale）について - note](https://note.com/mogareta7731/n/n4db668be92b5)
 - [Mesa GLES Render Scaleの利用例 - note](https://note.com/mogareta7731/n/n80aebd523379)
