@@ -8,8 +8,8 @@ Mesa GLES Render Scale（以下、RTScale）の技術情報を公開した[mogar
 
 RTScaleはmogareta7731氏が公開した技術情報を参考に、Waydroid向けに独立実装・調整しています。
 
-- [Mesa GLES Render Scale（Render Target Scale）について](https://note.com/mogareta7731/n/n4db668be92b5)
-- [Mesa GLES Render Scaleの利用例](https://note.com/mogareta7731/n/n80aebd523379)
+- [Mesa GLES Render Scale（Render Target Scale）について - note](https://note.com/mogareta7731/n/n4db668be92b5)
+- [Mesa GLES Render Scaleの利用例 - note](https://note.com/mogareta7731/n/n80aebd523379)
 
 ## 免責事項
 
