@@ -21,32 +21,22 @@ Gamescope・表示1920×1080・FSR OFFで撮影した実機MVです。同じ画�
 
 ### 3D標準：一旦愛して♡
 
-11/18：未来・杏奈・可奈・紬。
-
 | RTScale OFF | RTScale x3 |
 | --- | --- |
-| ![紬・OFF](docs/images/readme/ittan-tsumugi-off.webp) | ![紬・x3](docs/images/readme/ittan-tsumugi-x3.webp) |
 | ![4人・OFF](docs/images/readme/ittan-group-wide-off.webp) | ![4人・x3](docs/images/readme/ittan-group-wide-x3.webp) |
 
-### 3D標準：Thank You!
-
-39人ライブ、グループAのセンターは北上麗花。
-
+### 3D標準：Thank You! 39人ライブ
 | RTScale OFF | RTScale x3 |
 | --- | --- |
-| ![麗花・OFF](docs/images/readme/thank-you-reika-close-off.webp) | ![麗花・x3](docs/images/readme/thank-you-reika-close-x3.webp) |
 | ![39人ライブ・OFF](docs/images/readme/thank-you-wide-stage-off.webp) | ![39人ライブ・x3](docs/images/readme/thank-you-wide-stage-x3.webp) |
 
 ### 3D高画質：DIAMOND JOKER
 
-12/18：恵美・まつり・翼・貴音。
-
 | RTScale OFF | RTScale x3 |
 | --- | --- |
-| ![恵美・OFF](docs/images/readme/diamond-megumi-off.webp) | ![恵美・x3](docs/images/readme/diamond-megumi-x3.webp) |
 | ![4人・OFF](docs/images/readme/diamond-group-close-off.webp) | ![4人・x3](docs/images/readme/diamond-group-close-x3.webp) |
 
-[各キャラクターのアップ・引きのカットと撮影条件](docs/README_GALLERY.md)も参照してください。原寸PNGと撮影情報はリリース添付の `MWM_v0.85_README_originals.zip` に収録します。画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
+原寸PNGと撮影情報はリリース添付の `MWM_v0.85_README_originals.zip` に収録します。画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
 
 ## 主な機能
 
