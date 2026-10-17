@@ -23,23 +23,23 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 
 同じ編成・衣装・画質と近いカメラ・ポーズを合わせていますが、別再生のため髪・衣装・紙吹雪などに微小な時間差があります。
 
-### 一旦愛して♡ — 3D高画質
+### 一旦愛して♡ — 3D描画モード比較
 
 <details open>
-<summary>4人分割カット・未来の拡大比較</summary>
+<summary>杏奈 — 4人並びカット</summary>
 
-![4分割カット：3D高画質・RTScale 4条件](docs/images/readme/ittan_aishite/high_all-rts_split.webp)
+![3D標準、3D高画質、3D高画質RTScale x3、RTScale x6の比較](docs/images/readme/ittan_aishite/anna_wide_four_modes.webp)
 
-![未来：3D高画質・RTScale 4条件、同じ範囲を200%拡大](docs/images/readme/ittan_aishite/high_all-rts_mirai.webp)
+![杏奈の拡大比較](docs/images/readme/ittan_aishite/anna_wide_zoom_four_modes.webp)
 
 </details>
 
 <details>
-<summary>4人並びカット・杏奈の拡大比較</summary>
+<summary>未来 — 4分割カット</summary>
 
-![4人並び：3D高画質・RTScale 4条件](docs/images/readme/ittan_aishite/high_all-rts_wide.webp)
+![3D標準、3D高画質、3D高画質RTScale x3、RTScale x6の比較](docs/images/readme/ittan_aishite/mirai_split_four_modes.webp)
 
-![杏奈：3D高画質・RTScale 4条件、同じ範囲を200%拡大](docs/images/readme/ittan_aishite/high_all-rts_anna.webp)
+![未来の拡大比較](docs/images/readme/ittan_aishite/mirai_split_zoom_four_modes.webp)
 
 </details>
 
