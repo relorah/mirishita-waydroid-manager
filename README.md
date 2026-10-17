@@ -33,19 +33,27 @@ Gamescope・16:9で撮影した実機MVです。3D標準はRTScale OFF／x3、3D
 
 ![杏奈の拡大比較：RTScale OFFとx3](docs/images/readme/ittan-yellow-anna-200pct.webp)
 
-一旦愛して♡は[分割描画対応の修正候補](docs/graphics/half-height/README.md)で再録しました。この修正は公開済みv0.90の配布バイナリにはまだ含まれていません。4分割カットは修正検証のみに使用し、掲載画像は4人並びです。
+一旦愛して♡は[分割描画対応の修正候補](docs/graphics/half-height/README.md)で再録しました。この修正は公開済みv0.90の配布バイナリにはまだ含まれていません。4人並びに加え、4分割カットでも比較しています。
 
-### Thank You! — 39人ライブ / 3D標準
+### 一旦愛して♡ — 4分割カット / 3D標準
 
-![Thank You!：RTScale OFFとx3](docs/images/readme/thank_you-comparison.webp)
+![一旦愛して♡の4分割カット：RTScale OFFとx3](docs/images/readme/ittan-split-comparison.webp)
 
-### DIAMOND JOKER — 3D高画質
+同じ位置を切り出した200%拡大比較です。こちらも分割描画対応の修正候補で撮影しています。
 
-![DIAMOND JOKER：RTScale OFFとx6 / FSR 150% / Sharp 10](docs/images/readme/diamond_joker-comparison.webp)
+![杏奈の4分割カット拡大比較：RTScale OFFとx3](docs/images/readme/ittan-split-anna-200pct.webp)
+
+![未来の4分割カット拡大比較：RTScale OFFとx3](docs/images/readme/ittan-split-mirai-200pct.webp)
 
 ### 蝶々むすび — 13人ライブ / 3D高画質
 
 ![蝶々むすび：RTScale OFFとx6 / FSR 150% / Sharp 10、髪型修正後](docs/images/readme/choucho_musubi-comparison.webp)
+
+同じ位置を切り出した200%拡大比較です。FSR 150%・Sharp 10は両側で共通です。拡大は最近傍補間を使用し、原寸PNGへ描画補正は加えていません。
+
+![麗花の拡大比較：RTScale OFFとx6 / FSR 150% / Sharp 10](docs/images/readme/choucho-reika-200pct.webp)
+
+![ジュリアの拡大比較：RTScale OFFとx6 / FSR 150% / Sharp 10](docs/images/readme/choucho-julia-200pct.webp)
 
 画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
 
