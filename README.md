@@ -23,43 +23,23 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 
 同じ編成・衣装・画質と近いカメラ・ポーズを合わせていますが、別再生のため髪・衣装・紙吹雪などに微小な時間差があります。
 
-### 一旦愛して♡ — 3D標準
-
-<details>
-<summary>4人並び・杏奈の拡大比較</summary>
-
-![4人並び：3D標準・RTScale 4条件](docs/images/readme/ittan-standard-wide.webp)
-
-![杏奈：3D標準・同じ範囲を200%拡大](docs/images/readme/ittan-standard-anna.webp)
-
-</details>
-
-<details>
-<summary>4分割カット・未来の拡大比較</summary>
-
-![4分割カット：3D標準・RTScale 4条件](docs/images/readme/ittan-standard-split.webp)
-
-![未来：3D標準・同じ範囲を200%拡大](docs/images/readme/ittan-standard-mirai.webp)
-
-</details>
-
 ### 一旦愛して♡ — 3D高画質
 
-<details>
-<summary>4人並び・杏奈の拡大比較</summary>
+<details open>
+<summary>4人分割カット・未来の拡大比較</summary>
 
-![4人並び：3D高画質・RTScale 4条件](docs/images/readme/ittan-high-wide.webp)
+![4分割カット：3D高画質・RTScale 4条件](docs/images/readme/ittan_aishite/high_all-rts_split.webp)
 
-![杏奈：3D高画質・同じ範囲を200%拡大](docs/images/readme/ittan-high-anna.webp)
+![未来：3D高画質・RTScale 4条件、同じ範囲を200%拡大](docs/images/readme/ittan_aishite/high_all-rts_mirai.webp)
 
 </details>
 
 <details>
-<summary>4分割カット・未来の拡大比較</summary>
+<summary>4人並びカット・杏奈の拡大比較</summary>
 
-![4分割カット：3D高画質・RTScale 4条件](docs/images/readme/ittan-high-split.webp)
+![4人並び：3D高画質・RTScale 4条件](docs/images/readme/ittan_aishite/high_all-rts_wide.webp)
 
-![未来：3D高画質・同じ範囲を200%拡大](docs/images/readme/ittan-high-mirai.webp)
+![杏奈：3D高画質・RTScale 4条件、同じ範囲を200%拡大](docs/images/readme/ittan_aishite/high_all-rts_anna.webp)
 
 </details>
 
@@ -68,11 +48,11 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 <details>
 <summary>16:9と32:9の比較（RTScale x3 / FSR 150% / Sharp 10）</summary>
 
-![Thank You! 39人ライブ：16:9と32:9の比較](docs/images/readme/thank-you-aspect-comparison.webp)
+![Thank You! 39人ライブ：16:9と32:9の比較](docs/images/readme/thank_you/high_x3-fsr_aspect-comparison.webp)
 
 </details>
 
-[原寸PNG・比較画像一式](https://github.com/relorah/mltd-waydroid-manager/releases/download/v0.91/MWM_README_Comparisons_20261017.zip)
+[原寸PNG・比較画像一式（ZIP）](https://github.com/relorah/mltd-waydroid-manager/releases/download/v0.91/MWM_README_Comparisons_20261017.zip)
 
 画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
 
