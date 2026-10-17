@@ -43,10 +43,6 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 
 </details>
 
-### 蝶々むすび — 13人ライブ / 3D高画質
-
-![RTScale OFF と x6、FSR 150%、Sharp 10 の比較](docs/images/readme/choucho_musubi/high_off-vs-high_x6_choucho_13live.webp)
-
 ### Thank You! — 39人ライブ / 3D高画質
 
 <details>
