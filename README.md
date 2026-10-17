@@ -19,41 +19,60 @@ MWMはミリシタの権利者および各ソフトウェアの開発元とは�
 
 ## 描画比較
 
-Gamescope・16:9で撮影した実機MVです。3D標準はRTScale OFF／x3、3D高画質はOFF／x6を比較しています。高画質の両側はFSR 150%・Sharp 10で固定しています。元の表示は標準1920×1080、高画質3840×2160で、以下は縮小プレビューです。OFF側もAndroid表示を1920×1080に固定した撮影条件で、通常のGUIのOFF既定表示とは異なります。
+Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 
-同じ編成・衣装・画質と近いカメラ・ポーズを合わせていますが、別再生のため髪・衣装・紙吹雪などに微小な時間差があります。性能測定ではなく見た目の参考です。
+同じ編成・衣装・画質と近いカメラ・ポーズを合わせていますが、別再生のため髪・衣装・紙吹雪などに微小な時間差があります。
 
 ### 一旦愛して♡ — 3D標準
 
-![一旦愛して♡：RTScale OFFとx3、黄色バック](docs/images/readme/ittan_aishite-comparison.webp)
+<details>
+<summary>4人並び・杏奈の拡大比較</summary>
 
-同じ位置を切り出して200%表示した拡大比較です。最近傍補間を使用し、原寸PNGへ描画補正は加えていません。
+![4人並び：3D標準・RTScale 4条件](docs/images/readme/ittan-standard-wide.webp)
 
-![未来の拡大比較：RTScale OFFとx3](docs/images/readme/ittan-yellow-mirai-200pct.webp)
+![杏奈：3D標準・同じ範囲を200%拡大](docs/images/readme/ittan-standard-anna.webp)
 
-![杏奈の拡大比較：RTScale OFFとx3](docs/images/readme/ittan-yellow-anna-200pct.webp)
+</details>
 
-一旦愛して♡向けの[分割描画対応の修正](docs/graphics/half-height/README.md)はv0.91の描画ライブラリへ反映しました。掲載画像は同じ修正を適用した検証用ビルドで撮影しています。4人並びに加え、4分割カットでも比較しています。
+<details>
+<summary>4分割カット・未来の拡大比較</summary>
 
-### 一旦愛して♡ — 4分割カット / 3D標準
+![4分割カット：3D標準・RTScale 4条件](docs/images/readme/ittan-standard-split.webp)
 
-![一旦愛して♡の4分割カット：RTScale OFFとx3](docs/images/readme/ittan-split-comparison.webp)
+![未来：3D標準・同じ範囲を200%拡大](docs/images/readme/ittan-standard-mirai.webp)
 
-同じ位置を切り出した200%拡大比較です。こちらも分割描画対応の修正を適用して撮影しています。
+</details>
 
-![杏奈の4分割カット拡大比較：RTScale OFFとx3](docs/images/readme/ittan-split-anna-200pct.webp)
+### 一旦愛して♡ — 3D高画質
 
-![未来の4分割カット拡大比較：RTScale OFFとx3](docs/images/readme/ittan-split-mirai-200pct.webp)
+<details>
+<summary>4人並び・杏奈の拡大比較</summary>
 
-### 蝶々むすび — 13人ライブ / 3D高画質
+![4人並び：3D高画質・RTScale 4条件](docs/images/readme/ittan-high-wide.webp)
 
-![蝶々むすび：RTScale OFFとx6 / FSR 150% / Sharp 10、髪型修正後](docs/images/readme/choucho_musubi-comparison.webp)
+![杏奈：3D高画質・同じ範囲を200%拡大](docs/images/readme/ittan-high-anna.webp)
 
-同じ位置を切り出した200%拡大比較です。FSR 150%・Sharp 10は両側で共通です。拡大は最近傍補間を使用し、原寸PNGへ描画補正は加えていません。
+</details>
 
-![麗花の拡大比較：RTScale OFFとx6 / FSR 150% / Sharp 10](docs/images/readme/choucho-reika-200pct.webp)
+<details>
+<summary>4分割カット・未来の拡大比較</summary>
 
-![ジュリアの拡大比較：RTScale OFFとx6 / FSR 150% / Sharp 10](docs/images/readme/choucho-julia-200pct.webp)
+![4分割カット：3D高画質・RTScale 4条件](docs/images/readme/ittan-high-split.webp)
+
+![未来：3D高画質・同じ範囲を200%拡大](docs/images/readme/ittan-high-mirai.webp)
+
+</details>
+
+### Thank You! — 39人ライブ / 3D高画質
+
+<details>
+<summary>16:9と32:9の比較（RTScale x3 / FSR 150% / Sharp 10）</summary>
+
+![Thank You! 39人ライブ：16:9と32:9の比較](docs/images/readme/thank-you-aspect-comparison.webp)
+
+</details>
+
+[原寸PNG・比較画像一式](https://github.com/relorah/mltd-waydroid-manager/releases/download/v0.91/MWM_README_Comparisons_20261017.zip)
 
 画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
 
