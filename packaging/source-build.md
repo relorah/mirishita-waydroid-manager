@@ -7,6 +7,7 @@ Apply the following patches at the Mesa source root, in order, before compiling:
 ```bash
 patch -p1 < /path/to/sources/docs/graphics/msaa/mesa-msaa-storage2.patch
 patch -p1 < /path/to/sources/docs/graphics/depth-blit/mesa-depth-only-blit.patch
+patch -p1 < /path/to/sources/docs/graphics/half-height/mesa-rtscale-half-height.patch
 ```
 
 Follow the base archive's Android API30 / NDK r27c / LLVM21 build configuration and stage the resulting libraries. The retained RTScale documents describe the local shader-coordinate, MSAA and depth/stencil changes and their verification scope. `packaging/tests/graphics/` contains their independent probes.

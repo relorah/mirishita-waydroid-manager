@@ -14,10 +14,10 @@ def runtime_file(name):
     if name.startswith('packaging/payload/sources/'):return False
     if name.startswith('mwm/vendor/mangoapp/') and (name.endswith(('.tar.gz','.patch','.h')) or name.endswith('/BUILD.md')):return False
     if name.startswith('mwm/') and name.endswith(('.c','.h','.cpp')):return False
-    return name in RUNTIME_ROOT or name in HELPERS or name in USER_DOCS or name.startswith(('mwm/','LICENSES/','packaging/payload/'))
+    return name in RUNTIME_ROOT or name in HELPERS or name in USER_DOCS or name.startswith(('docs/images/readme/','mwm/','LICENSES/','packaging/payload/'))
 def source_file(name):
     if name in RUNTIME_ROOT or name=='packaging/anonymize-build-paths.py' or name in USER_DOCS or name in HELPERS:return True
-    if name.startswith(('LICENSES/','docs/graphics/','packaging/tests/graphics/','packaging/payload/manifests/')):return True
+    if name.startswith(('LICENSES/','docs/images/readme/','docs/graphics/','packaging/tests/graphics/','packaging/payload/manifests/')):return True
     return name.startswith('mwm/') and not name.startswith(('mwm/scripts/mangoapp-native/','mwm/scripts/mangoapp-bin/'))
 def add_bytes(archive,name,data,timestamp,mode=0o644):
     import io
@@ -51,7 +51,7 @@ def build(repo,out,graphics,label):
         p=PurePosixPath(name)
         if p.is_absolute() or '..' in p.parts or any(x in p.parts for x in ('.git','__pycache__','updates','investigations')):raise ValueError('Unexpected tracked file: '+name)
     manifest={'version':version,'candidate':label,'source_commit':commit,'graphics_base_sha256':GRAPHICS_BASE_SHA256,
-        'sources_archive':sources.name,'graphics_base_requires_patches':['docs/graphics/msaa/mesa-msaa-storage2.patch','docs/graphics/depth-blit/mesa-depth-only-blit.patch'],
+        'sources_archive':sources.name,'graphics_base_requires_patches':['docs/graphics/msaa/mesa-msaa-storage2.patch','docs/graphics/depth-blit/mesa-depth-only-blit.patch','docs/graphics/half-height/mesa-rtscale-half-height.patch'],
         'payload_sha256_file':'packaging/payload/SHA256SUMS'}
     encoded=(json.dumps(manifest,indent=2)+'\n').encode()
     with zipfile.ZipFile(runtime,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:

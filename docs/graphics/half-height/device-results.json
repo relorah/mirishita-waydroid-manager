@@ -1,0 +1,98 @@
+[
+  {
+    "scale": 1,
+    "src_rb": 0,
+    "dst_rb": 0,
+    "mask": 3,
+    "samples": 0,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=1 source_rb=0 destination_rb=0 bits=3\nsource_storage=1280x360 samples=0\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 1,
+    "src_rb": 1,
+    "dst_rb": 1,
+    "mask": 3,
+    "samples": 0,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=1 source_rb=1 destination_rb=1 bits=3\nsource_storage=1280x360 samples=0\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 1,
+    "src_rb": 0,
+    "dst_rb": 1,
+    "mask": 1,
+    "samples": 4,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=1 source_rb=0 destination_rb=1 bits=1\nsource_storage=1280x360 samples=4\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=0 right=0 expected=0 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 1,
+    "src_rb": 1,
+    "dst_rb": 0,
+    "mask": 2,
+    "samples": 4,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=1 source_rb=1 destination_rb=0 bits=2\nsource_storage=1280x360 samples=4\nblit_error=0\ndepth left=0 right=0 expected=0 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 3,
+    "src_rb": 0,
+    "dst_rb": 0,
+    "mask": 3,
+    "samples": 0,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=3 source_rb=0 destination_rb=0 bits=3\nsource_storage=3840x1080 samples=0\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 3,
+    "src_rb": 1,
+    "dst_rb": 1,
+    "mask": 3,
+    "samples": 0,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=3 source_rb=1 destination_rb=1 bits=3\nsource_storage=3840x1080 samples=0\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 3,
+    "src_rb": 0,
+    "dst_rb": 1,
+    "mask": 1,
+    "samples": 4,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=3 source_rb=0 destination_rb=1 bits=1\nsource_storage=3840x1080 samples=4\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=0 right=0 expected=0 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 3,
+    "src_rb": 1,
+    "dst_rb": 0,
+    "mask": 2,
+    "samples": 4,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=3 source_rb=1 destination_rb=0 bits=2\nsource_storage=3840x1080 samples=4\nblit_error=0\ndepth left=0 right=0 expected=0 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 6,
+    "src_rb": 0,
+    "dst_rb": 0,
+    "mask": 3,
+    "samples": 0,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=6 source_rb=0 destination_rb=0 bits=3\nsource_storage=7680x2160 samples=0\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 6,
+    "src_rb": 1,
+    "dst_rb": 1,
+    "mask": 3,
+    "samples": 0,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=6 source_rb=1 destination_rb=1 bits=3\nsource_storage=7680x2160 samples=0\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 6,
+    "src_rb": 0,
+    "dst_rb": 1,
+    "mask": 1,
+    "samples": 4,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=6 source_rb=0 destination_rb=1 bits=1\nsource_storage=7680x2160 samples=4\nblit_error=0\ndepth left=255 right=255 expected=255 error=0\nstencil left=0 right=0 expected=0 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  },
+  {
+    "scale": 6,
+    "src_rb": 1,
+    "dst_rb": 0,
+    "mask": 2,
+    "samples": 4,
+    "output": "Renderer: AMD Radeon RX 9060 XT (radeonsi, gfx1200, ACO, DRM 3.64, 7.2.9-2-cachyos)\nscale=6 source_rb=1 destination_rb=0 bits=2\nsource_storage=7680x2160 samples=4\nblit_error=0\ndepth left=0 right=0 expected=0 error=0\nstencil left=255 right=255 expected=255 error=0\nPASS depth-only read/draw, texture/renderbuffer, depth/stencil masks and full physical coverage\nMWM_PROBE_RC=0\n"
+  }
+]
