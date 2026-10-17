@@ -26,7 +26,7 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 ### 一旦愛して♡ — 3D高画質
 
 <details open>
-<summary>杏奈 — 4人並びカット</summary>
+<summary>4人並びカット</summary>
 
 ![3D高画質 RTScale OFF と x3：4人並びカット](docs/images/readme/ittan_aishite/high_off-vs-high_x3_anna_wide.webp)
 
@@ -35,7 +35,7 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 </details>
 
 <details>
-<summary>未来 — 4分割カット</summary>
+<summary>4分割カット</summary>
 
 ![3D高画質 RTScale OFF と x3：4分割カット](docs/images/readme/ittan_aishite/high_off-vs-high_x3_mirai_split.webp)
 
