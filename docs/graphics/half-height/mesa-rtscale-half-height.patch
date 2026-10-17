@@ -1,0 +1,29 @@
+--- a/src/mesa/main/gles_rtscale.c
++++ b/src/mesa/main/gles_rtscale.c
+@@ -9,7 +9,7 @@
+ bool
+ rtscale_dimensions(const struct rtscale_rule *r, unsigned format, int *w, int *h)
+ {
+-   if (r->scale < 2 || *h != r->base_height || *w > r->base_width)
++   if (r->scale < 2 || (*h != r->base_height && *h * 2 != r->base_height) || *w > r->base_width)
+       return false;
+    switch (format) {
+    case 0x8051: case 0x8058: case 0x81a5: case 0x81a6: case 0x881a:
+@@ -31,7 +31,7 @@
+       return false;
+    float scale = (float)r->scale;
+    if (!strcmp(name, "_ScreenParams")) {
+-      if (in[1] != (float)r->base_height || in[0] > (float)r->base_width)
++      if ((in[1] != (float)r->base_height && in[1] * 2.0f != (float)r->base_height) || in[0] > (float)r->base_width)
+          return false;
+       out[0] = in[0] * scale;
+       out[1] = in[1] * scale;
+@@ -41,7 +41,7 @@
+    }
+    /* The September donor uses strstr, rather than a suffix-only comparison. */
+    if (!r->texelsize || !strstr(name, "_TexelSize") ||
+-       in[3] != (float)r->base_height || in[2] > (float)r->base_width)
++       (in[3] != (float)r->base_height && in[3] * 2.0f != (float)r->base_height) || in[2] > (float)r->base_width)
+       return false;
+    out[0] = in[0] / scale;
+    out[1] = in[1] / scale;

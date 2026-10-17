@@ -19,24 +19,33 @@ MWMはミリシタの権利者および各ソフトウェアの開発元とは�
 
 ## 描画比較
 
-Gamescope・表示1920×1080・FSR OFFで撮影した実機MVです。同じ画質・ユニット・衣装でRTScale OFFとx3を比較しています。画像は1280×720のプレビューで、カメラ位置やポーズは完全には同期していません。性能測定ではなく見た目の参考です。
+Gamescope・16:9で撮影した実機MVです。3D標準はRTScale OFF／x3、3D高画質はOFF／x6を比較しています。高画質の両側はFSR 150%・Sharp 10で固定しています。元の表示は標準1920×1080、高画質3840×2160で、以下は縮小プレビューです。OFF側もAndroid表示を1920×1080に固定した撮影条件で、通常のGUIのOFF既定表示とは異なります。
 
-### 3D標準：一旦愛して♡
+同じ編成・衣装・画質と近いカメラ・ポーズを合わせていますが、別再生のため髪・衣装・紙吹雪などに微小な時間差があります。性能測定ではなく見た目の参考です。
 
-| RTScale OFF | RTScale x3 |
-| --- | --- |
-| ![4人・OFF](docs/images/readme/ittan-group-wide-off.webp) | ![4人・x3](docs/images/readme/ittan-group-wide-x3.webp) |
+### 一旦愛して♡ — 3D標準
 
-### 3D標準：Thank You! 39人ライブ
-| RTScale OFF | RTScale x3 |
-| --- | --- |
-| ![39人ライブ・OFF](docs/images/readme/thank-you-wide-stage-off.webp) | ![39人ライブ・x3](docs/images/readme/thank-you-wide-stage-x3.webp) |
+![一旦愛して♡：RTScale OFFとx3、黄色バック](docs/images/readme/ittan_aishite-comparison.webp)
 
-### 3D高画質：DIAMOND JOKER
+同じ位置を切り出して200%表示した拡大比較です。最近傍補間を使用し、原寸PNGへ描画補正は加えていません。
 
-| RTScale OFF | RTScale x3 |
-| --- | --- |
-| ![4人・OFF](docs/images/readme/diamond-group-close-off.webp) | ![4人・x3](docs/images/readme/diamond-group-close-x3.webp) |
+![未来の拡大比較：RTScale OFFとx3](docs/images/readme/ittan-yellow-mirai-200pct.webp)
+
+![杏奈の拡大比較：RTScale OFFとx3](docs/images/readme/ittan-yellow-anna-200pct.webp)
+
+一旦愛して♡は[分割描画対応の修正候補](docs/graphics/half-height/README.md)で再録しました。この修正は公開済みv0.90の配布バイナリにはまだ含まれていません。4分割カットは修正検証のみに使用し、掲載画像は4人並びです。
+
+### Thank You! — 39人ライブ / 3D標準
+
+![Thank You!：RTScale OFFとx3](docs/images/readme/thank_you-comparison.webp)
+
+### DIAMOND JOKER — 3D高画質
+
+![DIAMOND JOKER：RTScale OFFとx6 / FSR 150% / Sharp 10](docs/images/readme/diamond_joker-comparison.webp)
+
+### 蝶々むすび — 13人ライブ / 3D高画質
+
+![蝶々むすび：RTScale OFFとx6 / FSR 150% / Sharp 10、髪型修正後](docs/images/readme/choucho_musubi-comparison.webp)
 
 画像内のゲーム・キャラクター等の権利は各権利者に帰属します。
 
