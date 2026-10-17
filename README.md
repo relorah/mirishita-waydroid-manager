@@ -23,25 +23,29 @@ Gamescopeで撮影した実機MVです。以下は縮小プレビューです。
 
 同じ編成・衣装・画質と近いカメラ・ポーズを合わせていますが、別再生のため髪・衣装・紙吹雪などに微小な時間差があります。
 
-### 一旦愛して♡ — 3D描画モード比較
+### 一旦愛して♡ — 3D高画質
 
 <details open>
 <summary>杏奈 — 4人並びカット</summary>
 
-![3D標準、3D高画質、3D高画質RTScale x3、RTScale x6の比較](docs/images/readme/ittan_aishite/anna_wide_four_modes.webp)
+![3D高画質 RTScale OFF と x3：4人並びカット](docs/images/readme/ittan_aishite/high_off-vs-high_x3_anna_wide.webp)
 
-![杏奈の拡大比較](docs/images/readme/ittan_aishite/anna_wide_zoom_four_modes.webp)
+![杏奈の拡大比較](docs/images/readme/ittan_aishite/high_off-vs-high_x3_anna_wide_zoom.webp)
 
 </details>
 
 <details>
 <summary>未来 — 4分割カット</summary>
 
-![3D標準、3D高画質、3D高画質RTScale x3、RTScale x6の比較](docs/images/readme/ittan_aishite/mirai_split_four_modes.webp)
+![3D高画質 RTScale OFF と x3：4分割カット](docs/images/readme/ittan_aishite/high_off-vs-high_x3_mirai_split.webp)
 
-![未来の拡大比較](docs/images/readme/ittan_aishite/mirai_split_zoom_four_modes.webp)
+![未来の拡大比較](docs/images/readme/ittan_aishite/high_off-vs-high_x3_mirai_split_zoom.webp)
 
 </details>
+
+### 蝶々むすび — 13人ライブ / 3D高画質
+
+![RTScale OFF と x6、FSR 150%、Sharp 10 の比較](docs/images/readme/choucho_musubi/high_off-vs-high_x6_choucho_13live.webp)
 
 ### Thank You! — 39人ライブ / 3D高画質
 
